@@ -137,7 +137,7 @@ export default function Home() {
     }
   };
 
-  //mensaje que se muestra
+  //mensaje que se muestra.
   const handleMensaje = () => {
     toast.success("Este es un mensaje de exito.");
   };
