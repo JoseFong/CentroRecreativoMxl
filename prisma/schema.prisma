@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Docente {
+  id         Int      @id @default(autoincrement())
+  nombre     String
+  aPaterno   String
+  aMaterno   String
+  telefono   String
+  fechaNac   String
+  curp       String   @unique
+  correo     String
+  usuario    String   @unique
+  contrasena String
+  rol        String //dir o doc (Director o docente)
+  Grupo      Grupo[]
+  Salida     Salida[]
+}
+
+model Alumno {
+  id             Int         @id @default(autoincrement())
+  nombre         String
+  aPaterno       String
+  aMaterno       String
+  genero         String
+  fechaNac       String
+  telefono       String
+  telefonoAlumno String?
+  direccion      String
+  curp           String      @unique
+  AlumnoNEE      AlumnoNEE[]
+  grupo          Grupo?      @relation(fields: [grupoId], references: [id])
+  grupoId        Int?
+  Pago           Pago[]
+}
+
+model Neurodivergencia {
+  id        Int         @id @default(autoincrement())
+  nombre    String
+  AlumnoNEE AlumnoNEE[]
+}
+
+model AlumnoNEE {
+  id                 Int              @id @default(autoincrement())
+  alumno             Alumno           @relation(fields: [alumnoId], references: [id])
+  alumnoId           Int
+  neurodivergencia   Neurodivergencia @relation(fields: [neurodivergenciaId], references: [id])
+  neurodivergenciaId Int
+}
+
+model Grupo {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  alumnos   Alumno[]
+  docente   Docente? @relation(fields: [docenteId], references: [id])
+  docenteId Int?
+  Salida    Salida[]
+}
+
+model Actividad {
+  id      Int    @id @default(autoincrement())
+  nombre  String
+  horario String
+}
+
+model Salida {
+  id           Int     @id @default(autoincrement())
+  nombre       String
+  fecha        String
+  docente      Docente @relation(fields: [docenteId], references: [id])
+  docenteId    Int
+  grupo        Grupo   @relation(fields: [grupoId], references: [id])
+  grupoId      Int
+  horaDeSalida String
+}
+
+model Pago {
+  id          Int     @id @default(autoincrement())
+  cantidad    Float
+  folio       String
+  categoria   String //inscripción, material, mensualidad u otro
+  descripcion String? //solo si se selecciona otro
+  alumno      Alumno  @relation(fields: [alumnoId], references: [id])
+  alumnoId    Int
+}
+
+model Gasto {
+  id       Int    @id @default(autoincrement())
+  cantidad Float
+  concepto String
+  fecha    String
+}
