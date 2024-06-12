@@ -3,6 +3,11 @@ import {
   Button,
   Checkbox,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Spinner,
   Table,
   TableBody,
@@ -10,6 +15,7 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
+  useDisclosure,
 } from "@nextui-org/react";
 import axios from "axios";
 import { use, useEffect, useState } from "react";
@@ -33,6 +39,11 @@ export default function Home() {
   const [usuario, setUsuario] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [rol, setRol] = useState("");
+
+  const [docenteAEliminar, setDocenteAEliminar] = useState(-1);
+
+  //variables para controlar el modal de nextui
+  const { onOpen, onOpenChange, isOpen } = useDisclosure();
 
   //cuando se abre este componente se llama la función fetchDocentes
   useEffect(() => {
@@ -142,8 +153,59 @@ export default function Home() {
     toast.success("Este es un mensaje de exito.");
   };
 
+  //Se activa cuando se presiona eliminar en un docente
+  const handleEliminar = (docenteTemp: any) => {
+    setDocenteAEliminar(docenteTemp); //Se hace set al docente a eliminar como el docente indicado
+    onOpen(); //Se abre el modal de confirmación
+  };
+
+  //Se activa cuando se preciona eliminar en el modal de confirmación
+  const eliminar = async (onClose: any) => {
+    try {
+      const response = await axios.delete(
+        "/api/docentes/" + docenteAEliminar.id
+      );
+      if (response.status >= 200 && response.status < 300) {
+        toast.success("Se eliminó al docente exitosamente.");
+        fetchDocentes(); //Se vuelven a conseguir los docentes para actualizar la tabla
+        setDocenteAEliminar(null); //Se desasigna el docente a eliminar
+        onClose(); //Se cierra el modal
+      } else {
+        throw new Error(response.data.message || "Error desconocido.");
+      }
+    } catch (e: any) {
+      const statusRes = e.response.status;
+      if (statusRes === 404 || statusRes === 500) {
+        toast.error(e.response.data.message);
+      } else {
+        toast.error(e.message);
+      }
+    }
+  };
+
   return (
     <div className="min-w-screen min-h-screen bg-zinc-300 flex flex-col justify-center p-11 items-center gap-11">
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>
+                ¿Seguro que desea eliminar al docente {docenteAEliminar.nombre}{" "}
+                {docenteAEliminar.aPaterno}?
+              </ModalHeader>
+              <ModalBody>Esta acción es permanente.</ModalBody>
+              <ModalFooter>
+                <div className="flex flex-row gap-2">
+                  <Button onPress={onClose}>Cancelar</Button>
+                  <Button color="danger" onPress={() => eliminar(onClose)}>
+                    Eliminar
+                  </Button>
+                </div>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
       <Button
         color="success"
         onPress={handleMensaje}
@@ -261,7 +323,13 @@ export default function Home() {
                 {docentes.map((docente: any) => (
                   <div>
                     {docente.nombre} {docente.aPaterno} {docente.aMaterno}{" "}
-                    {docente.usuario} {docente.correo}
+                    {docente.usuario} {docente.correo}{" "}
+                    <button
+                      className="text-red-500 underline"
+                      onClick={() => handleEliminar(docente)}
+                    >
+                      eliminar
+                    </button>
                   </div>
                 ))}
               </>
