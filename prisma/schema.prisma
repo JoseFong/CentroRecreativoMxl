@@ -14,7 +14,7 @@ model Docente {
   id         Int      @id @default(autoincrement())
   nombre     String
   aPaterno   String
-  aMaterno   String
+  aMaterno   String?
   telefono   String
   fechaNac   String
   curp       String   @unique
@@ -58,18 +58,21 @@ model AlumnoNEE {
 }
 
 model Grupo {
-  id        Int      @id @default(autoincrement())
+  id        Int         @id @default(autoincrement())
   nombre    String
   alumnos   Alumno[]
-  docente   Docente? @relation(fields: [docenteId], references: [id])
+  docente   Docente?    @relation(fields: [docenteId], references: [id])
   docenteId Int?
   Salida    Salida[]
+  Actividad Actividad[]
 }
 
 model Actividad {
   id      Int    @id @default(autoincrement())
   nombre  String
   horario String
+  grupo   Grupo  @relation(fields: [grupoId], references: [id])
+  grupoId Int
 }
 
 model Salida {

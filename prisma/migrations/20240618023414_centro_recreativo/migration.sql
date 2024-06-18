@@ -3,7 +3,7 @@ CREATE TABLE "Docente" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "nombre" TEXT NOT NULL,
     "aPaterno" TEXT NOT NULL,
-    "aMaterno" TEXT NOT NULL,
+    "aMaterno" TEXT,
     "telefono" TEXT NOT NULL,
     "fechaNac" TEXT NOT NULL,
     "curp" TEXT NOT NULL,
@@ -56,7 +56,9 @@ CREATE TABLE "Grupo" (
 CREATE TABLE "Actividad" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "nombre" TEXT NOT NULL,
-    "horario" TEXT NOT NULL
+    "horario" TEXT NOT NULL,
+    "grupoId" INTEGER NOT NULL,
+    CONSTRAINT "Actividad_grupoId_fkey" FOREIGN KEY ("grupoId") REFERENCES "Grupo" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
