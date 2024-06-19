@@ -8,7 +8,7 @@ import {
 } from "@nextui-org/react";
 import axios from "axios";
 import React from "react";
-import toast, { useToasterStore } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 function ConfirmarEliminarAlumno({
   isOpen,
@@ -21,17 +21,21 @@ function ConfirmarEliminarAlumno({
   alumno: any;
   fetchAlumnos: () => void;
 }) {
+  //Función que elimina a un alumno, se ejecuta cuando se presiona eliminar
   const handleEliminar = async (onClose: any) => {
     try {
-      const response = await axios.delete("/api/alumnos/" + alumno.id);
+      const response = await axios.delete("/api/alumnos/" + alumno.id); //fetch con axios a api
       if (response.status >= 200 && response.status < 300) {
+        //respuesta exitosa
         toast.success("Se eliminó el registro del alumno exitosamente");
         fetchAlumnos();
         onClose();
       } else {
+        //respuesta no exitosa
         throw new Error(response.data.message || "Error desconocido.");
       }
     } catch (e: any) {
+      //mensajes de error
       if (e.response.status === 404 || e.response.status === 500) {
         toast.error(e.response.data.message);
       } else {
@@ -40,6 +44,7 @@ function ConfirmarEliminarAlumno({
     }
   };
 
+  //Contenido, solo es un mensaje de confirmación
   return (
     <>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>

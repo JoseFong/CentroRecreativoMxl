@@ -6,45 +6,52 @@ import toast from "react-hot-toast";
 import ConsultaEspecificaAlumno from "./consultaEspecifica";
 import ConfirmarEliminarAlumno from "./confirmarEliminarAlumno";
 
-interface NEE {
-  nombre: string;
-  id: number;
-}
-
 function ConsultaAlumnos() {
+  //useState para guardar a los alumnos registrados
   const [alumnos, setAlumnos] = useState([]);
-  const [cargando, setCargando] = useState(true);
-  const [nees, setNees] = useState([]);
-  const [alumno, setAlumno] = useState();
-  const [neeAlumno, setNeeAlumno] = useState();
 
+  //useState para determinar si la página sigue cargando
+  const [cargando, setCargando] = useState(true);
+
+  //useState para guardar las neurodivergencias
+  const [nees, setNees] = useState([]);
+
+  ///useState para guardar al alumno al cual se va a modificar o consultar de forma espeçifica
+  const [alumno, setAlumno] = useState();
+
+  //Variables para controlar el modal de registrar alumno
   const {
     onOpen: onRegistarOpen,
     isOpen: isRegistrarOpen,
     onOpenChange: onRegistarOpenChange,
   } = useDisclosure();
 
+  //Variables para controlar el modal de consulta específica de un alumno
   const {
     onOpen: onDetallesOpen,
     isOpen: isDetallesOpen,
     onOpenChange: onDetallesOpenChange,
   } = useDisclosure();
 
+  //Variables para controlar el modal de confirmación de eliminación de un alumno
   const {
     onOpen: onEliminarOpen,
     isOpen: isEliminarOpen,
     onOpenChange: onEliminarOpenChange,
   } = useDisclosure();
 
+  //Cuando esta página se cargue se llamaran las siguientes dos funciones:
   useEffect(() => {
     fetchAlumnos();
     fetchNees();
   }, []);
 
+  //fetchAlumnos consigue a todos los alumnos de la bd
   const fetchAlumnos = async () => {
     try {
-      const response = await axios.get("/api/alumnos");
+      const response = await axios.get("/api/alumnos"); //fetch a la api de alumnos
       if (response.status >= 200 && response.status < 300) {
+        //si el status es exitoso se guardan los alumnos y se declara cargando como false
         setAlumnos(response.data);
         setCargando(false);
       } else {
@@ -59,6 +66,7 @@ function ConsultaAlumnos() {
     }
   };
 
+  //fetchNees consigue todas las neurodivergencias registradas en la BD
   const fetchNees = async () => {
     try {
       const response = await axios.get("/api/nee");
@@ -76,16 +84,25 @@ function ConsultaAlumnos() {
     }
   };
 
+  /**
+   * Función para abrir el modal de consulta específica de un alumno
+   * @param alumno alumno del cual se verán los detalles
+   */
   const handleVerDetalles = (alumno: any) => {
     setAlumno(alumno);
     onDetallesOpen();
   };
 
+  /**
+   * Función para abrir el modal de confirmación de eliminación de un alumno
+   * @param alumno alumno que se va a eliminar
+   */
   const handleEliminar = (alumno: any) => {
     setAlumno(alumno);
     onEliminarOpen();
   };
 
+  //Contenido de la página
   return (
     <div>
       <h1>Alumnos</h1>
