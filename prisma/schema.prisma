@@ -30,7 +30,7 @@ model Alumno {
   id             Int         @id @default(autoincrement())
   nombre         String
   aPaterno       String
-  aMaterno       String
+  aMaterno       String?
   genero         String
   fechaNac       String
   telefono       String

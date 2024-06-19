@@ -18,7 +18,7 @@ CREATE TABLE "Alumno" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "nombre" TEXT NOT NULL,
     "aPaterno" TEXT NOT NULL,
-    "aMaterno" TEXT NOT NULL,
+    "aMaterno" TEXT,
     "genero" TEXT NOT NULL,
     "fechaNac" TEXT NOT NULL,
     "telefono" TEXT NOT NULL,
