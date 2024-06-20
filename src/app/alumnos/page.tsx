@@ -1,7 +1,9 @@
+"use client";
 import React from "react";
+import ConsultaAlumnos from "../../Components/Alumnos/consulta";
 
 function Alumnos() {
-  return <div>Alumnos</div>;
+  return <ConsultaAlumnos />;
 }
 
 export default Alumnos;
