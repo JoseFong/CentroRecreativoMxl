@@ -1,7 +1,5 @@
 import React from "react";
-import {
-  Button,
-} from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { IoLogOutOutline } from "react-icons/io5";
 import Image from "next/image";
 import Logo from "../../Assets/Logo.png";
@@ -13,7 +11,7 @@ export default function NavBar() {
     <header>
       <nav
         x-data="{ open: false }"
-        className="flex h-auto w-auto bg-verdeFuerte shadow-lg rounded-lg justify-between md:h-20"
+        className="flex h-auto w-auto bg-verdeFuerte shadow-lg justify-between md:h-20"
       >
         <div className="flex w-full justify-between ">
           <div
@@ -30,38 +28,38 @@ export default function NavBar() {
             }`}
           >
             <div className="flex flex-col items-center justify-center gap-2">
-            <Button
-              color="success"
-              variant="light"
-              size="lg"
-              className="text-[#000000]"
-            >
-              Alumnos
-            </Button>
-            <Button
-              color="success"
-              variant="light"
-              size="lg"
-              className="text-[#000000]"
-            >
-              Profesores
-            </Button>{" "}
-            <Button
-              color="success"
-              variant="light"
-              size="lg"
-              className="text-[#000000]"
-            >
-              Documentos
-            </Button>{" "}
-            <Button
-              color="success"
-              variant="light"
-              size="lg"
-              className="text-[#000000]"
-            >
-              Salidas
-            </Button>
+              <Button
+                color="success"
+                variant="light"
+                size="lg"
+                className="text-[#000000]"
+              >
+                Alumnos
+              </Button>
+              <Button
+                color="success"
+                variant="light"
+                size="lg"
+                className="text-[#000000]"
+              >
+                Profesores
+              </Button>{" "}
+              <Button
+                color="success"
+                variant="light"
+                size="lg"
+                className="text-[#000000]"
+              >
+                Documentos
+              </Button>{" "}
+              <Button
+                color="success"
+                variant="light"
+                size="lg"
+                className="text-[#000000]"
+              >
+                Salidas
+              </Button>
               <button>Sign Up</button>
             </div>
           </div>
@@ -100,10 +98,13 @@ export default function NavBar() {
             </Button>
           </div>
           <div className="hidden w-1/5 items-center justify-evenly font-semibold md:flex">
-
-          <Button className=" bg-verde" variant="solid" startContent={<IoLogOutOutline/>}>
-        Cerrar sesión
-      </Button>
+            <Button
+              className=" bg-verde"
+              variant="solid"
+              startContent={<IoLogOutOutline />}
+            >
+              Cerrar sesión
+            </Button>
           </div>
           <button
             className="text-gray-500 w-10 h-10 relative focus:outline-none bg-verdeFuerte md:hidden"

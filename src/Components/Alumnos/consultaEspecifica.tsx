@@ -51,7 +51,7 @@ function ConsultaEspecificaAlumno({
                   {alumno.telefonoAlumno.trim() !== "" && (
                     <>
                       <p>
-                        <span className="font-bold">Nombre: </span>
+                        <span className="font-bold">Teléfono del alumno: </span>
                         {alumno.telefonoAlumno}
                       </p>
                     </>

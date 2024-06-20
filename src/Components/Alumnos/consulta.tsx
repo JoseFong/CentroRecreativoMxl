@@ -5,8 +5,9 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import ConsultaEspecificaAlumno from "./consultaEspecifica";
 import ConfirmarEliminarAlumno from "./confirmarEliminarAlumno";
-import NavBar from "../Layout/NavBar"
+import NavBar from "../Layout/NavBar";
 import MainLayout from "../Layout/MainLayout";
+import ModificarAlumno from "./modificarAlumno";
 
 function ConsultaAlumnos() {
   //useState para guardar a los alumnos registrados
@@ -40,6 +41,12 @@ function ConsultaAlumnos() {
     onOpen: onEliminarOpen,
     isOpen: isEliminarOpen,
     onOpenChange: onEliminarOpenChange,
+  } = useDisclosure();
+
+  const {
+    onOpen: onModOpen,
+    onOpenChange: onModOpenChange,
+    isOpen: isModOpen,
   } = useDisclosure();
 
   //Cuando esta página se cargue se llamaran las siguientes dos funciones:
@@ -104,60 +111,77 @@ function ConsultaAlumnos() {
     onEliminarOpen();
   };
 
+  const handleEditar = (al: any) => {
+    setAlumno(al);
+    onModOpen();
+  };
+
   //Contenido de la página
   return (
     <MainLayout>
       <div>
-      <h1>Alumnos</h1>
-      <Button onPress={onRegistarOpen}>Registrar Alumno</Button>
-      <div>
-        {cargando ? (
-          <>
-            <Spinner size="lg" />
-          </>
-        ) : (
-          <div className="flex flex-col">
-            {alumnos.map((al: any) => (
-              <div className="flex flex-row gap-3">
-                {al.nombre} {al.aPaterno} {al.aMaterno} {al.fechaNac}{" "}
-                {al.telefono}
-                <button
-                  className="text-blue-800 underline"
-                  onClick={() => handleVerDetalles(al)}
-                >
-                  Ver detalles
-                </button>
-                <button
-                  className="text-blue-800 underline"
-                  onClick={() => handleEliminar(al)}
-                >
-                  Eliminar
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+        <h1>Alumnos</h1>
+        <Button onPress={onRegistarOpen}>Registrar Alumno</Button>
+        <div>
+          {cargando ? (
+            <>
+              <Spinner size="lg" />
+            </>
+          ) : (
+            <div className="flex flex-col">
+              {alumnos.map((al: any) => (
+                <div className="flex flex-row gap-3">
+                  {al.nombre} {al.aPaterno} {al.aMaterno} {al.fechaNac}{" "}
+                  {al.telefono}
+                  <button
+                    className="text-blue-800 underline"
+                    onClick={() => handleVerDetalles(al)}
+                  >
+                    Ver detalles
+                  </button>
+                  <button
+                    className="text-blue-800 underline"
+                    onClick={() => handleEditar(al)}
+                  >
+                    Editar
+                  </button>
+                  <button
+                    className="text-blue-800 underline"
+                    onClick={() => handleEliminar(al)}
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <RegistrarAlumno
+          isOpen={isRegistrarOpen}
+          onOpenChange={onRegistarOpenChange}
+          nees={nees}
+          fetchAlumnos={fetchAlumnos}
+          fetchNees={fetchNees}
+        />
+        <ConsultaEspecificaAlumno
+          isOpen={isDetallesOpen}
+          onOpenChange={onDetallesOpenChange}
+          alumno={alumno}
+        />
+        <ConfirmarEliminarAlumno
+          isOpen={isEliminarOpen}
+          onOpenChange={onEliminarOpenChange}
+          alumno={alumno}
+          fetchAlumnos={fetchAlumnos}
+        />
+        <ModificarAlumno
+          alumno={alumno}
+          onOpenChange={onModOpenChange}
+          isOpen={isModOpen}
+          nees={nees}
+          fetchAlumnos={fetchAlumnos}
+        />
       </div>
-      <RegistrarAlumno
-        isOpen={isRegistrarOpen}
-        onOpenChange={onRegistarOpenChange}
-        nees={nees}
-        fetchAlumnos={fetchAlumnos}
-        fetchNees={fetchNees}
-      />
-      <ConsultaEspecificaAlumno
-        isOpen={isDetallesOpen}
-        onOpenChange={onDetallesOpenChange}
-        alumno={alumno}
-      />
-      <ConfirmarEliminarAlumno
-        isOpen={isEliminarOpen}
-        onOpenChange={onEliminarOpenChange}
-        alumno={alumno}
-        fetchAlumnos={fetchAlumnos}
-      />
-    </div>
-
     </MainLayout>
   );
 }
