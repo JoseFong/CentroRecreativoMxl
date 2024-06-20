@@ -5,6 +5,8 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import ConsultaEspecificaAlumno from "./consultaEspecifica";
 import ConfirmarEliminarAlumno from "./confirmarEliminarAlumno";
+import NavBar from "../Layout/NavBar"
+import MainLayout from "../Layout/MainLayout";
 
 function ConsultaAlumnos() {
   //useState para guardar a los alumnos registrados
@@ -104,7 +106,8 @@ function ConsultaAlumnos() {
 
   //Contenido de la página
   return (
-    <div>
+    <MainLayout>
+      <div>
       <h1>Alumnos</h1>
       <Button onPress={onRegistarOpen}>Registrar Alumno</Button>
       <div>
@@ -154,6 +157,8 @@ function ConsultaAlumnos() {
         fetchAlumnos={fetchAlumnos}
       />
     </div>
+
+    </MainLayout>
   );
 }
 
