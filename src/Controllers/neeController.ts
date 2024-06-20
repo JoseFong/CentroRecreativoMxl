@@ -31,11 +31,13 @@ export async function obtenerNEEsDeAlumno(id:number){
 
     /*Usando el arreglo con las ids de las neurodivergencias, se encuentran todas esas
      neurodivergencias y se regresan*/
-    return await prisma.neurodivergencia.findMany({
+    const nees =  await prisma.neurodivergencia.findMany({
         where: {
             id: {
                 in: ids
             }
         }
     })
+
+    return nees
 }

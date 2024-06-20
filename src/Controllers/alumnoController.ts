@@ -92,3 +92,61 @@ export async function eliminarAlumno(id:number){
         }
     })
 }
+
+/**
+ * Función para modificar la información de un alumno
+ * @author Fong
+ * @param data información a modificar
+ * @param id id del alumno a modificar
+ * @returns mensaje de confirmación o de error
+ */
+export async function modificarAlumno(data:any,id:number){
+    //Se verifica si existe un alumno con la misma curp.
+    const alumno = await prisma.alumno.findFirst({
+        where: {
+            curp: data.curp
+        }
+    })
+    if(alumno && alumno.id!==id) return "Otro alumno ya tiene esta curp."
+
+    //Se modifica la información del alumno
+    const alumnoModificado = await prisma.alumno.update({
+        where: {
+            id:id
+        },
+        data: {
+            nombre: data.nombre,
+            aMaterno: data.aMaterno,
+            aPaterno: data.aPaterno,
+            genero: data.genero,
+            fechaNac: data.fechaNac,
+            telefono: data.telefono,
+            telefonoAlumno: data.telefonoAl,
+            direccion: data.direccion,
+            curp: data.curp
+        }
+    })
+
+    //si hay un error al modificar al alumno se regresa mensaje de error
+    if(!alumnoModificado) return "Hubo un error al modificar al alumno."
+
+    //Se borran todos los registros alumnoNEE del alumno
+    await prisma.alumnoNEE.deleteMany({
+        where: {
+            alumnoId: id
+        }
+    })
+
+    //Se crean registros alumnoNEE nuevos con las neurodivergencias seleccionadas
+    const partes = data.nee.split(",")
+    partes.map(async (parte:any)=>{
+        await prisma.alumnoNEE.create({
+            data: {
+                alumnoId: id,
+                neurodivergenciaId: parseInt(parte)
+            }
+        })
+    })
+
+    return "modificado" //Se regresa mensaje de éxito.
+}

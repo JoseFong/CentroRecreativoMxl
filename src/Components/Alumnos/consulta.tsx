@@ -5,6 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import ConsultaEspecificaAlumno from "./consultaEspecifica";
 import ConfirmarEliminarAlumno from "./confirmarEliminarAlumno";
+import ModificarAlumno from "./modificarAlumno";
 
 function ConsultaAlumnos() {
   //useState para guardar a los alumnos registrados
@@ -38,6 +39,13 @@ function ConsultaAlumnos() {
     onOpen: onEliminarOpen,
     isOpen: isEliminarOpen,
     onOpenChange: onEliminarOpenChange,
+  } = useDisclosure();
+
+  //Variables para manejar el modal de modificación de alumno
+  const {
+    onOpen: onModOpen,
+    isOpen: isModOpen,
+    onOpenChange: onModOpenChange,
   } = useDisclosure();
 
   //Cuando esta página se cargue se llamaran las siguientes dos funciones:
@@ -102,6 +110,12 @@ function ConsultaAlumnos() {
     onEliminarOpen();
   };
 
+  //Función para abrir el modal de modificación de alumno
+  const handleEditar = (al: any) => {
+    setAlumno(al);
+    onModOpen();
+  };
+
   //Contenido de la página
   return (
     <div>
@@ -123,6 +137,12 @@ function ConsultaAlumnos() {
                   onClick={() => handleVerDetalles(al)}
                 >
                   Ver detalles
+                </button>
+                <button
+                  className="text-blue-800 underline"
+                  onClick={() => handleEditar(al)}
+                >
+                  Editar
                 </button>
                 <button
                   className="text-blue-800 underline"
@@ -151,6 +171,13 @@ function ConsultaAlumnos() {
         isOpen={isEliminarOpen}
         onOpenChange={onEliminarOpenChange}
         alumno={alumno}
+        fetchAlumnos={fetchAlumnos}
+      />
+      <ModificarAlumno
+        alumno={alumno}
+        onOpenChange={onModOpenChange}
+        isOpen={isModOpen}
+        nees={nees}
         fetchAlumnos={fetchAlumnos}
       />
     </div>

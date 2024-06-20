@@ -17,33 +17,62 @@ import {
   TableRow,
   useDisclosure,
 } from "@nextui-org/react";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import ConfirmarRegistrarAlumno from "./confirmarRegistrarAlumno";
+import ConfirmarModificarAlumno from "./confirmarModificarAlumno";
 
-function RegistrarAlumno({
-  isOpen,
+function ModificarAlumno({
+  alumno,
   onOpenChange,
+  isOpen,
   nees,
   fetchAlumnos,
-  fetchNees,
 }: {
-  isOpen: any;
+  alumno: any;
   onOpenChange: any;
+  isOpen: any;
   nees: any;
   fetchAlumnos: () => void;
-  fetchNees: () => void;
+}) {
+  return (
+    <>
+      {alumno && (
+        <ComponenteModAlumno
+          alumno={alumno}
+          onOpenChange={onOpenChange}
+          isOpen={isOpen}
+          nees={nees}
+          fetchAlumnos={fetchAlumnos}
+        />
+      )}
+    </>
+  );
+}
+
+function ComponenteModAlumno({
+  alumno,
+  onOpenChange,
+  isOpen,
+  nees,
+  fetchAlumnos,
+}: {
+  alumno: any;
+  onOpenChange: any;
+  isOpen: any;
+  nees: any;
+  fetchAlumnos: () => void;
 }) {
   //useStates para guardar la información del alumno a registrar
-  const [nombre, setNombre] = useState("");
-  const [aPaterno, setAPaterno] = useState("");
-  const [aMaterno, setAMaterno] = useState("");
-  const [genero, setGenero] = useState("");
+  const [nombre, setNombre] = useState(alumno.nombre);
+  const [aPaterno, setAPaterno] = useState(alumno.aPaterno);
+  const [aMaterno, setAMaterno] = useState(alumno.aMaterno);
+  const [genero, setGenero] = useState(alumno.genero);
   const [fechaNac, setFechaNac] = useState("");
-  const [telefono, setTelefono] = useState("");
-  const [telefonoAl, setTelefonoAl] = useState("");
-  const [direccion, setDireccion] = useState("");
-  const [curp, setCurp] = useState("");
+  const [telefono, setTelefono] = useState(alumno.telefono);
+  const [telefonoAl, setTelefonoAl] = useState(alumno.telefonoAlumno);
+  const [direccion, setDireccion] = useState(alumno.direccion);
+  const [curp, setCurp] = useState(alumno.curp);
   const [data, setData] = useState(); //Aqui se va a guardar toda la información en conjunto
 
   const [ids, setIds] = useState<number[]>([]);
@@ -55,6 +84,11 @@ function RegistrarAlumno({
   //useState para verificar si hay errores en la fecha o no
   const [errorFecha, setErrorFecha] = useState(false);
 
+  //useState para almacenar las NEEs del alumno
+  const [neesDeAlumno, setNeesDeAlumno] = useState([]);
+
+  const [neesNombres, setNeesNombres] = useState("");
+
   //Variables para controlar el modal de confirmación de registro del alumno
   const {
     onOpen: onConfirmarOpen,
@@ -62,7 +96,61 @@ function RegistrarAlumno({
     onOpenChange: onConfirmarOpenChange,
   } = useDisclosure();
 
-  //Función para agregar el alumno, se ejecuta cuando se presiona registrar
+  //se ejecuta cuando se abre el modal y cuando se selecciona otro alumno
+  useEffect(() => {
+    reset(); //Se ejecuta la función reset
+    setIds([]); //Se borran las ids de las NEEs
+    setNombres([]); //Se borran los nombres de las NEEs
+
+    //Se consigue la fecha de nacimiento del alumno y se formatea para que aparezca en el input de tipo date
+    const partes = alumno.fechaNac.split("/");
+    const fecha = partes[2] + "-" + partes[1] + "-" + partes[0];
+    setFechaNac(fecha);
+
+    fetchNeesDeAlumno(); //Se consiguen las NEEs del alumno
+  }, [alumno, onOpenChange]);
+
+  //Se ejecuta cuando cambien las NEEs del alumno, o sea cuando se consigan.
+  useEffect(() => {
+    //Si existen NEEs se asignan las ids y el nombre de dichas NEEs a los arreglos de ids y nombres
+    if (neesDeAlumno.length > 0) {
+      setIds(neesDeAlumno.map((nee: any) => nee.id));
+      setNombres(neesDeAlumno.map((nee: any) => nee.nombre));
+    }
+  }, [neesDeAlumno]);
+
+  //función para conseguir las NEEs de un alumno especifico
+  const fetchNeesDeAlumno = async () => {
+    try {
+      const response = await axios.get("/api/nee/neesDeAlumno/" + alumno.id);
+      if (response.status >= 200 && response.status < 300) {
+        setNeesDeAlumno(response.data); //Se almacenan las NEEs
+      } else {
+        throw new Error(response.data.message || "Error desconocido.");
+      }
+    } catch (e: any) {
+      if (e.response.status === 404 || e.response.status === 500) {
+        toast.error(e.response.data.message);
+      } else {
+        toast.error(e.message);
+      }
+    }
+  };
+
+  //Regresa todo el formulario a la información actual del alumno
+  const reset = () => {
+    setNombre(alumno.nombre);
+    setAMaterno(alumno.aMaterno);
+    setAPaterno(alumno.aPaterno);
+    setFechaNac(alumno.fechaNac);
+    setGenero(alumno.genero);
+    setTelefono(alumno.telefono);
+    setTelefonoAl(alumno.telefonoAlumno);
+    setDireccion(alumno.direccion);
+    setCurp(alumno.curp);
+  };
+
+  //Función para modificat el alumno, se ejecuta cuando se presiona modificar
   const handleAgregar = () => {
     setErrorFecha(false); //Se regresa el error de fecha a false
 
@@ -146,46 +234,41 @@ function RegistrarAlumno({
       }
     }
 
+    const partes = fechaNac.split("-");
+    const fechaForm = partes[2] + "/" + partes[1] + "/" + partes[0];
+
+    let neesAEnviar: string = "";
+    let nombresAEnviar: string = "";
+    for (let i = 0; i < ids.length; i++) {
+      neesAEnviar = neesAEnviar + ids[i].toString();
+      nombresAEnviar = nombresAEnviar + nombres[i];
+      if (i !== ids.length - 1) {
+        neesAEnviar = neesAEnviar + ",";
+        nombresAEnviar = nombresAEnviar + ", ";
+      }
+    }
+
     //Si se llega a este punto es que no hay errores con los datos ingresados
     //Se agrega toda la información en un objeto dataTemp
     const dataTemp = {
+      id: alumno.id,
       nombre: nombre.trim(),
       aPaterno: aPaterno.trim(),
       aMaterno: aMaterno.trim(),
       genero: genero.trim(),
-      fechaNac: fechaNac.trim(),
+      fechaNac: fechaForm,
       telefono: telefono.trim(),
       telefonoAl: telefonoAl.trim(),
       direccion: direccion.trim(),
       curp: curp.trim(),
-      nee,
+      nee: neesAEnviar,
     };
 
-    //Se le pasa la información de dataTemp a data
     setData(dataTemp);
-
-    //Se abre el modal para confirmar el registro
+    setNeesNombres(nombresAEnviar);
     onConfirmarOpen();
   };
 
-  //Esta función se ejecuta cuando se registra un alumno exitosamente
-  //Vacia todo el formulario
-  const reset = () => {
-    setNombre("");
-    setAPaterno("");
-    setAMaterno("");
-    setFechaNac("");
-    setGenero("");
-    setTelefono("");
-    setTelefonoAl("");
-    setDireccion("");
-    setCurp("");
-    setEnviado(false);
-    setIds([]);
-    setNombres([]);
-  };
-
-  //Valida textos para que no sean vacios y no tengan numeros
   const verificarTextos = (texto: string) => {
     if (texto.trim() === "") return true;
     if (/\d/.test(texto)) return true;
@@ -205,28 +288,34 @@ function RegistrarAlumno({
     return false;
   };
 
+  //Se ejecuta al presionar un checkbox de una nee
   const agregarNEE = (id: number, nombre: string) => {
-    const index = ids.indexOf(id);
+    const index = ids.indexOf(id); //se obtiene el index de la id de la nee dentro del arreglo de ids
+
     if (index === -1) {
+      //Si no está se agrega el id a las ids y el nombre a los nombres
       setIds([...ids, id]);
       setNombres([...nombres, nombre]);
     } else {
+      //Si está, se quita de ambos arreglos
       setIds(ids.filter((idtemp) => idtemp !== id));
       setNombres(nombres.filter((nombretemp) => nombretemp !== nombre));
     }
   };
 
+  //Se ejecuta al presionar el checbkox en la cabecera de la tabla, selecciona todas las nees
   const selectAll = () => {
     if (nees.length === ids.length) {
+      //Si estan seleccionadas todas las deselecciona todas
       setIds([]);
       setNombres([]);
     } else {
+      //Si no están seleccionadas todas, se seleccionan todas.
       setIds(nees.map((nee: any) => nee.id));
       setNombres(nees.map((nee: any) => nee.nombre));
     }
   };
 
-  //CONTENIDO: Formulario para registrar la información del alumno.
   return (
     <>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="4xl">
@@ -234,7 +323,7 @@ function RegistrarAlumno({
           {(onClose) => (
             <>
               <ModalHeader className="flex items-center justify-center">
-                Registrar Alumno
+                Modificar información del alumno
               </ModalHeader>
               <ModalBody>
                 <div className="flex flex-row gap-5">
@@ -295,6 +384,7 @@ function RegistrarAlumno({
                         value={genero}
                         isInvalid={enviado && genero === ""}
                         onChange={(e) => setGenero(e.target.value)}
+                        defaultSelectedKeys={[alumno.genero]}
                       >
                         <SelectItem value={"Femenino"} key={"Femenino"}>
                           Femenino
@@ -359,7 +449,7 @@ function RegistrarAlumno({
                     />
                   </div>
                   <div className="flex flex-col gap-2 w-1/3">
-                    <h1 className="font-bold">Neurodivergencias</h1>
+                    <h1 className="font-bold text-center">Neurodivergencias</h1>
                     <Table className="overflow-y-auto" removeWrapper>
                       <TableHeader>
                         <TableColumn>NEE</TableColumn>
@@ -390,7 +480,7 @@ function RegistrarAlumno({
               <ModalFooter>
                 <div className="flex flex-row gap-1">
                   <Button onPress={handleAgregar} color="success">
-                    Registrar
+                    Modificar
                   </Button>
                   <Button onPress={onClose}>Cancelar</Button>
                 </div>
@@ -399,16 +489,15 @@ function RegistrarAlumno({
           )}
         </ModalContent>
       </Modal>
-      <ConfirmarRegistrarAlumno
-        data={data}
+      <ConfirmarModificarAlumno
         isOpen={isConfirmarOpen}
         onOpenChange={onConfirmarOpenChange}
-        nees={nombres}
+        data={data}
+        nombres={neesNombres}
         fetchAlumnos={fetchAlumnos}
-        reset={reset}
       />
     </>
   );
 }
 
-export default RegistrarAlumno;
+export default ModificarAlumno;

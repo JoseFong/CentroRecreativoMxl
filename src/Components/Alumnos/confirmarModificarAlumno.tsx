@@ -7,93 +7,81 @@ import {
   ModalHeader,
 } from "@nextui-org/react";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import toast from "react-hot-toast";
 
-function ConfirmarRegistrarAlumno({
-  data,
+function ConfirmarModificarAlumno({
   isOpen,
   onOpenChange,
-  nees,
+  data,
+  nombres,
   fetchAlumnos,
-  reset,
 }: {
-  data: any;
   isOpen: any;
   onOpenChange: any;
-  nees: any;
+  data: any;
+  nombres: any;
   fetchAlumnos: () => void;
-  reset: () => void;
 }) {
   return (
     <>
       {data && (
-        <ModalConfirmarAlumno
-          data={data}
+        <ModalConAl
           isOpen={isOpen}
           onOpenChange={onOpenChange}
-          nees={nees}
+          data={data}
+          nombres={nombres}
           fetchAlumnos={fetchAlumnos}
-          reset={reset}
         />
       )}
     </>
   );
 }
 
-function ModalConfirmarAlumno({
-  data,
+function ModalConAl({
   isOpen,
   onOpenChange,
-  nees,
+  data,
+  nombres,
   fetchAlumnos,
-  reset,
 }: {
-  data: any;
   isOpen: any;
   onOpenChange: any;
-  nees: any;
+  data: any;
+  nombres: any;
   fetchAlumnos: () => void;
-  reset: () => void;
 }) {
-  const [fechaDisplay, setFechaDisplay] = useState("");
-
-  const handleAceptar = async (onClose: any) => {
+  const modificar = async (onClose2: any) => {
     try {
-      const response = await axios.post("/api/alumnos", data);
-      if (response.status >= 200 && response.status < 300) {
-        toast.success("Alumno registrado exitosamente.");
+      const response = await axios.patch("/api/alumnos/" + data.id, data);
+      if (response.status === 200) {
+        toast.success("Se modificó la información del alumno.");
         fetchAlumnos();
-        reset();
-        onClose();
+        onClose2();
       } else {
-        throw new Error(response.data.message);
+        throw new Error(response.data.message || "Error desconocido.");
       }
     } catch (e: any) {
-      if (e.response.stauts === 404 || e.response.status === 500) {
-        toast.error(e.response.data.message);
+      if (e.response) {
+        if (e.response.status === 404 || e.response.status === 500) {
+          toast.error(e.response.data.message);
+        } else {
+          toast.error(e.message);
+        }
       } else {
         toast.error(e.message);
       }
     }
   };
 
-  useEffect(() => {
-    if (data.fechaNac.length !== 0) {
-      const partes = data.fechaNac.split("-");
-      const fecha = partes[2] + "/" + partes[1] + "/" + partes[0];
-      setFechaDisplay(fecha);
-    }
-  }, [data]);
-
   return (
     <>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
-          {(onClose) => (
+          {(onClose2) => (
             <>
               <ModalHeader>
-                ¿Seguró que quiere registrar al siguiente alumno?
+                ¿Seguro que quiere modificar la información del alumno?
               </ModalHeader>
               <ModalBody>
                 <div className="flex flex-col">
@@ -107,7 +95,7 @@ function ModalConfirmarAlumno({
                   </p>
                   <p>
                     <span className="font-bold">Fecha de Nacimiento: </span>
-                    {fechaDisplay}
+                    {data.fechaNac}
                   </p>
                   <p>
                     <span className="font-bold">Telefono del Tutor: </span>
@@ -131,23 +119,16 @@ function ModalConfirmarAlumno({
                   </p>
                   <p className="mt-3">
                     <span className="font-bold">Neurodivergencia(s): </span>
-                    <div className="flex flex-col">
-                      {nees.map((n: any) => (
-                        <p>{n}</p>
-                      ))}
-                    </div>
+                    {nombres}
                   </p>
                 </div>
               </ModalBody>
               <ModalFooter>
                 <div className="flex flex-row gap-2">
-                  <Button
-                    color="success"
-                    onPress={() => handleAceptar(onClose)}
-                  >
+                  <Button color="success" onPress={() => modificar(onClose2)}>
                     Aceptar
                   </Button>
-                  <Button onPress={onClose}>Cancelar</Button>
+                  <Button onPress={onClose2}>Cancelar</Button>
                 </div>
               </ModalFooter>
             </>
@@ -158,4 +139,4 @@ function ModalConfirmarAlumno({
   );
 }
 
-export default ConfirmarRegistrarAlumno;
+export default ConfirmarModificarAlumno;
