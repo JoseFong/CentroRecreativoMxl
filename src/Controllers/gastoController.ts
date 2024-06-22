@@ -1,6 +1,61 @@
 import {prisma} from "@/utils/prisma"
 
 /**
+ * Función para obtener todos los gastos
+ * @autor Jesus
+ * @returns todos los gastos en la base de datos
+ */
+export async function obtenerGastos(){
+    return await prisma.gasto.findMany()
+}
+
+/**
+ * Función para registrar un nuevo gasto
+ * @autor Jesus
+ * @param data concepto, cantidad y fecha del gasto a registrar
+ * @returns mensaje de error o confirmación
+ */
+export async function registrarGasto(data:any){
+    if(Date.now() < Date.parse(data.fecha)) return "La fecha no puede ser mayor a la actual"
+
+    const gasto = await prisma.gasto.create({
+        data: {
+            concepto: data.concepto,
+            cantidad: data.cantidad,
+            fecha: data.fecha
+        }
+    })
+
+    if(!gasto) return "Hubo un error al registrar el gasto."
+
+    return "registrado"
+}
+
+/**
+ * Función para modificar gastos
+ * @autor Jesus
+ * @param data concepto, cantidad y fecha del gasto a modificar
+ * @param id id del gasto a modificar
+ * @returns gastos del mes y año especificados
+ */
+export async function modificarGasto(data:any, id:number){
+    const gasto = await prisma.gasto.update({
+        where: {
+            id: id
+        },
+        data: {
+            concepto: data.concepto,
+            cantidad: data.cantidad,
+            fecha: data.fecha
+        }
+    })
+
+    if(!gasto) return "Hubo un error al modificar el gasto."
+
+    return "modificado"
+}
+
+/**
  * Función para eliminar los gastos de otro mes que no sea el actual
  * @author Fong
  */

@@ -1,0 +1,133 @@
+import React, {useEffect, useState} from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import {Button, Spinner, useDisclosure} from "@nextui-org/react";
+import MainLayout from "@/Components/Layout/MainLayout";
+import RegistrarGasto from "@/Components/Gastos/registrarGasto";
+import ConsultaEspecificaGasto from "@/Components/Gastos/consultaEspecifica";
+import ModificarGasto from "@/Components/Gastos/modificarGasto";
+
+function ConsultaGastos() {
+    const [gastos, setGastos] = useState([]);
+    const [cargando, setCargando] = useState(true);
+    const [totalGastos, setTotalGastos] = useState(0);
+    const [gasto, setGasto] = useState(null);
+
+    //Variables para controlar el modal de registrar gasto
+    const {
+        onOpen: onRegistarOpen,
+        isOpen: isRegistrarOpen,
+        onOpenChange: onRegistarOpenChange,
+    } = useDisclosure();
+
+    //Variables para controlar el modal de ver detalles
+    const {
+        onOpen: onVerDetallesOpen,
+        isOpen: isVerDetallesOpen,
+        onOpenChange: onVerDetallesOpenChange,
+    } = useDisclosure();
+
+    //Variables para controlar el modal de modificar gasto
+    const {
+        onOpen: onModificarOpen,
+        isOpen: isModificarOpen,
+        onOpenChange: onModificarOpenChange,
+    } = useDisclosure();
+
+    //Traer la informacion de todos los gastos
+    useEffect(() => {
+        fetchGastos();
+    }, []);
+
+    const fetchGastos = async () => {
+        try {
+            const response = await axios.get("/api/gastos");
+            if (response.status >= 200 && response.status < 300) {
+                const gastosOrdenados = response.data.sort((a: any, b: any) => {
+                    const fechaA = new Date(a.fecha);
+                    const fechaB = new Date(b.fecha);
+                    return fechaB.getTime() - fechaA.getTime(); // Orden descendente
+                });
+                setGastos(gastosOrdenados);
+                setTotalGastos(gastosOrdenados.reduce((acc: number, g: any) => acc + g.cantidad, 0));
+                setCargando(false);
+            } else {
+                throw new Error(response.data.message || "Error desconocido.");
+            }
+        } catch (e: any) {
+            if (e.response.status === 404 || e.response.status === 500) {
+                toast.error(e.response.data.message);
+            } else {
+                toast.error(e.message);
+            }
+        }
+    };
+
+    //Funcion para ver los detalles de un gasto
+    const handleVerDetalles = (gasto: any) => {
+        setGasto(gasto);
+        onVerDetallesOpen();
+    };
+
+    //Funcion para editar un gasto
+    function handleEditar(gasto: any) {
+        setGasto(gasto);
+        onModificarOpen();
+    }
+
+    return (
+        <MainLayout>
+            <div>
+                <h1>Gastos</h1>
+                <h2>Total de gastos: {totalGastos}</h2>
+                <Button onPress={onRegistarOpen}>Registrar Gastos</Button>
+                <div>
+                    {cargando ? (
+                        <>
+                            <Spinner size="lg"/>
+                        </>
+                    ) : (
+                        <div className="flex flex-col">
+                            {gastos.map((g: any) => (
+                                // eslint-disable-next-line react/jsx-key
+                                <div className="flex flex-row gap-3">
+                                    {g.concepto} {g.cantidad} {g.fecha} {" "}
+                                    <button
+                                        className="text-blue-800 underline"
+                                        onClick={() => handleVerDetalles(g)}
+                                    >
+                                        Ver detalles
+                                    </button>
+                                    <button
+                                        className="text-blue-800 underline"
+                                        onClick={() => handleEditar(g)}
+                                    >
+                                        Editar
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+                <RegistrarGasto
+                    isOpen={isRegistrarOpen}
+                    onOpenChange={onRegistarOpenChange}
+                    fetchGastos={fetchGastos}
+                />
+                <ConsultaEspecificaGasto
+                    gasto={gasto}
+                    isOpen={isVerDetallesOpen}
+                    onOpenChange={onVerDetallesOpenChange}
+                />
+                <ModificarGasto
+                    gasto={gasto}
+                    isOpen={isModificarOpen}
+                    onOpenChange={onModificarOpenChange}
+                    fetchGastos={fetchGastos}
+                />
+            </div>
+        </MainLayout>
+    );
+}
+
+export default ConsultaGastos;

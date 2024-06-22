@@ -229,7 +229,7 @@ function RegistrarAlumno({
   //CONTENIDO: Formulario para registrar la información del alumno.
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="4xl">
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}  size="4xl">
         <ModalContent>
           {(onClose) => (
             <>
