@@ -32,13 +32,28 @@ export async function registrarGasto(data:any){
 }
 
 /**
- * Función para obtener los gastos de un mes en específico
+ * Función para modificar gastos
  * @autor Jesus
- * @param mes mes en el que se buscarán los gastos
- * @param ano año en el que se buscarán los gastos
+ * @param data concepto, cantidad y fecha del gasto a modificar
+ * @param id id del gasto a modificar
  * @returns gastos del mes y año especificados
- * TODO - Implementar función
  */
+export async function modificarGasto(data:any, id:number){
+    const gasto = await prisma.gasto.update({
+        where: {
+            id: id
+        },
+        data: {
+            concepto: data.concepto,
+            cantidad: data.cantidad,
+            fecha: data.fecha
+        }
+    })
+
+    if(!gasto) return "Hubo un error al modificar el gasto."
+
+    return "modificado"
+}
 
 /**
  * Función para eliminar los gastos de otro mes que no sea el actual

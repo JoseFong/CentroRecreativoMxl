@@ -5,6 +5,7 @@ import {Button, Spinner, useDisclosure} from "@nextui-org/react";
 import MainLayout from "@/Components/Layout/MainLayout";
 import RegistrarGasto from "@/Components/Gastos/registrarGasto";
 import ConsultaEspecificaGasto from "@/Components/Gastos/consultaEspecifica";
+import ModificarGasto from "@/Components/Gastos/modificarGasto";
 
 function ConsultaGastos() {
     const [gastos, setGastos] = useState([]);
@@ -24,6 +25,13 @@ function ConsultaGastos() {
         onOpen: onVerDetallesOpen,
         isOpen: isVerDetallesOpen,
         onOpenChange: onVerDetallesOpenChange,
+    } = useDisclosure();
+
+    //Variables para controlar el modal de modificar gasto
+    const {
+        onOpen: onModificarOpen,
+        isOpen: isModificarOpen,
+        onOpenChange: onModificarOpenChange,
     } = useDisclosure();
 
     //Traer la informacion de todos los gastos
@@ -61,6 +69,12 @@ function ConsultaGastos() {
         onVerDetallesOpen();
     };
 
+    //Funcion para editar un gasto
+    function handleEditar(gasto: any) {
+        setGasto(gasto);
+        onModificarOpen();
+    }
+
     return (
         <MainLayout>
             <div>
@@ -84,6 +98,12 @@ function ConsultaGastos() {
                                     >
                                         Ver detalles
                                     </button>
+                                    <button
+                                        className="text-blue-800 underline"
+                                        onClick={() => handleEditar(g)}
+                                    >
+                                        Editar
+                                    </button>
                                 </div>
                             ))}
                         </div>
@@ -98,6 +118,12 @@ function ConsultaGastos() {
                     gasto={gasto}
                     isOpen={isVerDetallesOpen}
                     onOpenChange={onVerDetallesOpenChange}
+                />
+                <ModificarGasto
+                    gasto={gasto}
+                    isOpen={isModificarOpen}
+                    onOpenChange={onModificarOpenChange}
+                    fetchGastos={fetchGastos}
                 />
             </div>
         </MainLayout>

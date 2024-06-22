@@ -58,18 +58,21 @@ function RegistrarGasto({isOpen, onOpenChange, fetchGastos}: {
                     <ModalHeader>Registrar Gasto</ModalHeader>
                     <ModalBody>
                         <Input
+                            isRequired
                             type="text"
                             label="Concepto"
                             value={concepto}
                             onChange={(e) => setConcepto(e.target.value)}
                         />
                         <Input
+                            isRequired
                             type="number"
                             label="Cantidad"
                             value={cantidad}
                             onChange={(e) => setCantidad(e.target.value)}
                         />
                         <Input
+                            isRequired
                             type="date"
                             label="Fecha"
                             value={fecha}
