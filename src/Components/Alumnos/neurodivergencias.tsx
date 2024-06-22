@@ -16,6 +16,9 @@ import { Neurodivergencia } from "@prisma/client";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { HiSquaresPlus } from "react-icons/hi2";
+import NeurodivergenciaPlantilla from "./neurodivergenciaPlantilla";
+
 
 function Neurodivergencias() {
   const [neurodivergencias, setNeurodivergencias] = useState<
@@ -196,39 +199,35 @@ function Neurodivergencias() {
           )}
         </ModalContent>
       </Modal>
-      Neurodivergencias
       <Popover placement="bottom" showArrow offset={10}>
         <PopoverTrigger>
-          <Button color="primary">+</Button>
+          <Button isIconOnly className=" bg-verdeFuerte text-[#ffffff]">
+          <HiSquaresPlus />
+          </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[240px]">
-          <ul>
-            {neurodivergencias.length === 0 ? (
-              <p>No hay neurodivergencias disponibles.</p>
-            ) : (
-              neurodivergencias.map((neurodivergencia, index) => (
-                <li key={index}>
-                  {" "}
-                  {neurodivergencia.nombre}
-                  <button onClick={() => handleEliminar(neurodivergencia)}>
-                    {" "}
-                    eliminar{" "}
-                  </button>
-                  <button onClick={() => handleModificar(neurodivergencia)}>
-                    {" "}
-                    Modificar{" "}
-                  </button>
-                </li>
-              ))
-            )}
-          </ul>
+        <PopoverContent className="w-[240px] bg-white">
+          <div className=" font-bold py-2">Gestionar neurodivergencias</div>
+          <div className=" overflow-auto h-52 rounded-xl p-2 bg-slate-100">
+            <ul>
+              {neurodivergencias.length === 0 ? (
+                <p>No hay neurodivergencias disponibles.</p>
+              ) : (
+                neurodivergencias.map((neurodivergencia, index) => (
+                  <NeurodivergenciaPlantilla neurodivergencia={neurodivergencia} handleModificar={handleModificar} handleEliminar={handleEliminar} key={index}/>
+                ))
+              )}
+            </ul>
+          </div>
+          <div className=" my-2">
           <Input
             type="text"
-            label="Nombre NEE"
-            placeholder="Ingresa el nombre"
+            placeholder="Ingrese el nombre de la NEE"
             onChange={(e) => setNombre(e.target.value)}
           />
-          <Button onPress={handleRegistrar}>Guardar</Button>
+          <div className="flex justify-center pt-2">
+          <Button onPress={handleRegistrar} className="w-full bg-headerNav text-[#ffffff]">Guardar</Button>
+          </div>
+          </div>
         </PopoverContent>
       </Popover>
     </div>

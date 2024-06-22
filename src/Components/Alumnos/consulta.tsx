@@ -1,13 +1,27 @@
 import React, { useEffect, useState } from "react";
 import RegistrarAlumno from "./registrarAlumno";
-import { Button, Spinner, useDisclosure } from "@nextui-org/react";
+import { Button, Spinner, useDisclosure, Tooltip } from "@nextui-org/react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import ConsultaEspecificaAlumno from "./consultaEspecifica";
 import ConfirmarEliminarAlumno from "./confirmarEliminarAlumno";
-import NavBar from "../Layout/NavBar";
+import { FaRegEdit } from "react-icons/fa";
 import MainLayout from "../Layout/MainLayout";
 import ModificarAlumno from "./modificarAlumno";
+import { MdOutlineDelete } from "react-icons/md";
+import { FaUserEdit } from "react-icons/fa";
+import { CgDetailsMore } from "react-icons/cg";
+import { Input } from "@nextui-org/input";
+import { CiSearch } from "react-icons/ci";
+import Neurodivergencias from "@/Components/Alumnos/neurodivergencias";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@nextui-org/react";
 
 function ConsultaAlumnos() {
   //useState para guardar a los alumnos registrados
@@ -120,39 +134,109 @@ function ConsultaAlumnos() {
   return (
     <MainLayout>
       <div>
-        <h1>Alumnos</h1>
-        <Button onPress={onRegistarOpen}>Registrar Alumno</Button>
+        <div className="flex flex-row m-4 md:px-10 md:py-10">
+          <div className="flex flex-col md:flex-row">
+            <h1 className="text-4xl font-bold">Alumnos</h1>
+            <Input
+              startContent={<CiSearch />}
+              className="ml-0 mt-4 md:ml-10 md:mt-0"
+              variant="bordered"
+              placeholder="Filtrar alumnos"
+            >
+              a
+            </Input>
+          </div>
+          <div className=" ml-auto">
+            <div className="flex flex-col md:flex-row items-center ">
+              <Button
+                onPress={onRegistarOpen}
+                className=" bg-verdeFuerte text-[#ffffff]"
+                startContent={<FaUserEdit />}
+              >
+                Registrar Alumno
+              </Button>
+              <p className="text-lg px-4 hidden md:block">|</p>
+              <div className=" pt-4 md:pt-0">
+              <Tooltip content="Gestionar ND">
+              <Neurodivergencias/>
+              </Tooltip>
+              </div>
+            </div>
+          </div>
+        </div>
         <div>
           {cargando ? (
             <>
               <Spinner size="lg" />
             </>
           ) : (
-            <div className="flex flex-col">
-              {alumnos.map((al: any) => (
-                <div className="flex flex-row gap-3">
-                  {al.nombre} {al.aPaterno} {al.aMaterno} {al.fechaNac}{" "}
-                  {al.telefono}
-                  <button
-                    className="text-blue-800 underline"
-                    onClick={() => handleVerDetalles(al)}
-                  >
-                    Ver detalles
-                  </button>
-                  <button
-                    className="text-blue-800 underline"
-                    onClick={() => handleEditar(al)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className="text-blue-800 underline"
-                    onClick={() => handleEliminar(al)}
-                  >
-                    Eliminar
-                  </button>
-                </div>
-              ))}
+            <div>
+              <Table aria-label="Example static collection table">
+                <TableHeader>
+                  <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
+                    Alumno
+                  </TableColumn>
+                  <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
+                    Grupo
+                  </TableColumn>
+                  <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
+                    Teléfono
+                  </TableColumn>
+                  <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4 ">
+                    <div className="flex justify-center">Acciones</div>
+                  </TableColumn>
+                </TableHeader>
+                <TableBody>
+                  {alumnos.map((alumno: any, index: any) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <p className=" text-lg">
+                          {" "}
+                          {`${alumno.nombre} ${alumno.aPaterno} ${
+                            alumno.aMaterno ? alumno.aMaterno : ""
+                          }`}
+                        </p>
+                      </TableCell>
+                      <TableCell>
+                        <p className=" text-lg">{`${alumno.grupoId}`}</p>
+                      </TableCell>
+                      <TableCell>
+                        <p className=" text-lg">{`${alumno.telefono}`}</p>
+                      </TableCell>
+
+                      <TableCell>
+                        <div className="flex flex-col md:flex-row justify-center items-center">
+                          <Button
+                            isIconOnly
+                            size="md"
+                            className=" bg-verde"
+                            onClick={() => handleVerDetalles(alumno)}
+                          >
+                            <CgDetailsMore />
+                          </Button>
+                          <Button
+                            isIconOnly
+                            size="md"
+                            className="bg-verdeDetails mx-0  my-2 md:mx-3 md:my-0"
+                            onClick={() => handleEditar(alumno)}
+                          >
+                            <FaRegEdit style={{ fontSize: "15px" }} />
+                          </Button>
+
+                          <Button
+                            isIconOnly
+                            size="md"
+                            className=" bg-verdeFuerte"
+                            onClick={() => handleEliminar(alumno)}
+                          >
+                            <MdOutlineDelete style={{ fontSize: "15px" }} />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           )}
         </div>

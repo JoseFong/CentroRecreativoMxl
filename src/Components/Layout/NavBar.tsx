@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@nextui-org/react";
+import { Button, Tooltip } from "@nextui-org/react";
 import { IoLogOutOutline } from "react-icons/io5";
 import Image from "next/image";
 import Logo from "../../Assets/Logo.png";
@@ -11,7 +11,7 @@ export default function NavBar() {
     <header>
       <nav
         x-data="{ open: false }"
-        className="flex h-auto w-auto bg-verdeFuerte shadow-lg justify-between md:h-20"
+        className="flex h-auto w-auto  bg-headerNav shadow-lg justify-between md:h-20"
       >
         <div className="flex w-full justify-between ">
           <div
@@ -63,12 +63,12 @@ export default function NavBar() {
               <button>Sign Up</button>
             </div>
           </div>
-          <div className="hidden w-3/5 items-center justify-evenly font-semibold md:flex">
+          <div className="hidden w-2/4 items-center justify-evenly font-semibold md:flex">
             <Button
               color="success"
               variant="light"
               size="lg"
-              className="text-[#000000]"
+              className="text-[#ffffff]"
             >
               Alumnos
             </Button>
@@ -76,7 +76,7 @@ export default function NavBar() {
               color="success"
               variant="light"
               size="lg"
-              className="text-[#000000]"
+              className="text-[#ffffff]"
             >
               Profesores
             </Button>{" "}
@@ -84,7 +84,7 @@ export default function NavBar() {
               color="success"
               variant="light"
               size="lg"
-              className="text-[#000000]"
+              className="text-[#ffffff]"
             >
               Documentos
             </Button>{" "}
@@ -92,22 +92,25 @@ export default function NavBar() {
               color="success"
               variant="light"
               size="lg"
-              className="text-[#000000]"
+              className="text-[#ffffff]"
             >
               Salidas
             </Button>
           </div>
           <div className="hidden w-1/5 items-center justify-evenly font-semibold md:flex">
+          <Tooltip content="Cerrar sesión">
             <Button
-              className=" bg-verde"
+              className=" bg-verdeFuerte text-[#ffffff]"
               variant="solid"
-              startContent={<IoLogOutOutline />}
+              isIconOnly
+              size="lg"
             >
-              Cerrar sesión
+              <IoLogOutOutline style={{ fontSize: "22px" }}/>
             </Button>
+            </Tooltip>
           </div>
           <button
-            className="text-gray-500 w-10 h-10 relative focus:outline-none bg-verdeFuerte md:hidden"
+            className="text-white w-10 h-10 relative focus:outline-none bg-headerNav md:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             <span className="sr-only">Open main menu</span>

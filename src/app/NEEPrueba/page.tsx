@@ -1,5 +1,5 @@
 import React from 'react'
-import Neodivergencias from './neurodivergencias'
+import Neodivergencias from '../../Components/Alumnos/neurodivergencias'
 
 function Neodivergencia() {
   return (

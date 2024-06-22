@@ -17,8 +17,11 @@ const config: Config = {
       },
       colors:{
         "verde": "#c0ffea",
-        "verdeFuerte": "#5aba88",
-        success: "#2C332E"
+        "verdeFuerte": "#559F68",
+        "headerNav": "#467351",
+        "verdeDetails": "#75D18B",
+        success: "#2C332E",
+        "delete": "#DF3131",
       }
     },
   },
