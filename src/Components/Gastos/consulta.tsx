@@ -9,6 +9,7 @@ import ConsultaEspecificaGasto from "@/Components/Gastos/consultaEspecifica";
 function ConsultaGastos() {
     const [gastos, setGastos] = useState([]);
     const [cargando, setCargando] = useState(true);
+    const [totalGastos, setTotalGastos] = useState(0);
     const [gasto, setGasto] = useState(null);
 
     //Variables para controlar el modal de registrar gasto
@@ -34,7 +35,13 @@ function ConsultaGastos() {
         try {
             const response = await axios.get("/api/gastos");
             if (response.status >= 200 && response.status < 300) {
-                setGastos(response.data);
+                const gastosOrdenados = response.data.sort((a: any, b: any) => {
+                    const fechaA = new Date(a.fecha);
+                    const fechaB = new Date(b.fecha);
+                    return fechaB.getTime() - fechaA.getTime(); // Orden descendente
+                });
+                setGastos(gastosOrdenados);
+                setTotalGastos(gastosOrdenados.reduce((acc: number, g: any) => acc + g.cantidad, 0));
                 setCargando(false);
             } else {
                 throw new Error(response.data.message || "Error desconocido.");
@@ -58,11 +65,12 @@ function ConsultaGastos() {
         <MainLayout>
             <div>
                 <h1>Gastos</h1>
+                <h2>Total de gastos: {totalGastos}</h2>
                 <Button onPress={onRegistarOpen}>Registrar Gastos</Button>
                 <div>
                     {cargando ? (
                         <>
-                            <Spinner size="lg" />
+                            <Spinner size="lg"/>
                         </>
                     ) : (
                         <div className="flex flex-col">
