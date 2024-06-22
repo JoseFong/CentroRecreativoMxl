@@ -1,17 +1,15 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import RegistrarAlumno from "@/Components/Alumnos/registrarAlumno";
-import MainLayout from "@/Components/Layout/MainLayout";
 import {Button, Spinner, useDisclosure} from "@nextui-org/react";
-import ConsultaEspecificaAlumno from "@/Components/Alumnos/consultaEspecifica";
-import ConfirmarEliminarAlumno from "@/Components/Alumnos/confirmarEliminarAlumno";
-import ModificarAlumno from "@/Components/Alumnos/modificarAlumno";
+import MainLayout from "@/Components/Layout/MainLayout";
 import RegistrarGasto from "@/Components/Gastos/registrarGasto";
+import ConsultaEspecificaGasto from "@/Components/Gastos/consultaEspecifica";
 
 function ConsultaGastos() {
     const [gastos, setGastos] = useState([]);
     const [cargando, setCargando] = useState(true);
+    const [gasto, setGasto] = useState(null);
 
     //Variables para controlar el modal de registrar gasto
     const {
@@ -20,6 +18,14 @@ function ConsultaGastos() {
         onOpenChange: onRegistarOpenChange,
     } = useDisclosure();
 
+    //Variables para controlar el modal de ver detalles
+    const {
+        onOpen: onVerDetallesOpen,
+        isOpen: isVerDetallesOpen,
+        onOpenChange: onVerDetallesOpenChange,
+    } = useDisclosure();
+
+    //Traer la informacion de todos los gastos
     useEffect(() => {
         fetchGastos();
     }, []);
@@ -42,6 +48,12 @@ function ConsultaGastos() {
         }
     };
 
+    //Funcion para ver los detalles de un gasto
+    const handleVerDetalles = (gasto: any) => {
+        setGasto(gasto);
+        onVerDetallesOpen();
+    };
+
     return (
         <MainLayout>
             <div>
@@ -58,12 +70,12 @@ function ConsultaGastos() {
                                 // eslint-disable-next-line react/jsx-key
                                 <div className="flex flex-row gap-3">
                                     {g.concepto} {g.cantidad} {g.fecha} {" "}
-                                    {/*<button*/}
-                                    {/*    className="text-blue-800 underline"*/}
-                                    {/*    onClick={() => handleVerDetalles(al)}*/}
-                                    {/*>*/}
-                                    {/*    Ver detalles*/}
-                                    {/*</button>*/}
+                                    <button
+                                        className="text-blue-800 underline"
+                                        onClick={() => handleVerDetalles(g)}
+                                    >
+                                        Ver detalles
+                                    </button>
                                 </div>
                             ))}
                         </div>
@@ -73,6 +85,11 @@ function ConsultaGastos() {
                     isOpen={isRegistrarOpen}
                     onOpenChange={onRegistarOpenChange}
                     fetchGastos={fetchGastos}
+                />
+                <ConsultaEspecificaGasto
+                    gasto={gasto}
+                    isOpen={isVerDetallesOpen}
+                    onOpenChange={onVerDetallesOpenChange}
                 />
             </div>
         </MainLayout>
