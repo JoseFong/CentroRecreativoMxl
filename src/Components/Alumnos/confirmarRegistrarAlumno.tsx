@@ -141,13 +141,13 @@ function ModalConfirmarAlumno({
               </ModalBody>
               <ModalFooter>
                 <div className="flex flex-row gap-2">
+                  <Button onPress={onClose} className=" bg-verde">Cancelar</Button>
                   <Button
-                    color="success"
+                    className=" bg-verdeFuerte text-[#ffffff]"
                     onPress={() => handleAceptar(onClose)}
                   >
                     Aceptar
                   </Button>
-                  <Button onPress={onClose}>Cancelar</Button>
                 </div>
               </ModalFooter>
             </>

@@ -23,7 +23,7 @@ function ConsultaEspecificaAlumno({
   //CONTENIDO: La información del alumno
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="lg">
         <ModalContent>
           {(onClose) => (
             <>
@@ -31,51 +31,86 @@ function ConsultaEspecificaAlumno({
                 Detalles de {alumno.nombre} {alumno.aPaterno}
               </ModalHeader>
               <ModalBody>
-                <div className="flex flex-col">
-                  <p>
-                    <span className="font-bold">Nombre: </span>
-                    {alumno.nombre} {alumno.aPaterno} {alumno.aMaterno}
-                  </p>
-                  <p>
-                    <span className="font-bold">Género: </span>
-                    {alumno.genero}
-                  </p>
-                  <p>
-                    <span className="font-bold">Fecha de Nacimiento: </span>
-                    {alumno.fechaNac}
-                  </p>
-                  <p>
-                    <span className="font-bold">Telefono del Tutor: </span>
-                    {alumno.telefono}
-                  </p>
-                  {alumno.telefonoAlumno.trim() !== "" && (
-                    <>
-                      <p>
-                        <span className="font-bold">Teléfono del alumno: </span>
-                        {alumno.telefonoAlumno}
-                      </p>
-                    </>
-                  )}
-                  <p>
-                    <span className="font-bold">Dirección: </span>
-                    {alumno.direccion}
-                  </p>
-                  <p>
-                    <span className="font-bold">CURP: </span>
-                    {alumno.curp}
-                  </p>
-                  <p className="mt-3">
-                    <span className="font-bold">Neurodivergencia(s): </span>
-                    {
-                      alumno && (
-                        <NeurodivergenciaDeAlumnos alumno={alumno} />
-                      ) /*Solo se monta el componente cuando existe el alumno*/
-                    }
-                  </p>
-                </div>
+                <table className="min-w-full divide-y divide-gray-200">
+                  <tbody>
+                    <tr>
+                      <td className="px-6 py-4 whitespace-nowrap font-bold">
+                        Nombre:
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {alumno.nombre} {alumno.aPaterno} {alumno.aMaterno}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-6 py-4 whitespace-nowrap font-bold">
+                        Género:
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {alumno.genero}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-6 py-4 whitespace-nowrap font-bold">
+                        Fecha de Nacimiento:
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {alumno.fechaNac}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-6 py-4 whitespace-nowrap font-bold">
+                        Teléfono del Tutor:
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {alumno.telefono}
+                      </td>
+                    </tr>
+                    {alumno.telefonoAlumno.trim() !== "" && (
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap font-bold">
+                          Teléfono del Alumno:
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {alumno.telefonoAlumno}
+                        </td>
+                      </tr>
+                    )}
+                    <tr>
+                      <td className="px-6 py-4 whitespace-nowrap font-bold">
+                        Dirección:
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {alumno.direccion}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-6 py-4 whitespace-nowrap font-bold">
+                        CURP:
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {alumno.curp}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-6 py-4 whitespace-nowrap font-bold">
+                        Neurodivergencia(s):
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {alumno && (
+                          <NeurodivergenciaDeAlumnos alumno={alumno} />
+                        )}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </ModalBody>
               <ModalFooter>
-                <Button onPress={onClose}>Cerrar</Button>
+                <Button
+                  onPress={onClose}
+                  className=" bg-verdeFuerte text-[#ffffff]"
+                >
+                  Cerrar
+                </Button>
               </ModalFooter>
             </>
           )}

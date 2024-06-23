@@ -21,6 +21,7 @@ const config: Config = {
         "headerNav": "#467351",
         "verdeDetails": "#75D18B",
         success: "#2C332E",
+        warning:"#559F68",
         "delete": "#DF3131",
       }
     },

@@ -326,9 +326,9 @@ function ComponenteModAlumno({
                 Modificar información del alumno
               </ModalHeader>
               <ModalBody>
-                <div className="flex flex-row gap-5">
+                <div className="flex gap-5 md:flex-row flex-col">
                   <div className="flex flex-col gap-2">
-                    <h1 className="text-center font-bold">
+                    <h1 className="text-center font-bold mb-4">
                       Información del alumno
                     </h1>
                     <div className="flex flex-row gap-2">
@@ -448,13 +448,15 @@ function ComponenteModAlumno({
                       onChange={(e) => setCurp(e.target.value.toUpperCase())}
                     />
                   </div>
-                  <div className="flex flex-col gap-2 w-1/3">
+                  <div className="flex flex-col gap-2 w-1/3 justify-center">
+                  <div className="bg-slate-50 rounded-xl p-3 md:w-auto w-44">
                     <h1 className="font-bold text-center">Neurodivergencias</h1>
                     <Table className="overflow-y-auto" removeWrapper>
                       <TableHeader>
                         <TableColumn>NEE</TableColumn>
                         <TableColumn>
                           <Checkbox
+                            color="warning"
                             isSelected={nees.length === ids.length}
                             onChange={selectAll}
                           />
@@ -466,6 +468,7 @@ function ComponenteModAlumno({
                             <TableCell>{nee.nombre}</TableCell>
                             <TableCell>
                               <Checkbox
+                                color="warning"
                                 isSelected={ids.includes(nee.id)}
                                 onChange={() => agregarNEE(nee.id, nee.nombre)}
                               />
@@ -474,15 +477,21 @@ function ComponenteModAlumno({
                         ))}
                       </TableBody>
                     </Table>
+                    </div>
                   </div>
                 </div>
               </ModalBody>
               <ModalFooter>
                 <div className="flex flex-row gap-1">
-                  <Button onPress={handleAgregar} color="success">
+                  <Button onPress={onClose} className=" bg-verde">
+                    Cancelar
+                  </Button>
+                  <Button
+                    onPress={handleAgregar}
+                    className=" bg-verdeFuerte text-[#ffffff]"
+                  >
                     Modificar
                   </Button>
-                  <Button onPress={onClose}>Cancelar</Button>
                 </div>
               </ModalFooter>
             </>

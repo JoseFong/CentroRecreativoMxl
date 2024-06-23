@@ -125,10 +125,10 @@ function ModalConAl({
               </ModalBody>
               <ModalFooter>
                 <div className="flex flex-row gap-2">
-                  <Button color="success" onPress={() => modificar(onClose2)}>
+                  <Button onPress={onClose2} className="bg-verde">Cancelar</Button>
+                  <Button className="bg-verdeFuerte text-[#ffffff]" onPress={() => modificar(onClose2)}>
                     Aceptar
                   </Button>
-                  <Button onPress={onClose2}>Cancelar</Button>
                 </div>
               </ModalFooter>
             </>

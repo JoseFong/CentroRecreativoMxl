@@ -229,7 +229,7 @@ function RegistrarAlumno({
   //CONTENIDO: Formulario para registrar la información del alumno.
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}  size="4xl">
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="4xl">
         <ModalContent>
           {(onClose) => (
             <>
@@ -237,9 +237,9 @@ function RegistrarAlumno({
                 Registrar Alumno
               </ModalHeader>
               <ModalBody>
-                <div className="flex flex-row gap-5">
+                <div className="flex flex-col gap-5 md:flex-row ">
                   <div className="flex flex-col gap-2">
-                    <h1 className="text-center font-bold">
+                    <h1 className="text-center font-bold mb-4">
                       Información del alumno
                     </h1>
                     <div className="flex flex-row gap-2">
@@ -358,13 +358,15 @@ function RegistrarAlumno({
                       onChange={(e) => setCurp(e.target.value.toUpperCase())}
                     />
                   </div>
-                  <div className="flex flex-col gap-2 w-1/3">
-                    <h1 className="font-bold">Neurodivergencias</h1>
+                  <div className="flex flex-col gap-2 w-1/3 justify-center">
+                  <div className=" bg-slate-50 rounded-xl p-3 md:w-auto w-44">
+                    <h1 className="font-bold mb-2">Neurodivergencias</h1>
                     <Table className="overflow-y-auto" removeWrapper>
                       <TableHeader>
                         <TableColumn>NEE</TableColumn>
                         <TableColumn>
                           <Checkbox
+                            color="warning"
                             isSelected={nees.length === ids.length}
                             onChange={selectAll}
                           />
@@ -376,6 +378,7 @@ function RegistrarAlumno({
                             <TableCell>{nee.nombre}</TableCell>
                             <TableCell>
                               <Checkbox
+                                color="warning"
                                 isSelected={ids.includes(nee.id)}
                                 onChange={() => agregarNEE(nee.id, nee.nombre)}
                               />
@@ -384,15 +387,21 @@ function RegistrarAlumno({
                         ))}
                       </TableBody>
                     </Table>
+                    </div>
                   </div>
                 </div>
               </ModalBody>
               <ModalFooter>
                 <div className="flex flex-row gap-1">
-                  <Button onPress={handleAgregar} color="success">
+                  <Button onPress={onClose} className="bg-verde">
+                    Cancelar
+                  </Button>
+                  <Button
+                    onPress={handleAgregar}
+                    className=" bg-verdeFuerte text-[#ffffff]"
+                  >
                     Registrar
                   </Button>
-                  <Button onPress={onClose}>Cancelar</Button>
                 </div>
               </ModalFooter>
             </>

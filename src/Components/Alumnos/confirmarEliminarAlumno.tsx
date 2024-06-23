@@ -60,13 +60,13 @@ function ConfirmarEliminarAlumno({
               </ModalBody>
               <ModalFooter>
                 <div className="flex flex-row gap-1">
+                  <Button onPress={onClose} className="bg-verde">Cancelar</Button>
                   <Button
-                    color="danger"
+                    className=" bg-verdeFuerte text-[#ffffff]"
                     onPress={() => handleEliminar(onClose)}
                   >
                     Eliminar
                   </Button>
-                  <Button onPress={onClose}>Cancelar</Button>
                 </div>
               </ModalFooter>
             </>

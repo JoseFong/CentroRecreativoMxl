@@ -11,8 +11,6 @@ import ModificarAlumno from "./modificarAlumno";
 import { MdOutlineDelete } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import { CgDetailsMore } from "react-icons/cg";
-import { Input } from "@nextui-org/input";
-import { CiSearch } from "react-icons/ci";
 import Neurodivergencias from "@/Components/Alumnos/neurodivergencias";
 import {
   Table,
@@ -22,35 +20,27 @@ import {
   TableRow,
   TableCell,
 } from "@nextui-org/react";
+import FiltroAlumnos from "./FiltroAlumnos";
 
 function ConsultaAlumnos() {
-  //useState para guardar a los alumnos registrados
   const [alumnos, setAlumnos] = useState([]);
-
-  //useState para determinar si la página sigue cargando
   const [cargando, setCargando] = useState(true);
-
-  //useState para guardar las neurodivergencias
   const [nees, setNees] = useState([]);
-
-  ///useState para guardar al alumno al cual se va a modificar o consultar de forma espeçifica
   const [alumno, setAlumno] = useState();
+  const [searchText, setSearchText] = useState("");
 
-  //Variables para controlar el modal de registrar alumno
   const {
     onOpen: onRegistarOpen,
     isOpen: isRegistrarOpen,
     onOpenChange: onRegistarOpenChange,
   } = useDisclosure();
 
-  //Variables para controlar el modal de consulta específica de un alumno
   const {
     onOpen: onDetallesOpen,
     isOpen: isDetallesOpen,
     onOpenChange: onDetallesOpenChange,
   } = useDisclosure();
 
-  //Variables para controlar el modal de confirmación de eliminación de un alumno
   const {
     onOpen: onEliminarOpen,
     isOpen: isEliminarOpen,
@@ -63,18 +53,15 @@ function ConsultaAlumnos() {
     isOpen: isModOpen,
   } = useDisclosure();
 
-  //Cuando esta página se cargue se llamaran las siguientes dos funciones:
   useEffect(() => {
     fetchAlumnos();
     fetchNees();
   }, []);
 
-  //fetchAlumnos consigue a todos los alumnos de la bd
   const fetchAlumnos = async () => {
     try {
-      const response = await axios.get("/api/alumnos"); //fetch a la api de alumnos
+      const response = await axios.get("/api/alumnos");
       if (response.status >= 200 && response.status < 300) {
-        //si el status es exitoso se guardan los alumnos y se declara cargando como false
         setAlumnos(response.data);
         setCargando(false);
       } else {
@@ -89,7 +76,6 @@ function ConsultaAlumnos() {
     }
   };
 
-  //fetchNees consigue todas las neurodivergencias registradas en la BD
   const fetchNees = async () => {
     try {
       const response = await axios.get("/api/nee");
@@ -107,19 +93,11 @@ function ConsultaAlumnos() {
     }
   };
 
-  /**
-   * Función para abrir el modal de consulta específica de un alumno
-   * @param alumno alumno del cual se verán los detalles
-   */
   const handleVerDetalles = (alumno: any) => {
     setAlumno(alumno);
     onDetallesOpen();
   };
 
-  /**
-   * Función para abrir el modal de confirmación de eliminación de un alumno
-   * @param alumno alumno que se va a eliminar
-   */
   const handleEliminar = (alumno: any) => {
     setAlumno(alumno);
     onEliminarOpen();
@@ -130,21 +108,18 @@ function ConsultaAlumnos() {
     onModOpen();
   };
 
-  //Contenido de la página
+  const filteredAlumnos = alumnos.filter((alumno: any) => {
+    const nombreCompleto = `${alumno.nombre} ${alumno.aPaterno} ${alumno.aMaterno || ""}`.toLowerCase();
+    return nombreCompleto.includes(searchText.toLowerCase());
+  });
+
   return (
     <MainLayout>
       <div>
         <div className="flex flex-row m-4 md:px-10 md:py-10">
           <div className="flex flex-col md:flex-row">
             <h1 className="text-4xl font-bold">Alumnos</h1>
-            <Input
-              startContent={<CiSearch />}
-              className="ml-0 mt-4 md:ml-10 md:mt-0"
-              variant="bordered"
-              placeholder="Filtrar alumnos"
-            >
-              a
-            </Input>
+            <FiltroAlumnos searchText={searchText} setSearchText={setSearchText} />
           </div>
           <div className=" ml-auto">
             <div className="flex flex-col md:flex-row items-center ">
@@ -157,18 +132,18 @@ function ConsultaAlumnos() {
               </Button>
               <p className="text-lg px-4 hidden md:block">|</p>
               <div className=" pt-4 md:pt-0">
-              <Tooltip content="Gestionar ND">
-              <Neurodivergencias/>
-              </Tooltip>
+                <Tooltip content="Gestionar ND">
+                  <Neurodivergencias />
+                </Tooltip>
               </div>
             </div>
           </div>
         </div>
         <div>
           {cargando ? (
-            <>
-              <Spinner size="lg" />
-            </>
+            <div className="flex justify-center items-center">
+              <Spinner size="lg" color="warning" />
+            </div>
           ) : (
             <div>
               <Table aria-label="Example static collection table">
@@ -187,14 +162,11 @@ function ConsultaAlumnos() {
                   </TableColumn>
                 </TableHeader>
                 <TableBody>
-                  {alumnos.map((alumno: any, index: any) => (
+                  {filteredAlumnos.map((alumno: any, index: any) => (
                     <TableRow key={index}>
                       <TableCell>
                         <p className=" text-lg">
-                          {" "}
-                          {`${alumno.nombre} ${alumno.aPaterno} ${
-                            alumno.aMaterno ? alumno.aMaterno : ""
-                          }`}
+                          {`${alumno.nombre} ${alumno.aPaterno} ${alumno.aMaterno || ""}`}
                         </p>
                       </TableCell>
                       <TableCell>
@@ -203,34 +175,38 @@ function ConsultaAlumnos() {
                       <TableCell>
                         <p className=" text-lg">{`${alumno.telefono}`}</p>
                       </TableCell>
-
                       <TableCell>
                         <div className="flex flex-col md:flex-row justify-center items-center">
-                          <Button
-                            isIconOnly
-                            size="md"
-                            className=" bg-verde"
-                            onClick={() => handleVerDetalles(alumno)}
-                          >
-                            <CgDetailsMore />
-                          </Button>
-                          <Button
-                            isIconOnly
-                            size="md"
-                            className="bg-verdeDetails mx-0  my-2 md:mx-3 md:my-0"
-                            onClick={() => handleEditar(alumno)}
-                          >
-                            <FaRegEdit style={{ fontSize: "15px" }} />
-                          </Button>
-
-                          <Button
-                            isIconOnly
-                            size="md"
-                            className=" bg-verdeFuerte"
-                            onClick={() => handleEliminar(alumno)}
-                          >
-                            <MdOutlineDelete style={{ fontSize: "15px" }} />
-                          </Button>
+                          <Tooltip content="Detalles">
+                            <Button
+                              isIconOnly
+                              size="md"
+                              className=" bg-verde"
+                              onClick={() => handleVerDetalles(alumno)}
+                            >
+                              <CgDetailsMore />
+                            </Button>
+                          </Tooltip>
+                          <Tooltip content="Editar">
+                            <Button
+                              isIconOnly
+                              size="md"
+                              className="bg-verdeDetails mx-0  my-2 md:mx-3 md:my-0"
+                              onClick={() => handleEditar(alumno)}
+                            >
+                              <FaRegEdit style={{ fontSize: "15px" }} />
+                            </Button>
+                          </Tooltip>
+                          <Tooltip content="Eliminar">
+                            <Button
+                              isIconOnly
+                              size="md"
+                              className=" bg-verdeFuerte"
+                              onClick={() => handleEliminar(alumno)}
+                            >
+                              <MdOutlineDelete style={{ fontSize: "15px" }} />
+                            </Button>
+                          </Tooltip>
                         </div>
                       </TableCell>
                     </TableRow>

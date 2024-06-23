@@ -163,8 +163,8 @@ function Neurodivergencias() {
               </ModalHeader>
               <ModalFooter>
                 <div className="flex flex-row gap-2">
-                  <Button onPress={onClose}>Cancelar</Button>
-                  <Button color="danger" onPress={() => eliminar(onClose)}>
+                  <Button onPress={onClose}  className=" bg-verde">Cancelar</Button>
+                  <Button className=" bg-verdeFuerte text-[#ffffff]" onPress={() => eliminar(onClose)}>
                     Eliminar
                   </Button>
                 </div>
@@ -189,8 +189,8 @@ function Neurodivergencias() {
               </ModalBody>
               <ModalFooter>
                 <div className="flex flex-row gap-2">
-                  <Button onPress={onClose}>Cancelar</Button>
-                  <Button color="primary" onPress={modificar}>
+                  <Button onPress={onClose} className=" bg-verde">Cancelar</Button>
+                  <Button className=" bg-verdeFuerte text-[#ffffff]" onPress={modificar}>
                     Guardar
                   </Button>
                 </div>
