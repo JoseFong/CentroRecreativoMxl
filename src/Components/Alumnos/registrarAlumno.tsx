@@ -20,6 +20,13 @@ import {
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ConfirmarRegistrarAlumno from "./confirmarRegistrarAlumno";
+import {
+  fechaFutura,
+  telefonoInvalido,
+  textoVacio,
+  tieneCaracteresEspeciales,
+  tieneNumeros,
+} from "@/utils/validaciones";
 
 function RegistrarAlumno({
   isOpen,
@@ -52,9 +59,6 @@ function RegistrarAlumno({
   //useState para verificar si ya se presionó el botón de agregar
   const [enviado, setEnviado] = useState(false);
 
-  //useState para verificar si hay errores en la fecha o no
-  const [errorFecha, setErrorFecha] = useState(false);
-
   //Variables para controlar el modal de confirmación de registro del alumno
   const {
     onOpen: onConfirmarOpen,
@@ -64,108 +68,84 @@ function RegistrarAlumno({
 
   //Función para agregar el alumno, se ejecuta cuando se presiona registrar
   const handleAgregar = () => {
-    setErrorFecha(false); //Se regresa el error de fecha a false
+    try {
+      setEnviado(true); //Se declara enviado como true
 
-    setEnviado(true); //Se declara enviado como true
-
-    //Validaciones para campos en blanco
-    if (
-      nombre.trim() === "" ||
-      aPaterno.trim() === "" ||
-      fechaNac.trim() === "" ||
-      genero.trim() === "" ||
-      telefono === "" ||
-      direccion.trim() === "" ||
-      curp.trim() === ""
-    ) {
-      toast.error("No deje campos en blanco.");
-      return;
-    }
-
-    if (ids.length === 0) {
-      toast.error("Seleccione al menos una neurodivergencia.");
-      return;
-    }
-
-    //Validaciones para saber si el nombre tiene números.
-    if (/\d/.test(nombre) || /\d/.test(aPaterno) || /\d/.test(aMaterno)) {
-      toast.error("El nombre no puede contener números.");
-      return;
-    }
-
-    //VALIDACIONES PARA FECHAS
-    //Se parte la fecha en partes
-    const [ano, mes, dia] = fechaNac.split("-");
-
-    const fecha = new Date(parseInt(ano), parseInt(mes) - 1, parseInt(dia)); //Se crea una fecha con la fecha ingresada
-    const fechaHoy = new Date(); //Se crea una fecha con el día de hoy
-
-    //Se verifica si la fecha de nacimiento es superior a la fecha actual
-    if (fecha > fechaHoy) {
-      toast.error("La fecha de nacimiento no puede superar la fecha actual.");
-      setErrorFecha(true);
-      return;
-    }
-
-    //Validación para saber si los teléfonos tienen letras
-    if (
-      /[a-z]/.test(telefono) ||
-      /[a-z]/.test(telefonoAl) ||
-      /[A-Z]/.test(telefono) ||
-      /[A-Z]/.test(telefonoAl)
-    ) {
-      toast.error("El teléfono no puede contener letras.");
-      return;
-    }
-
-    //validación para saber si la curp es de 18 caracteres
-    if (curp.trim().length !== 18) {
-      toast.error("Ingrese una CURP con formato correcto.");
-      return;
-    }
-
-    //validaioón para longitud del telefono
-    if (telefono.trim().length !== 10) {
-      toast.error("Ingrese un teléfono con formato correcto.");
-      return;
-    }
-
-    //validación para la longitud del telefono del alumno
-    //agregue el telefonoAl.length>0 porque puede dejarse en blanco este espacio
-    if (telefonoAl.length > 0 && telefonoAl.length !== 10) {
-      toast.error("Ingrese un teléfono con formato correcto.");
-      return;
-    }
-
-    let nee: string = "";
-
-    for (let i = 0; i < ids.length; i++) {
-      nee = nee + ids[i];
-      if (i !== ids.length - 1) {
-        nee = nee + ",";
+      if (
+        textoVacio(nombre) ||
+        textoVacio(aPaterno) ||
+        textoVacio(aMaterno) ||
+        textoVacio(fechaNac) ||
+        textoVacio(genero) ||
+        textoVacio(telefono) ||
+        textoVacio(direccion) ||
+        textoVacio(curp)
+      ) {
+        throw new Error("No deje campos vacíos.");
       }
+
+      if (
+        tieneNumeros(nombre) ||
+        tieneNumeros(aPaterno) ||
+        tieneNumeros(aMaterno)
+      )
+        throw new Error("El nombre no puede contener números.");
+
+      if (
+        tieneCaracteresEspeciales(nombre) ||
+        tieneCaracteresEspeciales(aPaterno) ||
+        tieneCaracteresEspeciales(aMaterno)
+      ) {
+        throw new Error("El nombre no puede tener caracteres especiales.");
+      }
+
+      if (fechaFutura(fechaNac))
+        throw new Error("No puede ingresar una fecha de nacimiento futura.");
+
+      if (telefonoInvalido(telefono))
+        throw new Error("Ingrese un teléfono válido.");
+
+      if (telefonoAl.length > 0 && telefonoInvalido(telefonoAl))
+        throw new Error("Ingrese un teléfono válido.");
+
+      if (curp.trim().length !== 18)
+        throw new Error("Ingrese una CURP con un formáto correcto.");
+
+      if (ids.length === 0)
+        throw new Error("Seleccione al menos una neurodivergencia.");
+
+      let nee: string = "";
+
+      for (let i = 0; i < ids.length; i++) {
+        nee = nee + ids[i];
+        if (i !== ids.length - 1) {
+          nee = nee + ",";
+        }
+      }
+
+      //Si se llega a este punto es que no hay errores con los datos ingresados
+      //Se agrega toda la información en un objeto dataTemp
+      const dataTemp = {
+        nombre: nombre.trim(),
+        aPaterno: aPaterno.trim(),
+        aMaterno: aMaterno.trim(),
+        genero: genero.trim(),
+        fechaNac: fechaNac.trim(),
+        telefono: telefono.trim(),
+        telefonoAl: telefonoAl.trim(),
+        direccion: direccion.trim(),
+        curp: curp.trim(),
+        nee,
+      };
+
+      //Se le pasa la información de dataTemp a data
+      setData(dataTemp);
+
+      //Se abre el modal para confirmar el registro
+      onConfirmarOpen();
+    } catch (e: any) {
+      toast.error(e.message);
     }
-
-    //Si se llega a este punto es que no hay errores con los datos ingresados
-    //Se agrega toda la información en un objeto dataTemp
-    const dataTemp = {
-      nombre: nombre.trim(),
-      aPaterno: aPaterno.trim(),
-      aMaterno: aMaterno.trim(),
-      genero: genero.trim(),
-      fechaNac: fechaNac.trim(),
-      telefono: telefono.trim(),
-      telefonoAl: telefonoAl.trim(),
-      direccion: direccion.trim(),
-      curp: curp.trim(),
-      nee,
-    };
-
-    //Se le pasa la información de dataTemp a data
-    setData(dataTemp);
-
-    //Se abre el modal para confirmar el registro
-    onConfirmarOpen();
   };
 
   //Esta función se ejecuta cuando se registra un alumno exitosamente
@@ -183,26 +163,6 @@ function RegistrarAlumno({
     setEnviado(false);
     setIds([]);
     setNombres([]);
-  };
-
-  //Valida textos para que no sean vacios y no tengan numeros
-  const verificarTextos = (texto: string) => {
-    if (texto.trim() === "") return true;
-    if (/\d/.test(texto)) return true;
-    return false;
-  };
-
-  //Valida textos para que no tengan numeros
-  const verificarNumeros = (texto: string) => {
-    if (/\d/.test(texto)) return true;
-    return false;
-  };
-
-  //Valida strings para que no tengan letras ni mayusculas ni minusculas
-  const verificarLetra = (texto: string) => {
-    if (/[a-z]/.test(texto)) return true;
-    if (/[A-Z]/.test(texto)) return true;
-    return false;
   };
 
   const agregarNEE = (id: number, nombre: string) => {
@@ -249,7 +209,12 @@ function RegistrarAlumno({
                         label="Nombre"
                         labelPlacement="outside"
                         placeholder="Ej. Juan"
-                        isInvalid={enviado && verificarTextos(nombre)}
+                        isInvalid={
+                          enviado &&
+                          (textoVacio(nombre) ||
+                            tieneCaracteresEspeciales(nombre) ||
+                            tieneNumeros(nombre))
+                        }
                         value={nombre}
                         onValueChange={setNombre}
                       />
@@ -259,7 +224,12 @@ function RegistrarAlumno({
                         label="Apellido Paterno"
                         labelPlacement="outside"
                         placeholder="Ej. Pérez"
-                        isInvalid={enviado && verificarTextos(aPaterno)}
+                        isInvalid={
+                          enviado &&
+                          (textoVacio(aPaterno) ||
+                            tieneCaracteresEspeciales(aPaterno) ||
+                            tieneNumeros(aPaterno))
+                        }
                         value={aPaterno}
                         onValueChange={setAPaterno}
                       />
@@ -268,7 +238,12 @@ function RegistrarAlumno({
                         label="Apellido Materno"
                         labelPlacement="outside"
                         placeholder="Ej. López"
-                        isInvalid={enviado && verificarNumeros(aMaterno)}
+                        isInvalid={
+                          enviado &&
+                          (textoVacio(aMaterno) ||
+                            tieneCaracteresEspeciales(aMaterno) ||
+                            tieneNumeros(aMaterno))
+                        }
                         value={aMaterno}
                         onValueChange={setAMaterno}
                       />
@@ -283,7 +258,8 @@ function RegistrarAlumno({
                           value={fechaNac}
                           onValueChange={setFechaNac}
                           isInvalid={
-                            enviado && (fechaNac.trim() === "" || errorFecha)
+                            enviado &&
+                            (textoVacio(fechaNac) || fechaFutura(fechaNac))
                           }
                         />
                       </div>
@@ -293,7 +269,7 @@ function RegistrarAlumno({
                         labelPlacement="outside"
                         placeholder="Género"
                         value={genero}
-                        isInvalid={enviado && genero === ""}
+                        isInvalid={enviado && textoVacio(genero)}
                         onChange={(e) => setGenero(e.target.value)}
                       >
                         <SelectItem value={"Femenino"} key={"Femenino"}>
@@ -316,9 +292,7 @@ function RegistrarAlumno({
                         placeholder="Ej. 6861234564"
                         isInvalid={
                           enviado &&
-                          (verificarLetra(telefono) ||
-                            telefono.trim() === "" ||
-                            telefono.trim().length !== 10)
+                          (telefonoInvalido(telefono) || textoVacio(telefono))
                         }
                         value={telefono}
                         onValueChange={setTelefono}
@@ -330,8 +304,8 @@ function RegistrarAlumno({
                         placeholder="Ej. 6867894561"
                         isInvalid={
                           enviado &&
-                          (verificarLetra(telefonoAl) ||
-                            (telefonoAl.length > 0 && telefonoAl.length !== 10))
+                          !textoVacio(telefonoAl) &&
+                          telefonoInvalido(telefonoAl)
                         }
                         value={telefonoAl}
                         onValueChange={setTelefonoAl}
@@ -343,7 +317,7 @@ function RegistrarAlumno({
                       label="Dirección"
                       labelPlacement="outside"
                       placeholder="Dirección"
-                      isInvalid={enviado && direccion.trim() === ""}
+                      isInvalid={enviado && textoVacio(direccion)}
                       value={direccion}
                       onValueChange={setDireccion}
                     />
@@ -359,34 +333,36 @@ function RegistrarAlumno({
                     />
                   </div>
                   <div className="flex flex-col gap-2 w-1/3 justify-center">
-                  <div className=" bg-slate-50 rounded-xl p-3 md:w-auto w-44">
-                    <h1 className="font-bold mb-2">Neurodivergencias</h1>
-                    <Table className="overflow-y-auto" removeWrapper>
-                      <TableHeader>
-                        <TableColumn>NEE</TableColumn>
-                        <TableColumn>
-                          <Checkbox
-                            color="warning"
-                            isSelected={nees.length === ids.length}
-                            onChange={selectAll}
-                          />
-                        </TableColumn>
-                      </TableHeader>
-                      <TableBody>
-                        {nees.map((nee: any) => (
-                          <TableRow>
-                            <TableCell>{nee.nombre}</TableCell>
-                            <TableCell>
-                              <Checkbox
-                                color="warning"
-                                isSelected={ids.includes(nee.id)}
-                                onChange={() => agregarNEE(nee.id, nee.nombre)}
-                              />
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                    <div className=" bg-slate-50 rounded-xl p-3 md:w-auto w-44">
+                      <h1 className="font-bold mb-2">Neurodivergencias</h1>
+                      <Table className="overflow-y-auto" removeWrapper>
+                        <TableHeader>
+                          <TableColumn>NEE</TableColumn>
+                          <TableColumn>
+                            <Checkbox
+                              color="warning"
+                              isSelected={nees.length === ids.length}
+                              onChange={selectAll}
+                            />
+                          </TableColumn>
+                        </TableHeader>
+                        <TableBody>
+                          {nees.map((nee: any) => (
+                            <TableRow>
+                              <TableCell>{nee.nombre}</TableCell>
+                              <TableCell>
+                                <Checkbox
+                                  color="warning"
+                                  isSelected={ids.includes(nee.id)}
+                                  onChange={() =>
+                                    agregarNEE(nee.id, nee.nombre)
+                                  }
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
                     </div>
                   </div>
                 </div>
