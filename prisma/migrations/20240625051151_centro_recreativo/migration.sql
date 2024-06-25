@@ -78,9 +78,12 @@ CREATE TABLE "Pago" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "cantidad" REAL NOT NULL,
     "folio" TEXT NOT NULL,
+    "fecha" TEXT NOT NULL,
     "categoria" TEXT NOT NULL,
     "descripcion" TEXT,
     "alumnoId" INTEGER NOT NULL,
+    "mes" TEXT,
+    "materiales" TEXT,
     CONSTRAINT "Pago_alumnoId_fkey" FOREIGN KEY ("alumnoId") REFERENCES "Alumno" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 

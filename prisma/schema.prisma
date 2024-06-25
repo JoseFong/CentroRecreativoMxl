@@ -90,10 +90,13 @@ model Pago {
   id          Int     @id @default(autoincrement())
   cantidad    Float
   folio       String
+  fecha       String
   categoria   String //inscripción, material, mensualidad u otro
   descripcion String? //solo si se selecciona otro
   alumno      Alumno  @relation(fields: [alumnoId], references: [id])
   alumnoId    Int
+  mes         String? //solo si selecciona mensualidad
+  materiales  String? //solo si selecciona materiales
 }
 
 model Gasto {
