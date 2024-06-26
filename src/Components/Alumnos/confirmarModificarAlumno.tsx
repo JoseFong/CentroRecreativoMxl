@@ -16,12 +16,14 @@ function ConfirmarModificarAlumno({
   data,
   nombres,
   fetchAlumnos,
+  nombreGrupo,
 }: {
   isOpen: any;
   onOpenChange: any;
   data: any;
   nombres: any;
   fetchAlumnos: () => void;
+  nombreGrupo: any;
 }) {
   return (
     <>
@@ -32,6 +34,7 @@ function ConfirmarModificarAlumno({
           data={data}
           nombres={nombres}
           fetchAlumnos={fetchAlumnos}
+          nombreGrupo={nombreGrupo}
         />
       )}
     </>
@@ -44,11 +47,13 @@ function ModalConAl({
   data,
   nombres,
   fetchAlumnos,
+  nombreGrupo,
 }: {
   isOpen: any;
   onOpenChange: any;
   data: any;
   nombres: any;
+  nombreGrupo: any;
   fetchAlumnos: () => void;
 }) {
   const modificar = async (onClose2: any) => {
@@ -117,6 +122,12 @@ function ModalConAl({
                     <span className="font-bold">CURP: </span>
                     {data.curp}
                   </p>
+                  {data.grupoId !== "" && (
+                    <p>
+                      <span className="font-bold">Grupo: </span>
+                      {nombreGrupo}
+                    </p>
+                  )}
                   <p className="mt-3">
                     <span className="font-bold">Neurodivergencia(s): </span>
                     {nombres}
@@ -125,8 +136,13 @@ function ModalConAl({
               </ModalBody>
               <ModalFooter>
                 <div className="flex flex-row gap-2">
-                  <Button onPress={onClose2} className="bg-verde">Cancelar</Button>
-                  <Button className="bg-verdeFuerte text-[#ffffff]" onPress={() => modificar(onClose2)}>
+                  <Button onPress={onClose2} className="bg-verde">
+                    Cancelar
+                  </Button>
+                  <Button
+                    className="bg-verdeFuerte text-[#ffffff]"
+                    onPress={() => modificar(onClose2)}
+                  >
                     Aceptar
                   </Button>
                 </div>

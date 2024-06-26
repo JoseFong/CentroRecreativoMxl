@@ -17,6 +17,7 @@ function ConfirmarRegistrarAlumno({
   nees,
   fetchAlumnos,
   reset,
+  grupos,
 }: {
   data: any;
   isOpen: any;
@@ -24,6 +25,7 @@ function ConfirmarRegistrarAlumno({
   nees: any;
   fetchAlumnos: () => void;
   reset: () => void;
+  grupos: any;
 }) {
   return (
     <>
@@ -35,6 +37,7 @@ function ConfirmarRegistrarAlumno({
           nees={nees}
           fetchAlumnos={fetchAlumnos}
           reset={reset}
+          grupos={grupos}
         />
       )}
     </>
@@ -48,6 +51,7 @@ function ModalConfirmarAlumno({
   nees,
   fetchAlumnos,
   reset,
+  grupos,
 }: {
   data: any;
   isOpen: any;
@@ -55,8 +59,10 @@ function ModalConfirmarAlumno({
   nees: any;
   fetchAlumnos: () => void;
   reset: () => void;
+  grupos: any;
 }) {
   const [fechaDisplay, setFechaDisplay] = useState("");
+  const [grupoDisplay, setGrupoDisplay] = useState("");
 
   const handleAceptar = async (onClose: any) => {
     try {
@@ -67,11 +73,19 @@ function ModalConfirmarAlumno({
         reset();
         onClose();
       } else {
-        throw new Error(response.data.message);
+        throw new Error(response.data.message || "Error desconocido.");
       }
     } catch (e: any) {
-      if (e.response.stauts === 404 || e.response.status === 500) {
-        toast.error(e.response.data.message);
+      if (e.response) {
+        if (
+          e.response.status === 404 ||
+          e.response.status === 500 ||
+          e.response.status === 400
+        ) {
+          toast.error(e.response.data.message);
+        } else {
+          toast.error(e.message);
+        }
       } else {
         toast.error(e.message);
       }
@@ -83,6 +97,12 @@ function ModalConfirmarAlumno({
       const partes = data.fechaNac.split("-");
       const fecha = partes[2] + "/" + partes[1] + "/" + partes[0];
       setFechaDisplay(fecha);
+    }
+
+    if (data.grupoId && data.grupoId !== "") {
+      const grupoId: number = parseInt(data.grupoId);
+      const grupo = grupos.find((gr: any) => gr.id === grupoId);
+      setGrupoDisplay(grupo.nombre);
     }
   }, [data]);
 
@@ -129,6 +149,12 @@ function ModalConfirmarAlumno({
                     <span className="font-bold">CURP: </span>
                     {data.curp}
                   </p>
+                  {data.grupoId !== "" && (
+                    <p>
+                      <span className="font-bold">Grupo: </span>
+                      {grupoDisplay}
+                    </p>
+                  )}
                   <p className="mt-3">
                     <span className="font-bold">Neurodivergencia(s): </span>
                     <div className="flex flex-col">
@@ -141,7 +167,9 @@ function ModalConfirmarAlumno({
               </ModalBody>
               <ModalFooter>
                 <div className="flex flex-row gap-2">
-                  <Button onPress={onClose} className=" bg-verde">Cancelar</Button>
+                  <Button onPress={onClose} className=" bg-verde">
+                    Cancelar
+                  </Button>
                   <Button
                     className=" bg-verdeFuerte text-[#ffffff]"
                     onPress={() => handleAceptar(onClose)}

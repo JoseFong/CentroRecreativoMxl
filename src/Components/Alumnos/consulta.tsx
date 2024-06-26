@@ -28,6 +28,7 @@ function ConsultaAlumnos() {
   const [nees, setNees] = useState([]);
   const [alumno, setAlumno] = useState();
   const [searchText, setSearchText] = useState("");
+  const [grupos, setGrupos] = useState([]);
 
   const {
     onOpen: onRegistarOpen,
@@ -56,6 +57,7 @@ function ConsultaAlumnos() {
   useEffect(() => {
     fetchAlumnos();
     fetchNees();
+    fetchGrupos();
   }, []);
 
   const fetchAlumnos = async () => {
@@ -93,6 +95,31 @@ function ConsultaAlumnos() {
     }
   };
 
+  const fetchGrupos = async () => {
+    try {
+      const response = await axios.get("/api/grupos");
+      if (response.status >= 200 && response.status < 300) {
+        setGrupos(response.data);
+      } else {
+        throw new Error(response.data.message || "Error desconocido.");
+      }
+    } catch (e: any) {
+      if (e.response) {
+        if (
+          e.response.status === 404 ||
+          e.response.status === 500 ||
+          e.response.status === 400
+        ) {
+          toast.error(e.response.data.message);
+        } else {
+          toast.error(e.message);
+        }
+      } else {
+        toast.error(e.message);
+      }
+    }
+  };
+
   const handleVerDetalles = (alumno: any) => {
     setAlumno(alumno);
     onDetallesOpen();
@@ -108,8 +135,16 @@ function ConsultaAlumnos() {
     onModOpen();
   };
 
+  const obtenerNombreGrupo = (id: number) => {
+    const grupo = grupos.find((gr: any) => gr.id === id);
+    if (grupo) return grupo.nombre;
+    return null;
+  };
+
   const filteredAlumnos = alumnos.filter((alumno: any) => {
-    const nombreCompleto = `${alumno.nombre} ${alumno.aPaterno} ${alumno.aMaterno || ""}`.toLowerCase();
+    const nombreCompleto = `${alumno.nombre} ${alumno.aPaterno} ${
+      alumno.aMaterno || ""
+    }`.toLowerCase();
     return nombreCompleto.includes(searchText.toLowerCase());
   });
 
@@ -119,7 +154,10 @@ function ConsultaAlumnos() {
         <div className="flex flex-row m-4 md:px-10 md:py-10">
           <div className="flex flex-col md:flex-row">
             <h1 className="text-4xl font-bold">Alumnos</h1>
-            <FiltroAlumnos searchText={searchText} setSearchText={setSearchText} />
+            <FiltroAlumnos
+              searchText={searchText}
+              setSearchText={setSearchText}
+            />
           </div>
           <div className=" ml-auto">
             <div className="flex flex-col md:flex-row items-center ">
@@ -166,11 +204,19 @@ function ConsultaAlumnos() {
                     <TableRow key={index}>
                       <TableCell>
                         <p className=" text-lg">
-                          {`${alumno.nombre} ${alumno.aPaterno} ${alumno.aMaterno || ""}`}
+                          {`${alumno.nombre} ${alumno.aPaterno} ${
+                            alumno.aMaterno || ""
+                          }`}
                         </p>
                       </TableCell>
                       <TableCell>
-                        <p className=" text-lg">{`${alumno.grupoId}`}</p>
+                        {alumno.grupoId ? (
+                          <p className=" text-lg">
+                            {obtenerNombreGrupo(alumno.grupoId)}
+                          </p>
+                        ) : (
+                          <p className="text-lg">Sin grupo</p>
+                        )}
                       </TableCell>
                       <TableCell>
                         <p className=" text-lg">{`${alumno.telefono}`}</p>
@@ -221,7 +267,7 @@ function ConsultaAlumnos() {
           onOpenChange={onRegistarOpenChange}
           nees={nees}
           fetchAlumnos={fetchAlumnos}
-          fetchNees={fetchNees}
+          grupos={grupos}
         />
         <ConsultaEspecificaAlumno
           isOpen={isDetallesOpen}
@@ -240,6 +286,7 @@ function ConsultaAlumnos() {
           isOpen={isModOpen}
           nees={nees}
           fetchAlumnos={fetchAlumnos}
+          grupos={grupos}
         />
       </div>
     </MainLayout>

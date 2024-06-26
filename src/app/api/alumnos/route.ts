@@ -22,8 +22,11 @@ export async function POST(request:NextRequest){
     try{
         const data = await request.json()
         const response = await registrarAlumno(data)
+        if(!response){
+            return NextResponse.json({message:"Error al registrar al alumno."},{status:404})
+        }
         if(response!=="registrado"){
-            return NextResponse.json({message:response},{status:404})
+            return NextResponse.json({message:response},{status:400})
         }
         return NextResponse.json({message:"Alumno registrado exitosamente."},{status:200})
     }catch(e:any){

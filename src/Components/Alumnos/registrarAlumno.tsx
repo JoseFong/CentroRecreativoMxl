@@ -32,14 +32,14 @@ function RegistrarAlumno({
   isOpen,
   onOpenChange,
   nees,
+  grupos,
   fetchAlumnos,
-  fetchNees,
 }: {
   isOpen: any;
   onOpenChange: any;
   nees: any;
+  grupos: any;
   fetchAlumnos: () => void;
-  fetchNees: () => void;
 }) {
   //useStates para guardar la información del alumno a registrar
   const [nombre, setNombre] = useState("");
@@ -52,6 +52,7 @@ function RegistrarAlumno({
   const [direccion, setDireccion] = useState("");
   const [curp, setCurp] = useState("");
   const [data, setData] = useState(); //Aqui se va a guardar toda la información en conjunto
+  const [grupoId, setGrupoId] = useState("");
 
   const [ids, setIds] = useState<number[]>([]);
   const [nombres, setNombres] = useState<string[]>([]);
@@ -126,16 +127,17 @@ function RegistrarAlumno({
       //Si se llega a este punto es que no hay errores con los datos ingresados
       //Se agrega toda la información en un objeto dataTemp
       const dataTemp = {
-        nombre: nombre.trim(),
-        aPaterno: aPaterno.trim(),
-        aMaterno: aMaterno.trim(),
+        nombre: nombre.trim().toUpperCase(),
+        aPaterno: aPaterno.trim().toUpperCase(),
+        aMaterno: aMaterno.trim().toUpperCase(),
         genero: genero.trim(),
         fechaNac: fechaNac.trim(),
         telefono: telefono.trim(),
         telefonoAl: telefonoAl.trim(),
-        direccion: direccion.trim(),
-        curp: curp.trim(),
+        direccion: direccion.trim().toUpperCase(),
+        curp: curp.trim().toUpperCase(),
         nee,
+        grupoId,
       };
 
       //Se le pasa la información de dataTemp a data
@@ -162,6 +164,7 @@ function RegistrarAlumno({
     setCurp("");
     setEnviado(false);
     setIds([]);
+    setGrupoId("");
     setNombres([]);
   };
 
@@ -364,6 +367,22 @@ function RegistrarAlumno({
                         </TableBody>
                       </Table>
                     </div>
+                    <Select
+                      label="Grupo (Opcional)"
+                      labelPlacement="outside"
+                      placeholder="Grupo"
+                      value={grupoId}
+                      onChange={(e) => setGrupoId(e.target.value)}
+                      className="mt-8"
+                      isDisabled={grupos.length === 0}
+                      defaultSelectedKeys={[parseInt(grupoId)]}
+                    >
+                      {grupos.map((grupo: any) => (
+                        <SelectItem key={grupo.id} value={grupo.id}>
+                          {grupo.nombre}
+                        </SelectItem>
+                      ))}
+                    </Select>
                   </div>
                 </div>
               </ModalBody>
@@ -391,6 +410,7 @@ function RegistrarAlumno({
         nees={nombres}
         fetchAlumnos={fetchAlumnos}
         reset={reset}
+        grupos={grupos}
       />
     </>
   );

@@ -68,6 +68,17 @@ export async function registrarAlumno(data:any){
         })
     })
 
+    if(data.grupoId!==""){
+        await prisma.alumno.update({
+            where: {
+                id: alumnoARegistrar.id
+            },
+            data: {
+                grupoId: parseInt(data.grupoId)
+            }
+        })
+    }
+
     return "registrado" //Si llega hasta aqui es que todo está bien
 }
 
@@ -147,6 +158,27 @@ export async function modificarAlumno(data:any,id:number){
             }
         })
     })
+
+    if(data.grupoId===""){
+        await prisma.alumno.update({
+            where: {
+                id: alumnoModificado.id
+            },
+            data: {
+                grupoId: null
+            }
+        })
+    }else{
+        const idNum:number = parseInt(data.grupoId)
+        await prisma.alumno.update({
+            where: {
+                id: alumnoModificado.id
+            },
+            data: {
+                grupoId: idNum
+            }
+        })
+    }
 
     return "modificado" //Se regresa mensaje de éxito.
 }

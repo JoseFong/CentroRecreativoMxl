@@ -1,6 +1,10 @@
 import {
   Button,
   Checkbox,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Input,
   Modal,
   ModalBody,
@@ -21,6 +25,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ConfirmarModificarAlumno from "./confirmarModificarAlumno";
+import { Grupo } from "@prisma/client";
 
 function ModificarAlumno({
   alumno,
@@ -28,12 +33,14 @@ function ModificarAlumno({
   isOpen,
   nees,
   fetchAlumnos,
+  grupos,
 }: {
   alumno: any;
   onOpenChange: any;
   isOpen: any;
   nees: any;
   fetchAlumnos: () => void;
+  grupos: Grupo[];
 }) {
   return (
     <>
@@ -44,6 +51,7 @@ function ModificarAlumno({
           isOpen={isOpen}
           nees={nees}
           fetchAlumnos={fetchAlumnos}
+          grupos={grupos}
         />
       )}
     </>
@@ -56,12 +64,14 @@ function ComponenteModAlumno({
   isOpen,
   nees,
   fetchAlumnos,
+  grupos,
 }: {
   alumno: any;
   onOpenChange: any;
   isOpen: any;
   nees: any;
   fetchAlumnos: () => void;
+  grupos: Grupo[];
 }) {
   //useStates para guardar la información del alumno a registrar
   const [nombre, setNombre] = useState(alumno.nombre);
@@ -74,6 +84,9 @@ function ComponenteModAlumno({
   const [direccion, setDireccion] = useState(alumno.direccion);
   const [curp, setCurp] = useState(alumno.curp);
   const [data, setData] = useState(); //Aqui se va a guardar toda la información en conjunto
+  const [grupoId, setGrupoId] = useState<string>(alumno.grupoId);
+
+  const [nombreGrupo, setNombreGrupo] = useState("");
 
   const [ids, setIds] = useState<number[]>([]);
   const [nombres, setNombres] = useState<string[]>([]);
@@ -106,6 +119,13 @@ function ComponenteModAlumno({
     const partes = alumno.fechaNac.split("/");
     const fecha = partes[2] + "-" + partes[1] + "-" + partes[0];
     setFechaNac(fecha);
+
+    if (alumno.grupoId) {
+      const grupo = grupos.find((gr: Grupo) => gr.id === alumno.grupoId);
+      setNombreGrupo(grupo.nombre);
+    } else {
+      setNombreGrupo("Sin grupo");
+    }
 
     fetchNeesDeAlumno(); //Se consiguen las NEEs del alumno
   }, [alumno, onOpenChange]);
@@ -252,16 +272,17 @@ function ComponenteModAlumno({
     //Se agrega toda la información en un objeto dataTemp
     const dataTemp = {
       id: alumno.id,
-      nombre: nombre.trim(),
-      aPaterno: aPaterno.trim(),
-      aMaterno: aMaterno.trim(),
+      nombre: nombre.trim().toUpperCase(),
+      aPaterno: aPaterno.trim().toUpperCase(),
+      aMaterno: aMaterno.trim().toUpperCase(),
       genero: genero.trim(),
       fechaNac: fechaForm,
       telefono: telefono.trim(),
       telefonoAl: telefonoAl.trim(),
-      direccion: direccion.trim(),
-      curp: curp.trim(),
+      direccion: direccion.trim().toUpperCase(),
+      curp: curp.trim().toUpperCase(),
       nee: neesAEnviar,
+      grupoId,
     };
 
     setData(dataTemp);
@@ -314,6 +335,18 @@ function ComponenteModAlumno({
       setIds(nees.map((nee: any) => nee.id));
       setNombres(nees.map((nee: any) => nee.nombre));
     }
+  };
+
+  const handleCambioDeGrupo = (key: any) => {
+    const id: number = parseInt(key);
+    const grupo = grupos.find((gr: Grupo) => gr.id === id);
+    setNombreGrupo(grupo.nombre);
+    setGrupoId(key);
+  };
+
+  const handleDesasignarGrupo = () => {
+    setGrupoId("");
+    setNombreGrupo("Sin grupo");
   };
 
   return (
@@ -449,34 +482,67 @@ function ComponenteModAlumno({
                     />
                   </div>
                   <div className="flex flex-col gap-2 w-1/3 justify-center">
-                  <div className="bg-slate-50 rounded-xl p-3 md:w-auto w-44">
-                    <h1 className="font-bold text-center">Neurodivergencias</h1>
-                    <Table className="overflow-y-auto" removeWrapper>
-                      <TableHeader>
-                        <TableColumn>NEE</TableColumn>
-                        <TableColumn>
-                          <Checkbox
-                            color="warning"
-                            isSelected={nees.length === ids.length}
-                            onChange={selectAll}
-                          />
-                        </TableColumn>
-                      </TableHeader>
-                      <TableBody>
-                        {nees.map((nee: any) => (
-                          <TableRow>
-                            <TableCell>{nee.nombre}</TableCell>
-                            <TableCell>
-                              <Checkbox
-                                color="warning"
-                                isSelected={ids.includes(nee.id)}
-                                onChange={() => agregarNEE(nee.id, nee.nombre)}
-                              />
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                    <div className="bg-slate-50 rounded-xl p-3 md:w-auto w-44">
+                      <h1 className="font-bold text-center">
+                        Neurodivergencias
+                      </h1>
+                      <Table className="overflow-y-auto" removeWrapper>
+                        <TableHeader>
+                          <TableColumn>NEE</TableColumn>
+                          <TableColumn>
+                            <Checkbox
+                              color="warning"
+                              isSelected={nees.length === ids.length}
+                              onChange={selectAll}
+                            />
+                          </TableColumn>
+                        </TableHeader>
+                        <TableBody>
+                          {nees.map((nee: any) => (
+                            <TableRow>
+                              <TableCell>{nee.nombre}</TableCell>
+                              <TableCell>
+                                <Checkbox
+                                  color="warning"
+                                  isSelected={ids.includes(nee.id)}
+                                  onChange={() =>
+                                    agregarNEE(nee.id, nee.nombre)
+                                  }
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Input
+                        isReadOnly
+                        label="Grupo (Opcional)"
+                        labelPlacement="outside"
+                        placeholder="Grupo"
+                        value={nombreGrupo}
+                      />
+                      <Dropdown>
+                        <DropdownTrigger>
+                          <Button className=" bg-verde">
+                            Cambiar de grupo
+                          </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu
+                          onAction={(key) => handleCambioDeGrupo(key)}
+                        >
+                          {grupos.map((gr: Grupo) => (
+                            <DropdownItem key={gr.id}>{gr.nombre}</DropdownItem>
+                          ))}
+                        </DropdownMenu>
+                      </Dropdown>
+                      <Button
+                        className=" bg-verde"
+                        onPress={handleDesasignarGrupo}
+                      >
+                        Desasignar de grupo
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -504,6 +570,7 @@ function ComponenteModAlumno({
         data={data}
         nombres={neesNombres}
         fetchAlumnos={fetchAlumnos}
+        nombreGrupo={nombreGrupo}
       />
     </>
   );
