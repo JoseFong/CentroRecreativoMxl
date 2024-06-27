@@ -95,8 +95,6 @@ model Pago {
   descripcion String? //solo si se selecciona otro
   alumno      Alumno  @relation(fields: [alumnoId], references: [id])
   alumnoId    Int
-  mes         String? //solo si selecciona mensualidad
-  materiales  String? //solo si selecciona materiales
 }
 
 model Gasto {

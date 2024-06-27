@@ -47,3 +47,18 @@ export function telefonoInvalido(str:string){
     if(tieneCaracteresEspeciales(str)) return true
     return false
 }
+
+export function ceroNegativo(num:any){
+    const numero:number = parseFloat(num)
+    if(numero<=0) return true
+    return false 
+}
+
+export function pagoDeOtroAno(fecha:string){
+    const partes = fecha.split("-")
+    const dateHoy = new Date()
+    const anoHoy = dateHoy.getFullYear()
+    const anoNum:number = parseInt(partes[0])
+    if(anoNum!==anoHoy) return true
+    return false
+}
