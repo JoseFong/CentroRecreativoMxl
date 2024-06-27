@@ -19,7 +19,6 @@ import toast from "react-hot-toast";
 import { HiSquaresPlus } from "react-icons/hi2";
 import NeurodivergenciaPlantilla from "./neurodivergenciaPlantilla";
 
-
 function Neurodivergencias() {
   const [neurodivergencias, setNeurodivergencias] = useState<
     Neurodivergencia[]

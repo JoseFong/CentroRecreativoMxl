@@ -1,19 +1,19 @@
-import { eliminarDocente } from "@/Controllers/docenteController";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import {
+  actualizarDocente,
+  eliminarDocente,
+} from "@/Controllers/docenteController";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 
-interface Params{
-    id: string
+export async function PUT(request: Request, { params }: Params) {
+  const { id } = params;
+  const body = await request.json();
+  const docenteActualizado = await actualizarDocente(id, body);
+  return NextResponse.json(docenteActualizado);
 }
 
-export async function DELETE(request:NextRequest,{params}:{params:Params}){
-    try{
-        const idNum:number = parseInt(params.id)
-        const docente = await eliminarDocente(idNum)
-        if(!docente){
-            return NextResponse.json({message:"Hubo un error al eliminar al docente."},{status:404})
-        }
-        return NextResponse.json(docente)
-    }catch(e:any){
-        return NextResponse.json({message:e.message},{status:500})
-    }
+export async function DELETE(request: Request, { params }: Params) {
+  const { id } = params;
+  await eliminarDocente(id);
+  return NextResponse.json({ message: "Docente eliminado" });
 }

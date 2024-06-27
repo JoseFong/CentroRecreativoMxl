@@ -17,7 +17,7 @@ const neurodivergenciaPlantilla = ({
         <Tooltip content="Editar">
         <Button
           isIconOnly
-          className=" w-auto h-4 bg-verdeDetails mr-2"
+          className=" w-auto h-4 bg-verdeDetails mx-2"
           variant="light"
           onClick={() => handleModificar(neurodivergencia)}
         >
