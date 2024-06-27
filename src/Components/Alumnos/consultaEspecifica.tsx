@@ -153,8 +153,8 @@ function NeurodivergenciaDeAlumnos({ alumno }: { alumno: any }) {
   //Por cada neurodivergencia se ponen en un listado vertical
   return (
     <p className="flex flex-col">
-      {nees.map((n: any) => (
-        <p>{n.nombre}</p>
+      {nees.map((n: any, index) => (
+        <p key={index}>{n.nombre}</p>
       ))}
     </p>
   );
