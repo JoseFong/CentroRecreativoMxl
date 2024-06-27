@@ -137,7 +137,7 @@ function ConsultaAlumnos() {
 
   const obtenerNombreGrupo = (id: number) => {
     const grupo = grupos.find((gr: any) => gr.id === id);
-    if (grupo) return grupo.nombre;
+    if (grupo) return grupo.nombre
     return null;
   };
 
@@ -151,7 +151,7 @@ function ConsultaAlumnos() {
   return (
     <MainLayout>
       <div>
-        <div className="flex flex-row m-4 md:px-10 md:py-10">
+        <div className="flex flex-row m-4 md:px-10 md:pt-10 md:pb-4">
           <div className="flex flex-col md:flex-row">
             <h1 className="text-4xl font-bold">Alumnos</h1>
             <FiltroAlumnos
@@ -177,7 +177,7 @@ function ConsultaAlumnos() {
             </div>
           </div>
         </div>
-        <div>
+        <div className="flex flex-col m-4 md:px-10">
           {cargando ? (
             <div className="flex justify-center items-center">
               <Spinner size="lg" color="warning" />

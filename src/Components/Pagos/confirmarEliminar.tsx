@@ -90,8 +90,8 @@ function ModalConfirmarEliminar({
                 <p className="text-red-600">Esta operación es permanente.</p>
               </ModalBody>
               <ModalFooter>
-                <Button onPress={onClose3}>Cancelar</Button>
-                <Button color="danger" onPress={() => eliminar(onClose3)}>
+                <Button onPress={onClose3} className="bg-verde">Cancelar</Button>
+                <Button color="danger" onPress={() => eliminar(onClose3)} className=" bg-verdeFuerte text-[#ffffff]">
                   Eliminar
                 </Button>
               </ModalFooter>

@@ -16,6 +16,9 @@ import { Pago, Alumno } from "@prisma/client";
 import ListadoPagos from "./listadoPagos";
 import ConsultaInscripcion from "./consultaInscripcion";
 import RegistrarPago from "./registrarPago";
+import MainLayout from "../Layout/MainLayout";
+import { FaUserEdit } from "react-icons/fa";
+import FiltroAlumnos from "../Alumnos/FiltroAlumnos";
 
 interface AlumnosPago {
   alumno: string;
@@ -30,6 +33,7 @@ function ConsultaPagos() {
   const [cargando, setCargando] = useState(true);
   const [alumnos, setAlumnos] = useState<Alumno[]>([]);
   const [alumnoPagos, setAlumnoPagos] = useState<AlumnosPago[]>([]);
+  const [searchText, setSearchText] = useState("");
 
   const [selectedPagos, setSelectedPagos] = useState<Pago[]>([]);
   const [selectedAlumno, setSelectedAlumno] = useState("");
@@ -157,29 +161,55 @@ function ConsultaPagos() {
     onRegOpen();
   };
 
+  const filteredAlumnosPagos = alumnoPagos.filter((alp) => {
+    return alp.alumno.toLowerCase().includes(searchText.toLowerCase());
+  });
+
   return (
-    <>
-      Lista de pagos
-      <Button onPress={handleRegistrarPago}>Registrar pago</Button>
+    <MainLayout>
+      <div>
+      <div className="flex flex-row m-4 md:px-10 md:pt-10">
+          <div className="flex flex-col md:flex-row">
+            <h1 className="text-4xl font-bold">Pagos de Alumnos</h1>
+            <FiltroAlumnos
+              searchText={searchText}
+              setSearchText={setSearchText}
+            />
+          </div>
+          <div className=" ml-auto">
+            <div className="flex flex-col md:flex-row items-center ">
+              <Button
+                onPress={handleRegistrarPago}
+                className=" bg-verdeFuerte text-[#ffffff]"
+                startContent={<FaUserEdit />}
+              >
+                Registrar pago
+              </Button>
+            </div>
+          </div>
+      </div>
+      <div className="flex flex-row m-4 md:px-10 md:pt-4">
       {cargando ? (
-        <Spinner size="lg" />
+        <div className="flex justify-center items-center">
+          <Spinner size="lg" color="warning" />
+        </div>
       ) : (
         <>
-          <Table>
+          <Table aria-label="Tabla Pagos" >
             <TableHeader>
-              <TableColumn>Alumno</TableColumn>
-              <TableColumn>Inscripcion</TableColumn>
-              <TableColumn>Materiales</TableColumn>
-              <TableColumn>Mensualidades</TableColumn>
-              <TableColumn>Otros</TableColumn>
+              <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Alumno</TableColumn>
+              <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Inscripción</TableColumn>
+              <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Materiales</TableColumn>
+              <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Mensualidades</TableColumn>
+              <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4" align="center">Otros</TableColumn>
             </TableHeader>
-            <TableBody>
-              {alumnoPagos.map((alp: AlumnosPago) => (
+            <TableBody emptyContent={"No hay alumnos registrados."}>
+              {filteredAlumnosPagos.map((alp: AlumnosPago) => (
                 <TableRow>
                   <TableCell>{alp.alumno}</TableCell>
                   <TableCell>
                     {alp.inscripcion && alp.inscripcion.cantidad > 0 ? (
-                      <Button
+                      <Button className="border-2 border-green-500 bg-green-100 hover:bg-green-200" 
                         onPress={() =>
                           handleVerInscripcion(alp.alumno, alp.inscripcion)
                         }
@@ -187,11 +217,18 @@ function ConsultaPagos() {
                         PAGADO
                       </Button>
                     ) : (
-                      <p>NO HA PAGADO</p>
+                      <Button className="border-2 border-gray-500 bg-gray-100"
+                          onPress={() =>
+                            handleVerInscripcion(alp.alumno, alp.inscripcion)
+                          }
+                        >
+                          NO HA PAGADO
+                      </Button>
                     )}
                   </TableCell>
                   <TableCell>
                     <Button
+                      className={alp.materiales.length === 2 ? "border-2 border-green-500 bg-green-100 hover:bg-green-200" : "border-2 border-gray-500 bg-gray-100 hover:bg-gray-200"}
                       onPress={() =>
                         handleVerPagos("Materiales", alp.materiales, alp.alumno)
                       }
@@ -201,6 +238,7 @@ function ConsultaPagos() {
                   </TableCell>
                   <TableCell>
                     <Button
+                    className={alp.mensualidades.length === 12 ? "border-2 border-green-500 bg-green-100 hover:bg-green-200" : "border-2 border-gray-500 bg-gray-100 hover:bg-gray-200"}
                       onPress={() =>
                         handleVerPagos(
                           "Mensualidades",
@@ -214,12 +252,13 @@ function ConsultaPagos() {
                   </TableCell>
                   <TableCell>
                     <Button
-                      onPress={() =>
-                        handleVerPagos("Otros", alp.otros, alp.alumno)
-                      }
-                    >
-                      Ver otros ({alp.otros.length})
-                    </Button>
+                          className="border-2 border-gray-500 bg-gray-100 hover:bg-gray-200"
+                          onPress={() =>
+                            handleVerPagos("Otros", alp.otros, alp.alumno)
+                          }
+                        >
+                          Ver otros ({alp.otros.length})
+                      </Button>   
                   </TableCell>
                 </TableRow>
               ))}
@@ -248,7 +287,9 @@ function ConsultaPagos() {
         alumnos={alumnos}
         fetchPagos={fetchPagos}
       />
-    </>
+      </div>
+      </div>
+    </MainLayout>
   );
 }
 
