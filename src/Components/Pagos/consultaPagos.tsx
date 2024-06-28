@@ -190,8 +190,10 @@ function ConsultaPagos() {
       </div>
       <div className="flex flex-row m-4 md:px-10 md:pt-4">
       {cargando ? (
-        <div className="flex justify-center items-center">
-          <Spinner size="lg" color="warning" />
+        <div className="w-full">
+          <div className="flex justify-center items-center">
+              <Spinner size="lg" color="warning" />
+          </div>
         </div>
       ) : (
         <>
