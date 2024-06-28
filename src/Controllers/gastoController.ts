@@ -6,7 +6,7 @@ import {prisma} from "@/utils/prisma"
  * @returns todos los gastos en la base de datos
  */
 export async function obtenerGastos(){
-    return await prisma.gasto.findMany()
+    return prisma.gasto.findMany();
 }
 
 /**

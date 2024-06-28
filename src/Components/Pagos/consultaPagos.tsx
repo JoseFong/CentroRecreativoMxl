@@ -1,5 +1,4 @@
 import {
-  Button,
   Spinner,
   Table,
   TableBody,
@@ -7,15 +6,11 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-  useDisclosure,
 } from "@nextui-org/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Pago, Alumno } from "@prisma/client";
-import ListadoPagos from "./listadoPagos";
-import ConsultaInscripcion from "./consultaInscripcion";
-import RegistrarPago from "./registrarPago";
 
 interface AlumnosPago {
   alumno: string;
@@ -31,36 +26,13 @@ function ConsultaPagos() {
   const [alumnos, setAlumnos] = useState<Alumno[]>([]);
   const [alumnoPagos, setAlumnoPagos] = useState<AlumnosPago[]>([]);
 
-  const [selectedPagos, setSelectedPagos] = useState<Pago[]>([]);
-  const [selectedAlumno, setSelectedAlumno] = useState("");
-  const [tipo, setTipo] = useState("");
-  const [selectedPago, setSelectedPago] = useState<Pago>();
-
-  const {
-    isOpen: isMultOpen,
-    onOpenChange: onMultOpenChange,
-    onOpen: onMultOpen,
-  } = useDisclosure();
-
-  const {
-    isOpen: isInsOpen,
-    onOpenChange: onInsOpenChange,
-    onOpen: onInsOpen,
-  } = useDisclosure();
-
-  const {
-    isOpen: isRegOpen,
-    onOpenChange: onRegOpenChange,
-    onOpen: onRegOpen,
-  } = useDisclosure();
-
   useEffect(() => {
     fetchAlumnos();
     fetchPagos();
   }, []);
 
   useEffect(() => {
-    if (pagos && alumnos) {
+    if (pagos.length > 0 && alumnos.length > 0) {
       let registros: AlumnosPago[] = [];
       alumnos.map((alumno: Alumno) => {
         const id = alumno.id;
@@ -140,27 +112,9 @@ function ConsultaPagos() {
     }
   };
 
-  const handleVerPagos = (t: string, pagos: Pago[], alumno: string) => {
-    setTipo(t);
-    setSelectedAlumno(alumno);
-    setSelectedPagos(pagos);
-    onMultOpen();
-  };
-
-  const handleVerInscripcion = (alumno: string, pago: Pago) => {
-    setSelectedAlumno(alumno);
-    setSelectedPago(pago);
-    onInsOpen();
-  };
-
-  const handleRegistrarPago = () => {
-    onRegOpen();
-  };
-
   return (
     <>
       Lista de pagos
-      <Button onPress={handleRegistrarPago}>Registrar pago</Button>
       {cargando ? (
         <Spinner size="lg" />
       ) : (
@@ -179,75 +133,20 @@ function ConsultaPagos() {
                   <TableCell>{alp.alumno}</TableCell>
                   <TableCell>
                     {alp.inscripcion && alp.inscripcion.cantidad > 0 ? (
-                      <Button
-                        onPress={() =>
-                          handleVerInscripcion(alp.alumno, alp.inscripcion)
-                        }
-                      >
-                        PAGADO
-                      </Button>
+                      <p>PAGADO</p>
                     ) : (
                       <p>NO HA PAGADO</p>
                     )}
                   </TableCell>
-                  <TableCell>
-                    <Button
-                      onPress={() =>
-                        handleVerPagos("Materiales", alp.materiales, alp.alumno)
-                      }
-                    >
-                      {alp.materiales.length}/2
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      onPress={() =>
-                        handleVerPagos(
-                          "Mensualidades",
-                          alp.mensualidades,
-                          alp.alumno
-                        )
-                      }
-                    >
-                      {alp.mensualidades.length}/12
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      onPress={() =>
-                        handleVerPagos("Otros", alp.otros, alp.alumno)
-                      }
-                    >
-                      Ver otros ({alp.otros.length})
-                    </Button>
-                  </TableCell>
+                  <TableCell>{alp.materiales.length}/2</TableCell>
+                  <TableCell>{alp.mensualidades.length}/12</TableCell>
+                  <TableCell>Ver otros ({alp.otros.length})</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </>
       )}
-      <ListadoPagos
-        isOpen={isMultOpen}
-        onOpenChange={onMultOpenChange}
-        tipo={tipo}
-        alumno={selectedAlumno}
-        pagos={selectedPagos}
-        fetchPagos={fetchPagos}
-      />
-      <ConsultaInscripcion
-        isOpen={isInsOpen}
-        onOpenChange={onInsOpenChange}
-        pago={selectedPago}
-        alumno={selectedAlumno}
-        fetchPagos={fetchPagos}
-      />
-      <RegistrarPago
-        isOpen={isRegOpen}
-        onOpenChange={onRegOpenChange}
-        alumnos={alumnos}
-        fetchPagos={fetchPagos}
-      />
     </>
   );
 }
