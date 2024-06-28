@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import {Button, Spinner, useDisclosure} from "@nextui-org/react";
 import MainLayout from "@/Components/Layout/MainLayout";
 import {useEffect, useState} from "react";
+import RegistrarGrupo from "@/Components/Grupos/registrarGrupo";
 
 function ConsultaGrupos() {
     const [grupos, setGrupos] = useState([]);
@@ -128,6 +129,11 @@ function ConsultaGrupos() {
                         </div>
                     )}
                 </div>
+                <RegistrarGrupo
+                    isOpen={isRegistrarOpen}
+                    onOpenChange={onRegistarOpenChange}
+                    fetchGrupos={fetchGrupos}
+                    docentes={docentes} grupos={grupos}                />
             </div>
         </MainLayout>
     );
