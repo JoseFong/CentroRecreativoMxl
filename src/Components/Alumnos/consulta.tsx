@@ -141,17 +141,27 @@ function ConsultaAlumnos() {
     return null;
   };
 
-  const filteredAlumnos = alumnos.filter((alumno: any) => {
-    const nombreCompleto = `${alumno.nombre} ${alumno.aPaterno} ${
-      alumno.aMaterno || ""
-    }`.toLowerCase();
-    return nombreCompleto.includes(searchText.toLowerCase());
-  });
+  const filteredAlumnos = alumnos
+    .filter((alumno: any) => {
+      const nombreCompleto = `${alumno.nombre} ${alumno.aPaterno} ${
+        alumno.aMaterno || ""
+      }`.toLowerCase();
+      return nombreCompleto.includes(searchText.toLowerCase());
+    })
+    .sort((a: any, b: any) => {
+      const nombreA = `${a.nombre} ${a.aPaterno} ${
+        a.aMaterno || ""
+      }`.toLowerCase();
+      const nombreB = `${b.nombre} ${b.aPaterno} ${
+        b.aMaterno || ""
+      }`.toLowerCase();
+      return nombreA.localeCompare(nombreB);
+    });
 
   return (
     <MainLayout>
       <div>
-        <div className="flex flex-row m-4 md:px-10 md:py-10">
+        <div className="flex flex-row m-4 md:px-10 md:pt-10 md:pb-4">
           <div className="flex flex-col md:flex-row">
             <h1 className="text-4xl font-bold">Alumnos</h1>
             <FiltroAlumnos
@@ -177,7 +187,7 @@ function ConsultaAlumnos() {
             </div>
           </div>
         </div>
-        <div>
+        <div className="flex flex-col m-4 md:px-10">
           {cargando ? (
             <div className="flex justify-center items-center">
               <Spinner size="lg" color="warning" />

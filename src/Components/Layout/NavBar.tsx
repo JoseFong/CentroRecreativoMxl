@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Tooltip } from "@nextui-org/react";
 import { IoLogOutOutline } from "react-icons/io5";
 import Image from "next/image";
 import Logo from "../../Assets/Logo.png";
+import Link from "next/link";
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [opciones, setOpciones] = useState([
+    { nombre: "Alumnos", path: "/alumnos" },
+    { nombre: "Docentes", path: "/docentes" },
+    { nombre: "Pagos", path: "/pagos" },
+    { nombre: "Gastos", path: "/gastos" },
+    { nombre: "Documentos", path: "/documentos" },
+    { nombre: "Salidas", path: "/salidas" },
+  ]);
 
   return (
     <header>
@@ -28,85 +37,44 @@ export default function NavBar() {
             }`}
           >
             <div className="flex flex-col items-center justify-center gap-2">
-              <Button
-                color="success"
-                variant="light"
-                size="lg"
-                className="text-[#000000]"
-              >
-                Alumnos
-              </Button>
-              <Button
-                color="success"
-                variant="light"
-                size="lg"
-                className="text-[#000000]"
-              >
-                Profesores
-              </Button>{" "}
-              <Button
-                color="success"
-                variant="light"
-                size="lg"
-                className="text-[#000000]"
-              >
-                Documentos
-              </Button>{" "}
-              <Button
-                color="success"
-                variant="light"
-                size="lg"
-                className="text-[#000000]"
-              >
-                Salidas
-              </Button>
-              <button>Sign Up</button>
+              {opciones.map((opc) => (
+                <Link href={opc.path}>
+                  <Button
+                    color="success"
+                    variant="light"
+                    size="lg"
+                    className="text-[#ffffff]"
+                  >
+                    {opc.nombre}
+                  </Button>
+                </Link>
+              ))}
             </div>
           </div>
           <div className="hidden w-2/4 items-center justify-evenly font-semibold md:flex">
-            <Button
-              color="success"
-              variant="light"
-              size="lg"
-              className="text-[#ffffff]"
-            >
-              Alumnos
-            </Button>
-            <Button
-              color="success"
-              variant="light"
-              size="lg"
-              className="text-[#ffffff]"
-            >
-              Profesores
-            </Button>{" "}
-            <Button
-              color="success"
-              variant="light"
-              size="lg"
-              className="text-[#ffffff]"
-            >
-              Documentos
-            </Button>{" "}
-            <Button
-              color="success"
-              variant="light"
-              size="lg"
-              className="text-[#ffffff]"
-            >
-              Salidas
-            </Button>
+            {opciones.map((opc) => (
+              <Link href={opc.path}>
+                <Button
+                  color="success"
+                  variant="light"
+                  size="lg"
+                  className="text-[#ffffff]"
+                >
+                  {opc.nombre}
+                </Button>
+              </Link>
+            ))}
           </div>
           <div className="hidden w-1/5 items-center justify-evenly font-semibold md:flex">
-          <Tooltip content="Cerrar sesión">
-            <Button
-              className=" bg-verdeFuerte text-[#ffffff]"
-              variant="solid"
-              isIconOnly
-              size="lg"
-            >
-              <IoLogOutOutline style={{ fontSize: "22px" }}/>
-            </Button>
+            <Tooltip content="Cerrar sesión">
+              <Button
+                className=" bg-verdeFuerte text-[#ffffff]"
+                variant="solid"
+                isIconOnly
+                size="lg"
+              >
+                <IoLogOutOutline style={{ fontSize: "22px" }} />
+              </Button>
             </Tooltip>
           </div>
           <button

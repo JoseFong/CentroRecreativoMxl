@@ -355,7 +355,7 @@ function ComponenteModAlumno({
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex items-center justify-center">
+              <ModalHeader className="flex items-center justify-center pb-0 md:pb-3">
                 Modificar información del alumno
               </ModalHeader>
               <ModalBody>
@@ -482,9 +482,9 @@ function ComponenteModAlumno({
                     />
                   </div>
                   <div className="flex flex-col gap-2 w-1/3 justify-center">
-                    <div className="bg-slate-50 rounded-xl p-3 md:w-auto w-44">
-                      <h1 className="font-bold text-center">
-                        Neurodivergencias
+                    <div className="bg-slate-50 rounded-xl p-3 md:w-auto w-80">
+                      <h1 className="font-bold text-center pb-3">
+                        Neurodivergencias*
                       </h1>
                       <Table className="overflow-y-auto" removeWrapper>
                         <TableHeader>
@@ -515,34 +515,38 @@ function ComponenteModAlumno({
                         </TableBody>
                       </Table>
                     </div>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 bg-slate-50 rounded-xl p-3 md:w-auto w-80">
+                      <h1 className="font-bold text-center">Grupo asignado</h1>
                       <Input
                         isReadOnly
-                        label="Grupo (Opcional)"
                         labelPlacement="outside"
                         placeholder="Grupo"
                         value={nombreGrupo}
                       />
-                      <Dropdown>
-                        <DropdownTrigger>
-                          <Button className=" bg-verde">
-                            Cambiar de grupo
-                          </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu
-                          onAction={(key) => handleCambioDeGrupo(key)}
+                      <div className="flex flex-row">
+                        <Button
+                          className=" bg-verdeFuerte mr-3 text-[#ffffff]"
+                          onPress={handleDesasignarGrupo}
                         >
-                          {grupos.map((gr: Grupo) => (
-                            <DropdownItem key={gr.id}>{gr.nombre}</DropdownItem>
-                          ))}
-                        </DropdownMenu>
-                      </Dropdown>
-                      <Button
-                        className=" bg-verde"
-                        onPress={handleDesasignarGrupo}
-                      >
-                        Desasignar de grupo
-                      </Button>
+                          Quitar grupo
+                        </Button>
+                        <Dropdown>
+                          <DropdownTrigger>
+                            <Button className=" bg-verdeFuerte text-[#ffffff]">
+                              Cambiar grupo
+                            </Button>
+                          </DropdownTrigger>
+                          <DropdownMenu
+                            onAction={(key) => handleCambioDeGrupo(key)}
+                          >
+                            {grupos.map((gr: Grupo) => (
+                              <DropdownItem key={gr.id}>
+                                {gr.nombre}
+                              </DropdownItem>
+                            ))}
+                          </DropdownMenu>
+                        </Dropdown>
+                      </div>
                     </div>
                   </div>
                 </div>
