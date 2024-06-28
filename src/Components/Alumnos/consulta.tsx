@@ -137,16 +137,26 @@ function ConsultaAlumnos() {
 
   const obtenerNombreGrupo = (id: number) => {
     const grupo = grupos.find((gr: any) => gr.id === id);
-    if (grupo) return grupo.nombre
+    if (grupo) return grupo.nombre;
     return null;
   };
 
-  const filteredAlumnos = alumnos.filter((alumno: any) => {
-    const nombreCompleto = `${alumno.nombre} ${alumno.aPaterno} ${
-      alumno.aMaterno || ""
-    }`.toLowerCase();
-    return nombreCompleto.includes(searchText.toLowerCase());
-  });
+  const filteredAlumnos = alumnos
+    .filter((alumno: any) => {
+      const nombreCompleto = `${alumno.nombre} ${alumno.aPaterno} ${
+        alumno.aMaterno || ""
+      }`.toLowerCase();
+      return nombreCompleto.includes(searchText.toLowerCase());
+    })
+    .sort((a: any, b: any) => {
+      const nombreA = `${a.nombre} ${a.aPaterno} ${
+        a.aMaterno || ""
+      }`.toLowerCase();
+      const nombreB = `${b.nombre} ${b.aPaterno} ${
+        b.aMaterno || ""
+      }`.toLowerCase();
+      return nombreA.localeCompare(nombreB);
+    });
 
   return (
     <MainLayout>

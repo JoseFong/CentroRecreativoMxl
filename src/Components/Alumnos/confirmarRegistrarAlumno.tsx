@@ -63,8 +63,10 @@ function ModalConfirmarAlumno({
 }) {
   const [fechaDisplay, setFechaDisplay] = useState("");
   const [grupoDisplay, setGrupoDisplay] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleAceptar = async (onClose: any) => {
+    setLoading(true);
     try {
       const response = await axios.post("/api/alumnos", data);
       if (response.status >= 200 && response.status < 300) {
@@ -89,6 +91,8 @@ function ModalConfirmarAlumno({
       } else {
         toast.error(e.message);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -173,8 +177,9 @@ function ModalConfirmarAlumno({
                   <Button
                     className=" bg-verdeFuerte text-[#ffffff]"
                     onPress={() => handleAceptar(onClose)}
+                    isDisabled={loading}
                   >
-                    Aceptar
+                    {loading ? "Registrando..." : "Aceptar"}
                   </Button>
                 </div>
               </ModalFooter>
