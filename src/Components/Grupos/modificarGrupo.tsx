@@ -1,5 +1,6 @@
 import {
     Button,
+    Checkbox,
     Input,
     Modal,
     ModalBody,
@@ -7,10 +8,46 @@ import {
     ModalFooter,
     ModalHeader,
     Select,
-    SelectItem
+    SelectItem,
+    Table,
+    TableBody,
+    TableCell,
+    TableColumn,
+    TableHeader, TableRow
 } from "@nextui-org/react";
 import {useEffect, useState} from "react";
 import ConfirmarModificarGrupo from "./confirmarModificarGupo";
+
+interface Docente {
+    id: number;
+    nombre: string;
+}
+
+interface Alumno {
+    id: number;
+    nombre: string;
+    grupoId?: number | null; // Puede ser null si no está asignado a un grupo
+}
+
+interface Grupo {
+    id: number;
+    nombre: string;
+    docenteId?: number | null; // Puede ser null si no tiene docente asignado
+    alumnosIds: number[];
+}
+
+interface Props {
+    docentes: Docente[],
+    isOpen: boolean,
+    onOpenChange: (open: boolean) => void,
+    selectedGrupo: Grupo | null,
+    selectedDocente?: Docente | null,
+    grupos: Grupo[],
+    alumnos: Alumno[],
+    fetchGrupos: () => void,
+    selectedAlumnos?: Alumno[],
+    fetchAlumnos?: () => Promise<void>
+}
 
 function ModificarGrupo({
                             docentes,
@@ -19,59 +56,59 @@ function ModificarGrupo({
                             selectedGrupo,
                             selectedDocente,
                             grupos,
+                            alumnos,
                             fetchGrupos,
                             selectedAlumnos,
-                            alumnos
-                        }: {
-    docentes: any,
-    isOpen: any,
-    onOpenChange: any,
-    selectedGrupo: any,
-    selectedDocente?: any,
-    grupos: any[],
-    alumnos: any,
-    fetchGrupos?: () => any,
-    selectedAlumnos?: any[]
-}) {
-    const [nombre, setNombre] = useState(selectedGrupo ? selectedGrupo.nombre : "");
-    const [docenteId, setDocenteId] = useState(selectedGrupo ? selectedGrupo.docenteId : "");
-    const [docentesDisponibles, setDocentesDisponibles] = useState([]);
-    const [alumnosDisponibles, setAlumnosDisponibles] = useState([]);
-    const [isConfirmOpen, setIsConfirmOpen] = useState(false); // Nuevo estado para el modal de confirmación
-    const [data, setData] = useState(); // Nuevo estado para los datos de confirmación
+                            fetchAlumnos
+                        }: Props) {
+    const [nombre, setNombre] = useState(selectedGrupo?.nombre || "");
+    const [docenteId, setDocenteId] = useState<number | null>(selectedGrupo?.docenteId || null);
+    const [docentesDisponibles, setDocentesDisponibles] = useState<Docente[]>([]);
+    const [alumnosDisponibles, setAlumnosDisponibles] = useState<Alumno[]>([]);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [data, setData] = useState<Grupo | null>(null);
+    const [selectedAlumnosIds, setSelectedAlumnosIds] = useState<number[]>([]);
 
     useEffect(() => {
-        const docentesConGrupo = grupos.filter((g: any) => g.docenteId != null).map((g: any) => g.docenteId);
-        const docentesSinGrupo = docentes.filter((d: any) => !docentesConGrupo.includes(d.id))
-        docentesSinGrupo.push(selectedDocente); // Agrega el docente al listado de docentes disponibles
-        setDocentesDisponibles(docentesSinGrupo);
+        const docentesConGrupo = grupos.filter(g => g.docenteId !== null).map(g => g.docenteId!); // ! para asegurar que no es null
+        setDocentesDisponibles(docentes.filter(d => !docentesConGrupo.includes(d.id) || d.id === selectedDocente?.id));
 
-        const alumnosConGrupo = alumnos.filter((a: any) => a.grupoId != null).map((a: any) => a.grupoId);
-        const alumnosSinGrupo = alumnos.filter((a: any) => !alumnosConGrupo.includes(a.id));
-        alumnosSinGrupo.push(selectedAlumnos); // Agrega los alumnos al listado de alumnos disponibles
+        // Filtra a los alumnos que no tienen un grupoId o que están en el grupo seleccionado
+        const alumnosSinGrupo = alumnos.filter(a => !a.grupoId || (selectedAlumnos && selectedAlumnos.some(sa => sa.id === a.id)));
         setAlumnosDisponibles(alumnosSinGrupo);
-    }, [docentes, grupos, alumnos, docentesDisponibles, alumnosDisponibles])
+    }, [docentes, grupos, alumnos, selectedDocente, selectedAlumnos]);
 
     useEffect(() => {
         if (selectedGrupo) {
-            setNombre(selectedGrupo.nombre ? selectedGrupo.nombre : "");
-            setDocenteId(selectedGrupo.docenteId ? selectedGrupo.docenteId : "");
+            setNombre(selectedGrupo.nombre);
+            setDocenteId(selectedGrupo.docenteId || null);
+            setSelectedAlumnosIds(selectedAlumnos ? selectedAlumnos.map(a => a.id) : []);
         }
-    }, [selectedGrupo, onOpenChange]);
+    }, [selectedGrupo]);
 
     const handleModificar = () => {
         if (selectedGrupo) {
-            const dataTemp = {
+            setData({
                 ...selectedGrupo,
                 nombre: nombre.trim(),
-                docenteId: docenteId ? parseInt(docenteId) : null
-            };
-            setData(dataTemp);
-            setIsConfirmOpen(true); // Abre el modal de confirmación
+                docenteId: docenteId,
+                alumnosIds: selectedAlumnosIds
+            });
+            setIsConfirmOpen(true);
         }
     };
 
-    // @ts-ignore
+    const handleSelectAlumno = (id: number) => {
+        setSelectedAlumnosIds(prevIds =>
+            prevIds.includes(id) ? prevIds.filter(alumnoId => alumnoId !== id) : [...prevIds, id]
+        );
+    };
+
+    const handleSelectAllAlumnos = () => {
+        setSelectedAlumnosIds(prevIds =>
+            prevIds.length === alumnosDisponibles.length ? [] : alumnosDisponibles.map(alumno => alumno.id)
+        );
+    };
     return (
         selectedGrupo &&
         <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -85,32 +122,59 @@ function ModificarGrupo({
                     />
                     <Select
                         label="Docente"
-                        placeholder={selectedDocente.nombre}
+                        placeholder={selectedDocente ? selectedDocente.nombre : "Selecciona un docente"}
                         value={docenteId || ""}
-                        onChange={(e) => setDocenteId(e.target.value)}
+                        onChange={(e) => setDocenteId(parseInt(e.target.value))}
                     >
                         {
                             docentesDisponibles ?
-                                docentesDisponibles.map((docente : any) => (
+                                docentesDisponibles.map((docente: any) => (
                                     docente && <SelectItem key={docente.id} value={docente.id}>
                                         {docente.nombre}
                                     </SelectItem>))
                                 : []
                         }
                     </Select>
+                    <Table>
+                        <TableHeader>
+                            <TableColumn>Alumno</TableColumn>
+                            <TableColumn>
+                                <Checkbox
+                                    isSelected={alumnosDisponibles.length === selectedAlumnosIds.length}
+                                    onChange={handleSelectAllAlumnos}
+                                />
+                            </TableColumn>
+                        </TableHeader>
+                        <TableBody>
+                            {alumnosDisponibles.map((alumno) => (
+                                // eslint-disable-next-line react/jsx-key
+                                <TableRow>
+                                    <TableCell>{alumno.nombre}</TableCell>
+                                    <TableCell>
+                                        <Checkbox
+                                            isSelected={selectedAlumnosIds.includes(alumno.id)}
+                                            onChange={() => handleSelectAlumno(alumno.id)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
                 </ModalBody>
                 <ModalFooter>
                     <Button color="success" onClick={handleModificar}>
                         Modificar
                     </Button>
-                    <Button onClick={() => onOpenChange()}>Cancelar</Button>
+                    <Button onClick={() => onOpenChange(false)}>Cancelar</Button>
                 </ModalFooter>
             </ModalContent>
             <ConfirmarModificarGrupo
                 data={data}
                 isOpen={isConfirmOpen}
+                modificarOpenChange={onOpenChange}
                 onOpenChange={setIsConfirmOpen}
                 fetchGrupos={fetchGrupos}
+                fetchAlumnos={fetchAlumnos}
             />
         </Modal>
     )

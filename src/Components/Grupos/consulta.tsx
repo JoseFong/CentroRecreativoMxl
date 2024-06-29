@@ -192,6 +192,7 @@ function ConsultaGrupos() {
                     grupos={grupos}
                     alumnos={alumnos}
                     fetchGrupos={fetchGrupos}
+                    fetchAlumnos={fetchAlumnos}
                 />
             </div>
         </MainLayout>

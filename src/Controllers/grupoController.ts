@@ -92,5 +92,37 @@ export async function actualizarGrupo(data:any) {
             }
         })
     }
+
+    // Quitar a todos los alumnos
+    await prisma.alumno.updateMany({
+        where:{
+            grupoId: id
+        },
+        data:{
+            grupoId: null
+        }
+    })
+
+    // Asignar a los alumnos seleccionados
+    if(data.alumnosIds){
+        const alumnos = await prisma.alumno.findMany({
+            where:{
+                id:{
+                    in: data.alumnosIds
+                }
+            }
+        })
+        for(const alumno of alumnos){
+            await prisma.alumno.update({
+                where:{
+                    id: alumno.id
+                },
+                data:{
+                    grupoId: id
+                }
+            })
+        }
+    }
+
     return "actualizado"
 }

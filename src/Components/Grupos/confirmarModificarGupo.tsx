@@ -1,22 +1,39 @@
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
+import {Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from "@nextui-org/react";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-function ConfirmarModificarGrupo({ data, isOpen, onOpenChange, fetchGrupos }: {
+function ConfirmarModificarGrupo({data, isOpen, onOpenChange, fetchGrupos, modificarOpenChange, fetchAlumnos}: {
     data: any,
     isOpen: any,
     onOpenChange: any,
     fetchGrupos?: () => any,
+    modificarOpenChange: any,
+    fetchAlumnos?: (() => Promise<void>) | undefined
 }) {
-    const handleConfirm = () => {
-        // Aquí iría el código para modificar el grupo en la base de datos
-        // usando los datos en `data`
+    const handleConfirm = async () => {
+        try {
+            data.cantidad = parseFloat(data.cantidad);
+            const response = await axios.patch("/api/grupos/" + data.id, data);
+            if (response.status === 200) {
 
-        // Después de modificar el grupo, actualiza los grupos
-        if (fetchGrupos) {
-            fetchGrupos();
+                toast.success("Gasto modificado exitosamente.");
+                if (fetchGrupos && fetchAlumnos) {
+                    fetchAlumnos();
+                    fetchGrupos();
+                }
+                // Cierra el modal
+                onOpenChange(false);
+                modificarOpenChange(false);
+            } else {
+                throw new Error(response.data.message || "Error desconocido.");
+            }
+        } catch (e: any) {
+            if (e.response.status === 404 || e.response.status === 500) {
+                toast.error(e.response.data.message);
+            } else {
+                toast.error(e.message);
+            }
         }
-
-        // Cierra el modal
-        onOpenChange(false);
     };
 
     return (
