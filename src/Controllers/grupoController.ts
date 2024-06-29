@@ -16,7 +16,7 @@ export async function obtenerGrupos(){
  * @returns mensaje de error o confirmación
  */
 export async function registrarGrupo(data:any){
-    const nombre = data.nombre
+    const nombre = data.nombre.toUpperCase();
     const docenteId = data.docenteId ? parseInt(data.docenteId) : null;
 
     //Validación para que no se repita el nombre del grupo
@@ -62,7 +62,7 @@ export async function registrarGrupo(data:any){
  */
 export async function actualizarGrupo(data:any) {
     const id = parseInt(data.id)
-    const nombre = data.nombre
+    const nombre = data.nombre.toUpperCase();
     const docenteId = data.docenteId ? parseInt(data.docenteId) : null;
 
     //Validación para que no se repita el nombre del grupo
@@ -82,7 +82,18 @@ export async function actualizarGrupo(data:any) {
         }
     })
 
-    if (docenteId) {
+    // Desasignar el docente
+    await prisma.grupo.update({
+        where: {
+            id: id
+        },
+        data: {
+            docenteId: null
+        }
+    })
+
+    // Volvemos a asignar al docente o al nuevo docente
+    if (docenteId && docenteId > 0) {
         await prisma.grupo.update({
             where: {
                 id: id
@@ -126,3 +137,5 @@ export async function actualizarGrupo(data:any) {
 
     return "actualizado"
 }
+
+

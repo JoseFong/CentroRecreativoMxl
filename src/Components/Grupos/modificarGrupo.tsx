@@ -71,7 +71,9 @@ function ModificarGrupo({
 
     useEffect(() => {
         const docentesConGrupo = grupos.filter(g => g.docenteId !== null).map(g => g.docenteId!); // ! para asegurar que no es null
-        setDocentesDisponibles(docentes.filter(d => !docentesConGrupo.includes(d.id) || d.id === selectedDocente?.id));
+        const docentesDisponibles = docentes.filter(d => !docentesConGrupo.includes(d.id) || d.id === selectedDocente?.id)
+        const desasignarDocente = {id: -1, nombre: "Sin docente asignado"};
+        setDocentesDisponibles([desasignarDocente, ...docentesDisponibles]);
 
         // Filtra a los alumnos que no tienen un grupoId o que están en el grupo seleccionado
         const alumnosSinGrupo = alumnos.filter(a => !a.grupoId || (selectedAlumnos && selectedAlumnos.some(sa => sa.id === a.id)));
@@ -124,7 +126,7 @@ function ModificarGrupo({
                         label="Docente"
                         placeholder={selectedDocente ? selectedDocente.nombre : "Selecciona un docente"}
                         value={docenteId || ""}
-                        onChange={(e) => setDocenteId(parseInt(e.target.value))}
+                        onChange={(e) => setDocenteId(e.target.value ? parseInt(e.target.value) : null)}
                     >
                         {
                             docentesDisponibles ?
