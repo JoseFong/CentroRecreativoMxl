@@ -2,14 +2,18 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import {Button, Spinner, useDisclosure} from "@nextui-org/react";
 import MainLayout from "@/Components/Layout/MainLayout";
-import {useEffect, useState} from "react";
+import {SetStateAction, useEffect, useState} from "react";
 import RegistrarGrupo from "@/Components/Grupos/registrarGrupo";
+import ConsultaEspecificaGrupo from "@/Components/Grupos/consultaEspecifica";
 
 function ConsultaGrupos() {
     const [grupos, setGrupos] = useState([]);
     const [alumnos, setAlumnos] = useState([]);
     const [docentes, setDocentes] = useState([]);
     const [cargando, setCargando] = useState(true);
+    const [selectedGrupo, setSelectedGrupo] = useState(null);
+    const [selectedDocente, setSelectedDocente] = useState(null);
+    const [selectedAlumnos, setSelectedAlumnos] = useState([]);
 
     //Variables para manejar el modal de registro de grupo
     const {
@@ -17,6 +21,21 @@ function ConsultaGrupos() {
         isOpen: isRegistrarOpen,
         onOpenChange: onRegistarOpenChange,
     } = useDisclosure();
+
+    // Estado para manejar el grupo seleccionado
+    const {
+        onOpen: onConsultaEspecificaOpen,
+        isOpen: isConsultaEspecificaOpen,
+        onOpenChange: onConsultaEspecificaOpenChange,
+    } = useDisclosure();
+
+    // Función para manejar el click en un grupo
+    const handleGrupoClick = (grupo: React.SetStateAction<null>, docente: any, alumnos: SetStateAction<never[]>) => {
+        setSelectedGrupo(grupo);
+        setSelectedDocente(docente);
+        setSelectedAlumnos(alumnos);
+        onConsultaEspecificaOpen();
+    }
 
     //Traer la informacion de todos los grupos
     useEffect(() => {
@@ -110,6 +129,7 @@ function ConsultaGrupos() {
                         <div className="flex flex-col">
                             {grupos.map((g: any) => {
                                 const docente = docentesPorGrupo(g.id);
+                                const alumnos = alumnosPorGrupo(g.id);
                                 return (
                                     <div className="flex flex-row gap-3" key={g.id}>
                                         {g.nombre}
@@ -118,11 +138,14 @@ function ConsultaGrupos() {
                                                 docente ? docente.nombre : "Sin docente asignado"
                                             }
                                         </p>
-                                        {alumnosPorGrupo(g.id).map((alumno: any) => (
+                                        {alumnos.map((alumno: any) => (
                                             <p key={alumno.id}>
                                                 {alumno.nombre} {alumno.aPaterno} {alumno.aMaterno}
                                             </p>
                                         ))}
+                                        <Button color="primary" onClick={() => handleGrupoClick(g, docente, alumnos)}>
+                                            Detalles
+                                        </Button>
                                     </div>
                                 );
                             })}
@@ -133,7 +156,11 @@ function ConsultaGrupos() {
                     isOpen={isRegistrarOpen}
                     onOpenChange={onRegistarOpenChange}
                     fetchGrupos={fetchGrupos}
-                    docentes={docentes} grupos={grupos}                />
+                    docentes={docentes} grupos={grupos}/>
+                <ConsultaEspecificaGrupo
+                    isOpen={isConsultaEspecificaOpen}
+                    onOpenChange={onConsultaEspecificaOpenChange}
+                    grupo={selectedGrupo} docente={selectedDocente} alumnos={selectedAlumnos}/>
             </div>
         </MainLayout>
     );
