@@ -182,17 +182,17 @@ function ConsultaGrupos() {
                     grupo={selectedGrupo}
                     docente={selectedDocente}
                     alumnos={selectedAlumnos}/>
-                {/*<ModificarGrupo*/}
-                {/*    selectedGrupo={selectedGrupo}*/}
-                {/*    selectedDocente={selectedDocente}*/}
-                {/*    selectedAlumnos={selectedAlumnos}*/}
-                {/*    isOpen={isModificarOpen}*/}
-                {/*    onOpenChange={onModificarOpenChange}*/}
-                {/*    docentes={docentes}*/}
-                {/*    grupos={grupos}*/}
-                {/*    alumnos={alumnos}*/}
-                {/*    fetchGrupos={fetchGrupos}*/}
-                {/*/>*/}
+                <ModificarGrupo
+                    selectedGrupo={selectedGrupo}
+                    selectedDocente={selectedDocente}
+                    selectedAlumnos={selectedAlumnos}
+                    isOpen={isModificarOpen}
+                    onOpenChange={onModificarOpenChange}
+                    docentes={docentes}
+                    grupos={grupos}
+                    alumnos={alumnos}
+                    fetchGrupos={fetchGrupos}
+                />
             </div>
         </MainLayout>
     );
