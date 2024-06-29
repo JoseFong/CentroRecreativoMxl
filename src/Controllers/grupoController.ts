@@ -53,3 +53,44 @@ export async function registrarGrupo(data:any){
     }
     return "registrado"
 }
+
+/**
+ * Función para actualizar un grupo
+ * @autor Jesus
+ * @param data del grupo a actualizar
+ * @returns mensaje de error o confirmación
+ */
+export async function actualizarGrupo(data:any) {
+    const id = parseInt(data.id)
+    const nombre = data.nombre
+    const docenteId = data.docenteId ? parseInt(data.docenteId) : null;
+
+    //Validación para que no se repita el nombre del grupo
+    const grupo = await prisma.grupo.findFirst({
+        where: {
+            nombre: nombre
+        }
+    })
+    if (grupo && grupo.id !== id) return "Ya existe otro grupo con ese nombre"
+
+    await prisma.grupo.update({
+        where: {
+            id: id
+        },
+        data: {
+            nombre: nombre
+        }
+    })
+
+    if (docenteId) {
+        await prisma.grupo.update({
+            where: {
+                id: id
+            },
+            data: {
+                docenteId: docenteId
+            }
+        })
+    }
+    return "actualizado"
+}

@@ -1,6 +1,5 @@
-import { obtenerGrupos } from "@/Controllers/grupoController";
+import { obtenerGrupos, registrarGrupo } from "@/Controllers/grupoController";
 import { NextRequest, NextResponse } from "next/server";
-import {registrarGrupo} from "@/Controllers/grupoController";
 
 /**
  * Función handler par obtener los grupos

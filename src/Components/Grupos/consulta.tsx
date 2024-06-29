@@ -5,6 +5,7 @@ import MainLayout from "@/Components/Layout/MainLayout";
 import {SetStateAction, useEffect, useState} from "react";
 import RegistrarGrupo from "@/Components/Grupos/registrarGrupo";
 import ConsultaEspecificaGrupo from "@/Components/Grupos/consultaEspecifica";
+import ModificarGrupo from "@/Components/Grupos/modificarGrupo";
 
 function ConsultaGrupos() {
     const [grupos, setGrupos] = useState([]);
@@ -29,12 +30,26 @@ function ConsultaGrupos() {
         onOpenChange: onConsultaEspecificaOpenChange,
     } = useDisclosure();
 
+    // Estado para manejar modificar un grupo
+    const {
+        onOpen: onModificarOpen,
+        isOpen: isModificarOpen,
+        onOpenChange: onModificarOpenChange,
+    } = useDisclosure();
+
     // Función para manejar el click en un grupo
-    const handleGrupoClick = (grupo: React.SetStateAction<null>, docente: any, alumnos: SetStateAction<never[]>) => {
+    const handleVerGrupoClick = (grupo: React.SetStateAction<null>, docente: any, alumnos: SetStateAction<never[]>) => {
         setSelectedGrupo(grupo);
         setSelectedDocente(docente);
         setSelectedAlumnos(alumnos);
         onConsultaEspecificaOpen();
+    }
+
+    const handleModificarGrupoClick = (grupo: React.SetStateAction<null>, docente: any, alumnos: SetStateAction<never[]>) => {
+        setSelectedGrupo(grupo);
+        setSelectedDocente(docente);
+        setSelectedAlumnos(alumnos);
+        onModificarOpen();
     }
 
     //Traer la informacion de todos los grupos
@@ -143,8 +158,11 @@ function ConsultaGrupos() {
                                                 {alumno.nombre} {alumno.aPaterno} {alumno.aMaterno}
                                             </p>
                                         ))}
-                                        <Button color="primary" onClick={() => handleGrupoClick(g, docente, alumnos)}>
+                                        <Button color="primary" onClick={() => handleVerGrupoClick(g, docente, alumnos)}>
                                             Detalles
+                                        </Button>
+                                        <Button color="warning" onClick={() => handleModificarGrupoClick(g, docente, alumnos)}>
+                                            Modificar
                                         </Button>
                                     </div>
                                 );
@@ -156,11 +174,25 @@ function ConsultaGrupos() {
                     isOpen={isRegistrarOpen}
                     onOpenChange={onRegistarOpenChange}
                     fetchGrupos={fetchGrupos}
-                    docentes={docentes} grupos={grupos}/>
+                    docentes={docentes}
+                    grupos={grupos}/>
                 <ConsultaEspecificaGrupo
                     isOpen={isConsultaEspecificaOpen}
                     onOpenChange={onConsultaEspecificaOpenChange}
-                    grupo={selectedGrupo} docente={selectedDocente} alumnos={selectedAlumnos}/>
+                    grupo={selectedGrupo}
+                    docente={selectedDocente}
+                    alumnos={selectedAlumnos}/>
+                {/*<ModificarGrupo*/}
+                {/*    selectedGrupo={selectedGrupo}*/}
+                {/*    selectedDocente={selectedDocente}*/}
+                {/*    selectedAlumnos={selectedAlumnos}*/}
+                {/*    isOpen={isModificarOpen}*/}
+                {/*    onOpenChange={onModificarOpenChange}*/}
+                {/*    docentes={docentes}*/}
+                {/*    grupos={grupos}*/}
+                {/*    alumnos={alumnos}*/}
+                {/*    fetchGrupos={fetchGrupos}*/}
+                {/*/>*/}
             </div>
         </MainLayout>
     );
