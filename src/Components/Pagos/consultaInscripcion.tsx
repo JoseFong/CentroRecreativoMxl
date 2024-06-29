@@ -77,7 +77,7 @@ function InfoPago({
 
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} >
         <ModalContent>
           {(onClose) => (
             <>
@@ -85,12 +85,12 @@ function InfoPago({
               <ModalBody>
                 <Table>
                   <TableHeader>
-                    <TableColumn>Monto</TableColumn>
-                    <TableColumn>Folio</TableColumn>
-                    <TableColumn>Fecha</TableColumn>
-                    <TableColumn>.</TableColumn>
+                    <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Monto</TableColumn>
+                    <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Folio</TableColumn>
+                    <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Fecha</TableColumn>
+                    <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4 text-transparent" align="center">.</TableColumn>
                   </TableHeader>
-                  <TableBody>
+                  <TableBody emptyContent={"No hay pagos registrados."}>
                     <TableRow>
                       <TableCell>{pago.cantidad}</TableCell>
                       <TableCell>{pago.folio}</TableCell>
@@ -112,7 +112,7 @@ function InfoPago({
                 </Table>
               </ModalBody>
               <ModalFooter>
-                <Button onPress={onClose}>Cerrar</Button>
+                <Button onPress={onClose} className="bg-verde">Cerrar</Button>
               </ModalFooter>
             </>
           )}

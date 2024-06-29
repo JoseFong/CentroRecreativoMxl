@@ -19,6 +19,7 @@ import { Pago } from "@prisma/client";
 import Image from "next/image";
 import deleteIcon from "@/Assets/deleteIcon.png";
 import ConfirmarEliminar from "./confirmarEliminar";
+import './scrollbar.css'
 
 function ListadoPagos({
   isOpen,
@@ -72,7 +73,6 @@ function Listado({
     onOpenChange: onDelOpenChange,
   } = useDisclosure();
   const [selectedPago, setSelectedPago] = useState();
-
   const handleEliminar = (pago: any) => {
     setSelectedPago(pago);
     onDelOpen();
@@ -92,15 +92,15 @@ function Listado({
                 {tipo} de {alumno}
               </ModalHeader>
               <ModalBody>
-                <Table>
+                <Table aria-label="Tabla de listado de pagos" isHeaderSticky className="max-h-[400px] overflow-y-auto p-1"> 
                   <TableHeader>
-                    <TableColumn>Monto</TableColumn>
-                    <TableColumn>Folio</TableColumn>
-                    <TableColumn>Fecha</TableColumn>
-                    <TableColumn>Descripción</TableColumn>
-                    <TableColumn>.</TableColumn>
+                    <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Monto</TableColumn>
+                    <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Folio</TableColumn>
+                    <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Fecha</TableColumn>
+                    <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Descripción</TableColumn>
+                    <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4 text-transparent" align="center">.</TableColumn>
                   </TableHeader>
-                  <TableBody>
+                  <TableBody emptyContent={"No hay pagos registrados."}>
                     {pagos.map((pag: Pago) => (
                       <TableRow>
                         <TableCell>{pag.cantidad}</TableCell>
@@ -129,7 +129,7 @@ function Listado({
                 </Table>
               </ModalBody>
               <ModalFooter>
-                <Button onPress={onClose}>Cerrar</Button>
+                <Button onPress={onClose} className="bg-verde">Cerrar</Button>
               </ModalFooter>
             </>
           )}

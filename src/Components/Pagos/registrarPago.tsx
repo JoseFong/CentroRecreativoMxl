@@ -142,6 +142,7 @@ function RegistrarPago({
         fetchPagos();
         reset();
         onClose2();
+        onOpenChange(false);
       } else {
         throw new Error(response.data.message || "Error desconocido.");
       }
@@ -204,6 +205,11 @@ function RegistrarPago({
                     placeholder="$"
                     value={monto}
                     onChange={(e) => setMonto(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'e' || e.key === 'E') {
+                        e.preventDefault();
+                      }
+                    }}
                     isRequired
                     isInvalid={
                       enviado &&
@@ -292,8 +298,8 @@ function RegistrarPago({
                 )}
               </ModalBody>
               <ModalFooter>
-                <Button onPress={onClose}>Cancelar</Button>
-                <Button onPress={handleRegistrar}>Registrar</Button>
+                <Button onPress={onClose} className="bg-verde">Cancelar</Button>
+                <Button onPress={handleRegistrar} className=" bg-verdeFuerte text-[#ffffff]">Registrar</Button>
               </ModalFooter>
             </>
           )}
@@ -338,8 +344,8 @@ function RegistrarPago({
                   </div>
                 </ModalBody>
                 <ModalFooter>
-                  <Button onPress={onClose2}>Cancelar</Button>
-                  <Button onPress={() => registrar(onClose2)}>Aceptar</Button>
+                  <Button onPress={onClose2} className="bg-verde">Cancelar</Button>
+                  <Button onPress={() => registrar(onClose2)} className=" bg-verdeFuerte text-[#ffffff]">Aceptar</Button>
                 </ModalFooter>
               </>
             )}

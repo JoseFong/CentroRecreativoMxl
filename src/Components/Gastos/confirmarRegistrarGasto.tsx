@@ -1,7 +1,15 @@
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@nextui-org/react";
 import axios from "axios";
 import React from "react";
 import toast from "react-hot-toast";
+import { useState } from "react";
 
 function ConfirmarRegistrarGasto({
   data,
@@ -16,8 +24,11 @@ function ConfirmarRegistrarGasto({
   fetchGastos: () => void;
   reset: () => void;
 }) {
+  const [loading, setLoading] = useState(false);
+
   const handleAceptar = async (onClose: any) => {
     try {
+      setLoading(true);
       data.cantidad = parseFloat(data.cantidad);
       const response = await axios.post("/api/gastos", data);
       if (response.status >= 200 && response.status < 300) {
@@ -34,6 +45,8 @@ function ConfirmarRegistrarGasto({
       } else {
         toast.error(e.message);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,7 +55,9 @@ function ConfirmarRegistrarGasto({
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader>¿Seguro que quiere registrar el siguiente gasto?</ModalHeader>
+            <ModalHeader>
+              ¿Seguro que quiere registrar el siguiente gasto?
+            </ModalHeader>
             <ModalBody>
               <p>
                 <span className="font-bold">Concepto: </span>
@@ -62,8 +77,9 @@ function ConfirmarRegistrarGasto({
                 <Button
                   color="success"
                   onPress={() => handleAceptar(onClose)}
+                  isDisabled={loading}
                 >
-                  Registrar
+                  {loading ? "Registrando..." : "Aceptar"}
                 </Button>
                 <Button onPress={onClose}>Cancelar</Button>
               </div>

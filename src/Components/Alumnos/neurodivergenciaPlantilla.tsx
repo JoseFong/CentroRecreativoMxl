@@ -8,33 +8,36 @@ const neurodivergenciaPlantilla = ({
   neurodivergencia,
   handleModificar,
   handleEliminar,
-  key,
+  index,
 }: any) => {
   return (
-    <div className="text-[#ffffff] flex flex-row mb-1 p-2 items-center bg-verdeFuerte rounded-md" key={key}>
+    <div
+      className="text-[#ffffff] flex flex-row mb-1 p-2 items-center bg-verdeFuerte rounded-md"
+      key={index}
+    >
       {neurodivergencia.nombre}
       <div className="flex flex-row ml-auto">
         <Tooltip content="Editar">
-        <Button
-          isIconOnly
-          className=" w-auto h-4 bg-verdeDetails mx-2"
-          variant="light"
-          onClick={() => handleModificar(neurodivergencia)}
-        >
-          {" "}
-          <FaRegEdit />
-        </Button>
+          <Button
+            isIconOnly
+            className=" w-auto h-4 bg-verdeDetails mx-2"
+            variant="light"
+            onClick={() => handleModificar(neurodivergencia)}
+          >
+            {" "}
+            <FaRegEdit />
+          </Button>
         </Tooltip>
         <Tooltip content="Eliminar">
-        <Button
-          isIconOnly
-          className=" w-auto h-4 bg-verde"
-          variant="light"
-          onClick={() => handleEliminar(neurodivergencia)}
-        >
-          {" "}
-          <MdOutlineDelete />
-        </Button>
+          <Button
+            isIconOnly
+            className=" w-auto h-4 bg-verde"
+            variant="light"
+            onClick={() => handleEliminar(neurodivergencia)}
+          >
+            {" "}
+            <MdOutlineDelete />
+          </Button>
         </Tooltip>
       </div>
     </div>

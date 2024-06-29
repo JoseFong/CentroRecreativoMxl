@@ -33,6 +33,7 @@ function Neurodivergencias() {
   } = useDisclosure();
 
   const { onOpen, onOpenChange, isOpen } = useDisclosure();
+  const [loading, setLoading] = useState(false);
 
   const fetchNEE = async () => {
     try {
@@ -52,7 +53,7 @@ function Neurodivergencias() {
     const data = {
       nombre: nombre,
     };
-
+    setLoading(true);
     try {
       const response = await axios.post("/api/nee", data);
       if (response.status >= 200 && response.status < 300) {
@@ -72,6 +73,8 @@ function Neurodivergencias() {
       } else {
         toast.error(e.message);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -162,8 +165,13 @@ function Neurodivergencias() {
               </ModalHeader>
               <ModalFooter>
                 <div className="flex flex-row gap-2">
-                  <Button onPress={onClose}  className=" bg-verde">Cancelar</Button>
-                  <Button className=" bg-verdeFuerte text-[#ffffff]" onPress={() => eliminar(onClose)}>
+                  <Button onPress={onClose} className=" bg-verde">
+                    Cancelar
+                  </Button>
+                  <Button
+                    className=" bg-verdeFuerte text-[#ffffff]"
+                    onPress={() => eliminar(onClose)}
+                  >
                     Eliminar
                   </Button>
                 </div>
@@ -188,8 +196,14 @@ function Neurodivergencias() {
               </ModalBody>
               <ModalFooter>
                 <div className="flex flex-row gap-2">
-                  <Button onPress={onClose} className=" bg-verde">Cancelar</Button>
-                  <Button className=" bg-verdeFuerte text-[#ffffff]" onPress={modificar}>
+                  <Button onPress={onClose} className=" bg-verde">
+                    Cancelar
+                  </Button>
+                  <Button
+                    className=" bg-verdeFuerte text-[#ffffff]"
+                    onPress={modificar}
+                    isDisabled={nombre === ""}
+                  >
                     Guardar
                   </Button>
                 </div>
@@ -201,7 +215,7 @@ function Neurodivergencias() {
       <Popover placement="bottom" showArrow offset={10}>
         <PopoverTrigger>
           <Button isIconOnly className=" bg-verdeFuerte text-[#ffffff]">
-          <HiSquaresPlus />
+            <HiSquaresPlus />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[240px] bg-white">
@@ -212,20 +226,32 @@ function Neurodivergencias() {
                 <p>No hay neurodivergencias disponibles.</p>
               ) : (
                 neurodivergencias.map((neurodivergencia, index) => (
-                  <NeurodivergenciaPlantilla neurodivergencia={neurodivergencia} handleModificar={handleModificar} handleEliminar={handleEliminar} key={index}/>
+                  <NeurodivergenciaPlantilla
+                    neurodivergencia={neurodivergencia}
+                    handleModificar={handleModificar}
+                    handleEliminar={handleEliminar}
+                    key={index}
+                    index={index}
+                  />
                 ))
               )}
             </ul>
           </div>
           <div className=" my-2">
-          <Input
-            type="text"
-            placeholder="Ingrese el nombre de la NEE"
-            onChange={(e) => setNombre(e.target.value)}
-          />
-          <div className="flex justify-center pt-2">
-          <Button onPress={handleRegistrar} className="w-full bg-headerNav text-[#ffffff]">Guardar</Button>
-          </div>
+            <Input
+              type="text"
+              placeholder="Ingrese el nombre de la NEE"
+              onChange={(e) => setNombre(e.target.value)}
+            />
+            <div className="flex justify-center pt-2">
+              <Button
+                onPress={handleRegistrar}
+                className="w-full bg-headerNav text-[#ffffff]"
+                isDisabled={loading || nombre === ""}
+              >
+                {loading ? "Registrando..." : "Guardar"}
+              </Button>
+            </div>
           </div>
         </PopoverContent>
       </Popover>
