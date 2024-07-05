@@ -37,9 +37,10 @@ export default function NavBar() {
             }`}
           >
             <div className="flex flex-col items-center justify-center gap-2">
-              {opciones.map((opc) => (
-                <Link href={opc.path}>
+              {opciones.map((opc, index) => (
+                <Link href={opc.path} key={index}>
                   <Button
+                    key={index}
                     color="success"
                     variant="light"
                     size="lg"
@@ -52,9 +53,10 @@ export default function NavBar() {
             </div>
           </div>
           <div className="hidden w-2/4 items-center justify-evenly font-semibold md:flex">
-            {opciones.map((opc) => (
-              <Link href={opc.path}>
+            {opciones.map((opc, index) => (
+              <Link href={opc.path} key={index}>
                 <Button
+                  key={index}
                   color="success"
                   variant="light"
                   size="lg"

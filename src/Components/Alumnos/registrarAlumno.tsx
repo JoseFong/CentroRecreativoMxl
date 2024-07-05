@@ -192,7 +192,12 @@ function RegistrarAlumno({
   //CONTENIDO: Formulario para registrar la información del alumno.
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="4xl">
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        size="4xl"
+        placement="center"
+      >
         <ModalContent>
           {(onClose) => (
             <>
@@ -367,22 +372,24 @@ function RegistrarAlumno({
                         </TableBody>
                       </Table>
                     </div>
-                    <Select
-                      label="Grupo (Opcional)"
-                      labelPlacement="outside"
-                      placeholder="Grupo"
-                      value={grupoId}
-                      onChange={(e) => setGrupoId(e.target.value)}
-                      className="mt-8"
-                      isDisabled={grupos.length === 0}
-                      defaultSelectedKeys={[parseInt(grupoId)]}
-                    >
-                      {grupos.map((grupo: any) => (
-                        <SelectItem key={grupo.id} value={grupo.id}>
-                          {grupo.nombre}
-                        </SelectItem>
-                      ))}
-                    </Select>
+                    <div className="flex w-72">
+                      <Select
+                        label="Grupo (Opcional)"
+                        labelPlacement="outside"
+                        placeholder="Grupo"
+                        value={grupoId}
+                        onChange={(e) => setGrupoId(e.target.value)}
+                        className="mt-8 w-full"
+                        isDisabled={grupos.length === 0}
+                        defaultSelectedKeys={[parseInt(grupoId)]}
+                      >
+                        {grupos.map((grupo: any) => (
+                          <SelectItem key={grupo.id} value={grupo.id}>
+                            {grupo.nombre}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </div>
                   </div>
                 </div>
               </ModalBody>
