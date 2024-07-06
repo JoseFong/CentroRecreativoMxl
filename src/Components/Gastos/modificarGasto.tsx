@@ -1,7 +1,5 @@
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Input } from "@nextui-org/react";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import ConfirmarModificarGasto from "./confirmarModificarGasto";
 
 function ModificarGasto({ gasto, onOpenChange, isOpen, fetchGastos } : { gasto: any, onOpenChange: any, isOpen: any, fetchGastos: any }) {
