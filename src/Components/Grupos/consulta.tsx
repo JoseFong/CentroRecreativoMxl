@@ -48,16 +48,6 @@ function ConsultaGrupos() {
   } = useDisclosure();
 
   // Función para manejar el click en un grupo
-  const handleVerGrupoClick = (
-    grupo: React.SetStateAction<null>,
-    docente: any,
-    alumnos: SetStateAction<never[]>
-  ) => {
-    setSelectedGrupo(grupo);
-    setSelectedDocente(docente);
-    setSelectedAlumnos(alumnos);
-    onConsultaEspecificaOpen();
-  };
 
   const handleModificarGrupoClick = (
     grupo: React.SetStateAction<null>,

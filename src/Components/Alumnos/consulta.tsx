@@ -193,7 +193,7 @@ function ConsultaAlumnos() {
               <Spinner size="lg" color="warning" />
             </div>
           ) : (
-            <div>
+            <div className="overflow-y-auto max-h-[40rem] border-1 rounded-xl">
               <Table aria-label="Example static collection table">
                 <TableHeader>
                   <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
