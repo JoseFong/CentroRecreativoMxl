@@ -351,7 +351,12 @@ function ComponenteModAlumno({
 
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        placement="center"
+        size="4xl"
+      >
         <ModalContent>
           {(onClose) => (
             <>
