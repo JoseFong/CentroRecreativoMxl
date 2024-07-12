@@ -176,7 +176,7 @@ function RegistrarPago({
 
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
         <ModalContent>
           {(onClose) => (
             <>
@@ -206,7 +206,7 @@ function RegistrarPago({
                     value={monto}
                     onChange={(e) => setMonto(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === 'e' || e.key === 'E') {
+                      if (e.key === "e" || e.key === "E") {
                         e.preventDefault();
                       }
                     }}
@@ -298,15 +298,26 @@ function RegistrarPago({
                 )}
               </ModalBody>
               <ModalFooter>
-                <Button onPress={onClose} className="bg-verde">Cancelar</Button>
-                <Button onPress={handleRegistrar} className=" bg-verdeFuerte text-[#ffffff]">Registrar</Button>
+                <Button onPress={onClose} className="bg-verde">
+                  Cancelar
+                </Button>
+                <Button
+                  onPress={handleRegistrar}
+                  className=" bg-verdeFuerte text-[#ffffff]"
+                >
+                  Registrar
+                </Button>
               </ModalFooter>
             </>
           )}
         </ModalContent>
       </Modal>
       {data && (
-        <Modal isOpen={isConfOpen} onOpenChange={onConfOpenChange}>
+        <Modal
+          isOpen={isConfOpen}
+          onOpenChange={onConfOpenChange}
+          placement="center"
+        >
           <ModalContent>
             {(onClose2) => (
               <>
@@ -344,8 +355,15 @@ function RegistrarPago({
                   </div>
                 </ModalBody>
                 <ModalFooter>
-                  <Button onPress={onClose2} className="bg-verde">Cancelar</Button>
-                  <Button onPress={() => registrar(onClose2)} className=" bg-verdeFuerte text-[#ffffff]">Aceptar</Button>
+                  <Button onPress={onClose2} className="bg-verde">
+                    Cancelar
+                  </Button>
+                  <Button
+                    onPress={() => registrar(onClose2)}
+                    className=" bg-verdeFuerte text-[#ffffff]"
+                  >
+                    Aceptar
+                  </Button>
                 </ModalFooter>
               </>
             )}
