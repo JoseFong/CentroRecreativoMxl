@@ -15,6 +15,7 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
+  Tooltip,
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import ConfirmarModificarGrupo from "./confirmarModificarGupo";

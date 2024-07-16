@@ -194,7 +194,7 @@ function RegistrarPago({
                   >
                     {alumnos.map((al: any) => (
                       <SelectItem key={al.id} value={al.id}>
-                        {al.nombre} {al.aPaterno}
+                        {`${al.nombre} ${al.aPaterno} ${al.aMaterno}`}
                       </SelectItem>
                     ))}
                   </Select>
