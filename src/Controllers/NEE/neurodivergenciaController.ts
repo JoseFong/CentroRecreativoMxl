@@ -8,7 +8,7 @@ import { FUNCTIONS_CONFIG_MANIFEST } from "next/dist/shared/lib/constants"
  * @returns todas las neurodivergencias
  */
 export async function obtenerTodasNEE() {
-    return await prisma.neurodivergencia.findMany()
+    return prisma.neurodivergencia.findMany();
 }
 
 
@@ -25,11 +25,11 @@ export async function registrarNEE(data:any) {
         }
     })
     if(!neeTemp){
-        return await prisma.neurodivergencia.create({
+        return prisma.neurodivergencia.create({
             data: {
                 nombre: data.nombre.toUpperCase()
             }
-        })
+        });
     } else {
         return "Neurodivergencia_repetida"
     }
@@ -42,11 +42,11 @@ export async function registrarNEE(data:any) {
  * @returns La neurodivergencia eliminada
  */
 export async function eliminarNEE(id:number) {
-    return await prisma.neurodivergencia.delete({
+    return prisma.neurodivergencia.delete({
         where: {
             id: id
         }
-    })
+    });
 }
 
 /**

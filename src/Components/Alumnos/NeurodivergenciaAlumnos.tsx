@@ -14,7 +14,7 @@ function NeurodivergenciaDeAlumnos({ alumno }: { alumno: any }) {
   //Consigue las neurodivergencias de un alumno especificamente.
   const fetchNeesDeAlumno = async () => {
     try {
-      const response = await axios.get("/api/nee/neesDeAlumno/" + alumno.id);
+      const response = await axios.get("/api/NEE/neesDeAlumno/" + alumno.id);
       if (response.status >= 200 && response.status < 300) {
         setNees(response.data);
       } else {
