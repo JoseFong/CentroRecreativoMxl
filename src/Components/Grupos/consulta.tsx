@@ -8,14 +8,7 @@ import ConsultaEspecificaGrupo from "@/Components/Grupos/consultaEspecifica";
 import ModificarGrupo from "@/Components/Grupos/modificarGrupo";
 import ImprimirGrupo from "./imprimirGrupo";
 import { FaUserEdit } from "react-icons/fa";
-import {
-  Tabs,
-  Tab,
-  Card,
-  CardBody,
-  CardHeader,
-  Tooltip,
-} from "@nextui-org/react";
+import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
 import {
   Table,
   TableHeader,

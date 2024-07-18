@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 
 function ConfirmarModificarAlumno({
   isOpen,
+  onOpenChangeModal,
   onOpenChange,
   data,
   nombres,
@@ -19,6 +20,7 @@ function ConfirmarModificarAlumno({
   nombreGrupo,
 }: {
   isOpen: any;
+  onOpenChangeModal: any;
   onOpenChange: any;
   data: any;
   nombres: any;
@@ -30,6 +32,7 @@ function ConfirmarModificarAlumno({
       {data && (
         <ModalConAl
           isOpen={isOpen}
+          onOpenChangeModal={onOpenChangeModal}
           onOpenChange={onOpenChange}
           data={data}
           nombres={nombres}
@@ -43,6 +46,7 @@ function ConfirmarModificarAlumno({
 
 function ModalConAl({
   isOpen,
+  onOpenChangeModal,
   onOpenChange,
   data,
   nombres,
@@ -50,6 +54,7 @@ function ModalConAl({
   nombreGrupo,
 }: {
   isOpen: any;
+  onOpenChangeModal: any;
   onOpenChange: any;
   data: any;
   nombres: any;
@@ -63,6 +68,7 @@ function ModalConAl({
         toast.success("Se modificó la información del alumno.");
         fetchAlumnos();
         onClose2();
+        onOpenChangeModal(false);
       } else {
         throw new Error(response.data.message || "Error desconocido.");
       }
@@ -109,7 +115,7 @@ function ModalConAl({
                   {data.telefonoAl.trim() !== "" && (
                     <>
                       <p>
-                        <span className="font-bold">Nombre: </span>
+                        <span className="font-bold">Teléfono del Alumno: </span>
                         {data.telefonoAl}
                       </p>
                     </>
