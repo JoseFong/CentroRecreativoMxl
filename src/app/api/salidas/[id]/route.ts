@@ -1,5 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
-import {modificarSalida, obtenerSalidasDeGrupo} from "@/Controllers/salidasController";
+import {eliminarSalida, modificarSalida} from "@/Controllers/salidasController";
 import {Params} from "next/dist/shared/lib/router/utils/route-matcher";
 
 /**
@@ -36,13 +36,15 @@ export async function PATCH(request:NextRequest,{params}:{params:Params}){
 export async function DELETE(request:NextRequest,{params}:{params:Params}){
     try{
         const id = parseInt(params.id)
-        const data = await request.json()
-
-        const salidas = await obtenerSalidasDeGrupo(id)
-        if(!salidas){
-            return NextResponse.json({message:"Error al obtener las salidas."},{status:404})
+        const response = await eliminarSalida(id)
+        if(!response){
+            return NextResponse.json({message:"Hubo un error al eliminar la salida."})
         }
-        return NextResponse.json(salidas)
+        // @ts-ignore
+        if(response!=="eliminado"){
+            return NextResponse.json({message:response},{status:404})
+        }
+        return NextResponse.json({message:"Salida eliminada exitosamente."},{status:200})
     }catch(e:any){
         return NextResponse.json({message:e.message},{status:500})
     }

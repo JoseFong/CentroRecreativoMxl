@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, Tooltip, useDisclosure } from "@nextui-org/react";
 import { MdOutlineDelete } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
 import ConfirmarEliminarSalida from "./confirmarEliminarSalida";
 import EditarSalida from "./EditarSalida";
 
-function SalidaPlantilla({ nombre, index, setIsOpen }: any) {
+function SalidaPlantilla({ salida, index, refetch, docentes, grupos }: any) {
   const {
     isOpen: isOpenEliminar,
     onOpen: onOpenEliminar,
@@ -24,7 +24,7 @@ function SalidaPlantilla({ nombre, index, setIsOpen }: any) {
         className="text-[#ffffff] flex flex-row mb-1 p-2 items-center bg-verdeFuerte rounded-md"
         key={index}
       >
-        {nombre}
+        {salida.nombre}
         <div className="flex flex-row ml-auto">
           <Tooltip content="Editar">
             <Button
@@ -54,12 +54,17 @@ function SalidaPlantilla({ nombre, index, setIsOpen }: any) {
         isOpen={isOpenEliminar}
         onOpen={onOpenEliminar}
         onOpenChange={onChangeEliminar}
-        nombre={nombre}
+        salida={salida}
+        refetch={refetch}
       />
       <EditarSalida
         isOpen={isOpenModificar}
         onOpen={onOpenModificar}
         onOpenChange={onChangeModificar}
+        docentes={docentes}
+        grupos={grupos}
+        salida={salida}
+        refetch={refetch}
       />
     </>
   );

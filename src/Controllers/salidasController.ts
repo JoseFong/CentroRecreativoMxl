@@ -1,17 +1,13 @@
 import {prisma} from "@/utils/prisma";
 
+
 /**
- * Función para obtener las salidas de cierto grupo
- * @autor Jesus
- * @param id id del grupo
- * @returns Salidas de cierto alumno
+ * Función para obtener todas las salidas
+ *  @autor Jesus
+ *  @returns array de todas las salidas
  */
-export async function obtenerSalidasDeGrupo(id:number) {
-    return prisma.salida.findMany({
-        where: {
-            grupoId: id
-        }
-    })
+export async function obtenerSalidas() {
+    return prisma.salida.findMany();
 }
 
 /**
@@ -83,18 +79,6 @@ export async function modificarSalida(data:any, id:number) {
  * @returns mensaje de error o éxito
  */
 export async function eliminarSalida(id:number) {
-
-    //Se desvinculan el grupo y el docente
-    await prisma.salida.update({
-        where: {
-            id: id
-        },
-        data: {
-            grupoId: -1,
-            docenteId: -1
-        }
-    })
-
     await prisma.salida.delete({
         where: {
             id: id

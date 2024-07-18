@@ -25,7 +25,6 @@ import {
   TableRow,
 } from "@nextui-org/table";
 import { FaPrint } from "react-icons/fa6";
-import RegistroSalidasGrupo from "../Salidas/registrarSalida";
 import ConsultaSalidas from "../Salidas/consultaSalidas";
 
 function ConsultaGrupos() {
@@ -38,7 +37,7 @@ function ConsultaGrupos() {
   const [selectedAlumnos, setSelectedAlumnos] = useState([]);
   const [alumnosGrupo, setAlumnosGrupo] = useState([]);
   const [grupoImprimir, setGrupoImprimir] = useState([]);
-  const [salidasGrupo, setSalidasGrupo] = useState([]);
+  const [salidas, setSalidas] = useState([]);
 
   //Variables para manejar el modal de registro de grupo
   const {
@@ -49,7 +48,6 @@ function ConsultaGrupos() {
 
   // Estado para manejar el grupo seleccionado
   const {
-    onOpen: onConsultaEspecificaOpen,
     isOpen: isConsultaEspecificaOpen,
     onOpenChange: onConsultaEspecificaOpenChange,
   } = useDisclosure();
@@ -68,15 +66,7 @@ function ConsultaGrupos() {
     onOpenChange: onOpenChangeImprimir,
   } = useDisclosure();
 
-  //Estado para manejar el modal de salidas
-  const {
-    isOpen: isOpenSalidas,
-    onOpen: onOpenSalidas,
-    onOpenChange: onOpenChangeSalidas,
-  } = useDisclosure();
-
   // Función para manejar el click en un grupo
-
   const handleModificarGrupoClick = (
     grupo: React.SetStateAction<null>,
     docente: any,
@@ -93,6 +83,7 @@ function ConsultaGrupos() {
     fetchGrupos();
     fetchDocentes();
     fetchAlumnos();
+    fetchSalidas();
   }, []);
 
   // Función para obtener los grupos desde la API
@@ -150,6 +141,29 @@ function ConsultaGrupos() {
     }
   };
 
+  //Funcion para obtener las salidas
+  const fetchSalidas = async () => {
+    try {
+      const response = await axios.get("/api/salidas/");
+      if (response.status >= 200 && response.status < 300) {
+        setSalidas(response.data);
+      } else {
+        throw new Error(response.data.message || "Error desconocido.");
+      }
+    } catch (e: any) {
+      if (e.response?.status === 404 || e.response?.status === 500) {
+        toast.error(e.response.data.message);
+      } else {
+        toast.error(e.message);
+      }
+    }
+  };
+
+  //Funcion para obtener las salidas de un grupo
+  const salidasPorGrupo = (grupoId: number) => {
+    return salidas.filter((s: any) => s.grupoId === grupoId);
+  }
+
   // Función para obtener los docentes por grupo
   const docentesPorGrupo = (grupoId: number) => {
     const grupo: any = grupos.find((g: any) => g.id === grupoId);
@@ -189,7 +203,12 @@ function ConsultaGrupos() {
               </Button>
               <p className="text-lg px-4 hidden md:block">|</p>
               <div className=" pt-4 md:pt-0 hidden md:block">
-                <ConsultaSalidas />
+                <ConsultaSalidas
+                    docentes={docentes}
+                    grupos={grupos}
+                    salidasRegistradas={salidas}
+                    refetch={fetchSalidas}
+                />
               </div>
             </div>
           </div>
@@ -234,7 +253,12 @@ function ConsultaGrupos() {
                                   : "Sin docente asignado"
                               }
                             </h1>
-                            <h1 className="font-bold">Salida(s):</h1>
+                            <h1 className="font-bold">Salida(s):{" "}
+                              {
+                                // @ts-ignore
+                                salidasPorGrupo(g.id).map((s: any) => s.nombre).join(", ") || "Sin salidas asignadas"
+                              }
+                            </h1>
                           </div>
                           <div className="overflow-y-auto max-h-[32rem]">
                             <Table aria-label="Example static collection table">

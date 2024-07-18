@@ -1,5 +1,19 @@
 import {NextRequest, NextResponse} from "next/server";
-import {registrarSalida} from "@/Controllers/salidasController";
+import {obtenerSalidas, registrarSalida} from "@/Controllers/salidasController";
+
+/**
+ * Funcion GET para obtener todas las sailidas
+ * @autor Jesus
+ * @returns array de salidas
+ */
+export async function GET(){
+    try{
+        const response = await obtenerSalidas()
+        return NextResponse.json(response)
+    }catch(e:any){
+        return NextResponse.json({message:e.message},{status:500})
+    }
+}
 
 /**
  * Función POST para registrar una salida

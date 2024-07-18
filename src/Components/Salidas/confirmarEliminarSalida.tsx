@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Modal,
   ModalContent,
@@ -7,13 +7,35 @@ import {
   ModalFooter,
 } from "@nextui-org/modal";
 import { Button } from "@nextui-org/react";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 function confirmarEliminarSalida({
   isOpen,
-  onOpen,
   onOpenChange,
-  nombre,
+  salida,
+  refetch,
 }: any) {
+  const handleEliminar = async () => {
+    try {
+      const response = await axios.delete(`/api/salidas/${salida.id}`);
+      if (response.status >= 200 && response.status < 300) {
+        toast.success("Salida eliminada con éxito");
+      } else {
+        throw new Error("Error al eliminar la salida");
+      }
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Error desconocido al eliminar la salida"
+      );
+    } finally {
+      onOpenChange();
+      refetch();
+    }
+  }
+
   return (
     <>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
@@ -21,7 +43,7 @@ function confirmarEliminarSalida({
           {(onClose) => (
             <>
               <ModalHeader>
-                ¿Seguro que quiere eliminar la salida hacia {nombre}?
+                ¿Seguro que quiere eliminar la salida hacia {salida.nombre}?
               </ModalHeader>
               <ModalBody>
                 <p className="text-red-600">Esta acción es permanente.</p>
@@ -31,7 +53,7 @@ function confirmarEliminarSalida({
                   <Button onPress={onClose} className="bg-verde">
                     Cancelar
                   </Button>
-                  <Button className=" bg-verdeFuerte text-[#ffffff]">
+                  <Button  onClick={handleEliminar} className=" bg-verdeFuerte text-[#ffffff]">
                     Eliminar
                   </Button>
                 </div>
