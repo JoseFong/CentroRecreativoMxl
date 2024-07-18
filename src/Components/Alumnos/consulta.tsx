@@ -180,7 +180,7 @@ function ConsultaAlumnos() {
                 Registrar Alumno
               </Button>
               <p className="text-lg px-4 hidden md:block">|</p>
-              <div className=" pt-4 md:pt-0">
+              <div className=" pt-4 md:pt-0 hidden md:block">
                 <Tooltip content="Gestionar ND">
                   <Neurodivergencias />
                 </Tooltip>
@@ -216,7 +216,7 @@ function ConsultaAlumnos() {
                       <TableCell>
                         <p className=" text-lg">
                           {`${alumno.nombre} ${alumno.aPaterno} ${
-                            alumno.aMaterno || ""
+                            alumno.aMaterno ? alumno.aMaterno : ""
                           }`}
                         </p>
                       </TableCell>

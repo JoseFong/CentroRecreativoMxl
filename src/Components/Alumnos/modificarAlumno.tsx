@@ -122,6 +122,7 @@ function ComponenteModAlumno({
 
     if (alumno.grupoId) {
       const grupo = grupos.find((gr: Grupo) => gr.id === alumno.grupoId);
+      //@ts-ignore
       setNombreGrupo(grupo.nombre);
     } else {
       setNombreGrupo("Sin grupo");
@@ -285,6 +286,7 @@ function ComponenteModAlumno({
       grupoId,
     };
 
+    //@ts-ignore
     setData(dataTemp);
     setNeesNombres(nombresAEnviar);
     onConfirmarOpen();
@@ -340,6 +342,7 @@ function ComponenteModAlumno({
   const handleCambioDeGrupo = (key: any) => {
     const id: number = parseInt(key);
     const grupo = grupos.find((gr: Grupo) => gr.id === id);
+    //@ts-ignore
     setNombreGrupo(grupo.nombre);
     setGrupoId(key);
   };
@@ -575,6 +578,7 @@ function ComponenteModAlumno({
       </Modal>
       <ConfirmarModificarAlumno
         isOpen={isConfirmarOpen}
+        onOpenChangeModal={onOpenChange}
         onOpenChange={onConfirmarOpenChange}
         data={data}
         nombres={neesNombres}

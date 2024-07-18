@@ -16,13 +16,14 @@ import ConsultaEspecificaGrupo from "@/Components/Grupos/consultaEspecifica";
 import ModificarGrupo from "@/Components/Grupos/modificarGrupo";
 import ImprimirGrupo from "./imprimirGrupo";
 import { FaUserEdit } from "react-icons/fa";
+import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
 import {
   Table,
-  TableBody,
-  TableCell,
-  TableColumn,
   TableHeader,
+  TableBody,
+  TableColumn,
   TableRow,
+  TableCell,
 } from "@nextui-org/table";
 import { FaPrint } from "react-icons/fa6";
 import ConsultaSalidas from "../Salidas/consultaSalidas";
