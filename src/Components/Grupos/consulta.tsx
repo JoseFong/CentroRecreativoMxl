@@ -1,14 +1,6 @@
 import axios from "axios";
 import toast from "react-hot-toast";
-import {
-  Button,
-  Card,
-  CardBody,
-  Spinner,
-  Tab,
-  Tabs,
-  useDisclosure,
-} from "@nextui-org/react";
+import { Button, Spinner, useDisclosure } from "@nextui-org/react";
 import MainLayout from "@/Components/Layout/MainLayout";
 import React, { SetStateAction, useEffect, useState } from "react";
 import RegistrarGrupo from "@/Components/Grupos/registrarGrupo";
@@ -163,7 +155,7 @@ function ConsultaGrupos() {
   //Funcion para obtener las salidas de un grupo
   const salidasPorGrupo = (grupoId: number) => {
     return salidas.filter((s: any) => s.grupoId === grupoId);
-  }
+  };
 
   // Función para obtener los docentes por grupo
   const docentesPorGrupo = (grupoId: number) => {
@@ -205,10 +197,10 @@ function ConsultaGrupos() {
               <p className="text-lg px-4 hidden md:block">|</p>
               <div className=" pt-4 md:pt-0 hidden md:block">
                 <ConsultaSalidas
-                    docentes={docentes}
-                    grupos={grupos}
-                    salidasRegistradas={salidas}
-                    refetch={fetchSalidas}
+                  docentes={docentes}
+                  grupos={grupos}
+                  salidasRegistradas={salidas}
+                  refetch={fetchSalidas}
                 />
               </div>
             </div>
@@ -254,10 +246,13 @@ function ConsultaGrupos() {
                                   : "Sin docente asignado"
                               }
                             </h1>
-                            <h1 className="font-bold">Salida(s):{" "}
+                            <h1 className="font-bold">
+                              Salida(s):{" "}
                               {
                                 // @ts-ignore
-                                salidasPorGrupo(g.id).map((s: any) => s.nombre).join(", ") || "Sin salidas asignadas"
+                                salidasPorGrupo(g.id)
+                                  .map((s: any) => s.nombre)
+                                  .join(", ") || "Sin salidas asignadas"
                               }
                             </h1>
                           </div>
@@ -331,6 +326,7 @@ function ConsultaGrupos() {
           alumnos={selectedAlumnos}
         />
         <ModificarGrupo
+          salidasGrupo={salidasPorGrupo}
           selectedGrupo={selectedGrupo}
           selectedDocente={selectedDocente}
           selectedAlumnos={selectedAlumnos}

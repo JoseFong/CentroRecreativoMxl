@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -6,12 +6,21 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Input, Select, SelectItem,
+  Input,
+  Select,
+  SelectItem,
 } from "@nextui-org/react";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-function EditarSalida({ isOpen, onOpenChange, salida, refetch, grupos, docentes }: any) {
+function EditarSalida({
+  isOpen,
+  onOpenChange,
+  salida,
+  refetch,
+  grupos,
+  docentes,
+}: any) {
   const [fecha, setFecha] = useState(salida.fecha);
   const [nombre, setNombre] = useState(salida.nombre);
   const [hora, setHora] = useState(salida.horaDeSalida);
@@ -56,11 +65,14 @@ function EditarSalida({ isOpen, onOpenChange, salida, refetch, grupos, docentes 
     } finally {
       setEnviando(false);
     }
-  }
+  };
 
-  const docenteAsignado = docentes.find((docente: { id: string; }) => docente.id === docenteId);
-  const grupoAsignado = grupos.find((grupo: { id: string; }) => grupo.id === grupoId);
-
+  const docenteAsignado = docentes.find(
+    (docente: { id: string }) => docente.id === docenteId
+  );
+  const grupoAsignado = grupos.find(
+    (grupo: { id: string }) => grupo.id === grupoId
+  );
 
   return (
     <div>
@@ -74,65 +86,77 @@ function EditarSalida({ isOpen, onOpenChange, salida, refetch, grupos, docentes 
               <ModalBody>
                 <div className="m-1">
                   <Input
-                      label="Nombre de la salida"
-                      placeholder="Ejm. Starbucks"
-                      isRequired
-                      value={nombre}
-                      onValueChange={setNombre}
-                      size="sm"
+                    label="Nombre de la salida"
+                    placeholder="Ejm. Starbucks"
+                    isRequired
+                    value={nombre}
+                    onValueChange={setNombre}
+                    size="sm"
                   ></Input>
                   <div className="flex flex-row py-2">
                     <Input
-                        type="date"
-                        label="Fecha de la salida"
-                        isRequired
-                        value={fecha}
-                        onValueChange={setFecha}
-                        className="pr-2"
-                        size="sm"
+                      type="date"
+                      label="Fecha de la salida"
+                      isRequired
+                      value={fecha}
+                      onValueChange={setFecha}
+                      className="pr-2"
+                      size="sm"
                     ></Input>
                     <Input
-                        type="time"
-                        label="Hora de salida"
-                        isRequired
-                        value={hora}
-                        onValueChange={setHora}
-                        size="sm"
+                      type="time"
+                      label="Hora de salida"
+                      isRequired
+                      value={hora}
+                      onValueChange={setHora}
+                      size="sm"
                     ></Input>
                   </div>
                   <div>
                     <Select
-                        label="Docente asignado"
-                        isRequired
-                        placeholder={docenteAsignado ? docenteAsignado.nombre : "Selecciona un docente"}
-                        onChange={handleSelectionDocente}
-                        selectedKeys={[docenteId]}
-                        className="pb-2"
-                        size="sm"
+                      label="Docente asignado"
+                      isRequired
+                      placeholder={
+                        docenteAsignado
+                          ? docenteAsignado.nombre
+                          : "Selecciona un docente"
+                      }
+                      onChange={handleSelectionDocente}
+                      selectedKeys={[docenteId]}
+                      className="pb-2"
+                      size="sm"
                     >
-                      {// @ts-ignore
+                      {
+                        // @ts-ignore
                         docentes.map((docente) => (
-                            //@ts-ignore
-                            <SelectItem key={docente.id} value={docente.nombre}>
-                              {docente.nombre}
-                            </SelectItem>
-                        ))}
+                          //@ts-ignore
+                          <SelectItem key={docente.id} value={docente.nombre}>
+                            {docente.nombre}
+                          </SelectItem>
+                        ))
+                      }
                     </Select>
                     <Select
-                        label="Grupo asignado"
-                        isRequired
-                        placeholder={grupoAsignado ? grupoAsignado.nombre : "Selecciona un grupo"}
-                        selectedKeys={[grupoId]}
-                        onChange={handleSelectionGrupo}
-                        size="sm"
+                      label="Grupo asignado"
+                      isRequired
+                      placeholder={
+                        grupoAsignado
+                          ? grupoAsignado.nombre
+                          : "Selecciona un grupo"
+                      }
+                      selectedKeys={[grupoId]}
+                      onChange={handleSelectionGrupo}
+                      size="sm"
                     >
-                      {//@ts-ignore
+                      {
+                        //@ts-ignore
                         grupos.map((grupo) => (
-                            //@ts-ignore
-                            <SelectItem key={grupo.id} value={grupo.nombre}>
-                              {grupo.nombre}
-                            </SelectItem>
-                        ))}
+                          //@ts-ignore
+                          <SelectItem key={grupo.id} value={grupo.nombre}>
+                            {grupo.nombre}
+                          </SelectItem>
+                        ))
+                      }
                     </Select>
                   </div>
                 </div>
@@ -142,11 +166,16 @@ function EditarSalida({ isOpen, onOpenChange, salida, refetch, grupos, docentes 
                   Cerrar
                 </Button>
                 <Button
-                    className="bg-verdeFuerte text-[#ffffff] w-full"
-                    onPress={() => handleModificar()}
-                    isDisabled={
-                        enviando || !nombre || !hora || !docenteId || !grupoId || !fecha
-                    }
+                  className="bg-verdeFuerte text-[#ffffff]"
+                  onPress={() => handleModificar()}
+                  isDisabled={
+                    enviando ||
+                    !nombre ||
+                    !hora ||
+                    !docenteId ||
+                    !grupoId ||
+                    !fecha
+                  }
                 >
                   <p>Modificar</p>
                 </Button>
