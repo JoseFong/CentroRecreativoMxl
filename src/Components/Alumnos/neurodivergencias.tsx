@@ -155,7 +155,7 @@ function Neurodivergencias() {
 
   return (
     <div>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
         <ModalContent>
           {(onClose) => (
             <>
@@ -180,7 +180,11 @@ function Neurodivergencias() {
           )}
         </ModalContent>
       </Modal>
-      <Modal isOpen={isEditOpen} onOpenChange={onEditOpenChange}>
+      <Modal
+        isOpen={isEditOpen}
+        onOpenChange={onEditOpenChange}
+        placement="center"
+      >
         <ModalContent>
           {(onClose) => (
             <>

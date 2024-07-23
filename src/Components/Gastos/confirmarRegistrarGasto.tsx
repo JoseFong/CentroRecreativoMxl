@@ -17,12 +17,14 @@ function ConfirmarRegistrarGasto({
   onOpenChange,
   fetchGastos,
   reset,
+  onRegistrar,
 }: {
   data: any;
   isOpen: any;
   onOpenChange: any;
   fetchGastos: () => void;
   reset: () => void;
+  onRegistrar: any;
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -36,6 +38,7 @@ function ConfirmarRegistrarGasto({
         fetchGastos();
         reset();
         onClose();
+        onRegistrar(false);
       } else {
         throw new Error(response.data.message);
       }
@@ -51,7 +54,7 @@ function ConfirmarRegistrarGasto({
   };
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
       <ModalContent>
         {(onClose) => (
           <>
@@ -64,8 +67,7 @@ function ConfirmarRegistrarGasto({
                 {data.concepto}
               </p>
               <p>
-                <span className="font-bold">Cantidad: </span>
-                {data.cantidad}
+                <span className="font-bold">Cantidad: </span>${data.cantidad}
               </p>
               <p>
                 <span className="font-bold">Fecha: </span>
@@ -74,14 +76,16 @@ function ConfirmarRegistrarGasto({
             </ModalBody>
             <ModalFooter>
               <div className="flex flex-row gap-2">
+                <Button onPress={onClose} className=" bg-verde">
+                  Cancelar
+                </Button>
                 <Button
-                  color="success"
+                  className=" bg-verdeFuerte text-[#ffffff]"
                   onPress={() => handleAceptar(onClose)}
                   isDisabled={loading}
                 >
                   {loading ? "Registrando..." : "Aceptar"}
                 </Button>
-                <Button onPress={onClose}>Cancelar</Button>
               </div>
             </ModalFooter>
           </>

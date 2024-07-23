@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 function ConfirmarRegistrarAlumno({
   data,
   isOpen,
+  onOpenChangeRegitro,
   onOpenChange,
   nees,
   fetchAlumnos,
@@ -21,6 +22,7 @@ function ConfirmarRegistrarAlumno({
 }: {
   data: any;
   isOpen: any;
+  onOpenChangeRegitro: any;
   onOpenChange: any;
   nees: any;
   fetchAlumnos: () => void;
@@ -33,6 +35,7 @@ function ConfirmarRegistrarAlumno({
         <ModalConfirmarAlumno
           data={data}
           isOpen={isOpen}
+          onOpenChangeRegitro={onOpenChangeRegitro}
           onOpenChange={onOpenChange}
           nees={nees}
           fetchAlumnos={fetchAlumnos}
@@ -47,6 +50,7 @@ function ConfirmarRegistrarAlumno({
 function ModalConfirmarAlumno({
   data,
   isOpen,
+  onOpenChangeRegitro,
   onOpenChange,
   nees,
   fetchAlumnos,
@@ -55,6 +59,7 @@ function ModalConfirmarAlumno({
 }: {
   data: any;
   isOpen: any;
+  onOpenChangeRegitro: any;
   onOpenChange: any;
   nees: any;
   fetchAlumnos: () => void;
@@ -74,6 +79,7 @@ function ModalConfirmarAlumno({
         fetchAlumnos();
         reset();
         onClose();
+        onOpenChangeRegitro(false);
       } else {
         throw new Error(response.data.message || "Error desconocido.");
       }

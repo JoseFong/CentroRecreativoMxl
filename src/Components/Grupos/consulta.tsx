@@ -6,8 +6,9 @@ import { SetStateAction, useEffect, useState } from "react";
 import RegistrarGrupo from "@/Components/Grupos/registrarGrupo";
 import ConsultaEspecificaGrupo from "@/Components/Grupos/consultaEspecifica";
 import ModificarGrupo from "@/Components/Grupos/modificarGrupo";
+import ImprimirGrupo from "./imprimirGrupo";
 import { FaUserEdit } from "react-icons/fa";
-import { Tabs, Tab, Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
 import {
   Table,
   TableHeader,
@@ -16,6 +17,7 @@ import {
   TableRow,
   TableCell,
 } from "@nextui-org/table";
+import { FaPrint } from "react-icons/fa6";
 
 function ConsultaGrupos() {
   const [grupos, setGrupos] = useState([]);
@@ -25,6 +27,8 @@ function ConsultaGrupos() {
   const [selectedGrupo, setSelectedGrupo] = useState(null);
   const [selectedDocente, setSelectedDocente] = useState(null);
   const [selectedAlumnos, setSelectedAlumnos] = useState([]);
+  const [alumnosGrupo, setAlumnosGrupo] = useState([]);
+  const [grupoImprimir, setGrupoImprimir] = useState([]);
 
   //Variables para manejar el modal de registro de grupo
   const {
@@ -45,6 +49,13 @@ function ConsultaGrupos() {
     onOpen: onModificarOpen,
     isOpen: isModificarOpen,
     onOpenChange: onModificarOpenChange,
+  } = useDisclosure();
+
+  // Estado para manejar la impresion de grupo
+  const {
+    onOpen: onOpenImprimir,
+    isOpen: isOpenImprimir,
+    onOpenChange: onOpenChangeImprimir,
   } = useDisclosure();
 
   // Función para manejar el click en un grupo
@@ -136,6 +147,12 @@ function ConsultaGrupos() {
     return alumnos.filter((a: any) => a.grupoId === grupoId);
   };
 
+  const imprimir = (grupo: any) => {
+    setGrupoImprimir(grupo);
+    setAlumnosGrupo(alumnosPorGrupo(grupo.id));
+    onOpenImprimir();
+  };
+
   return (
     <MainLayout>
       <div>
@@ -175,9 +192,14 @@ function ConsultaGrupos() {
                         }
                       >
                         <CardBody>
-                          <div className="p-2 flex flex-col mr-auto">
-                            <h1 className="font-bold">Grupo: {g.nombre}</h1>
-                            <h1 className="font-bold">
+                          <div className="p-2 flex flex-col w-full">
+                            <div className="flex justify-between items-center">
+                              <h1 className="font-bold">Grupo: {g.nombre}</h1>
+                              <Button isIconOnly onPress={() => imprimir(g)}>
+                                <FaPrint />
+                              </Button>
+                            </div>
+                            <h1 className="font-bold pb-2">
                               Docente Encargado:{" "}
                               {docente && docente.nombre
                                 ? docente.nombre + " " + docente.aPaterno
@@ -190,13 +212,13 @@ function ConsultaGrupos() {
                           <div className="overflow-y-auto max-h-[32rem]">
                             <Table aria-label="Example static collection table">
                               <TableHeader>
-                                <TableColumn className="bg-headerNav text-[#ffffff] text-md font-bold">
+                                <TableColumn className="bg-headerNav text-[#ffffff] text-sm md:text-md font-bold">
                                   Nombre(s)
                                 </TableColumn>
-                                <TableColumn className="bg-headerNav text-[#ffffff] text-md font-bold">
+                                <TableColumn className="bg-headerNav text-[#ffffff] text-sm md:text-md font-bold">
                                   Apellido Paterno
                                 </TableColumn>
-                                <TableColumn className="bg-headerNav text-[#ffffff] text-md font-bold">
+                                <TableColumn className="bg-headerNav text-[#ffffff] text-sm md:text-md font-bold">
                                   Apellido Materno
                                 </TableColumn>
                               </TableHeader>
@@ -204,18 +226,18 @@ function ConsultaGrupos() {
                                 {alumnos.map((alumno: any, index: any) => (
                                   <TableRow key={index}>
                                     <TableCell>
-                                      <p className="text-xl">
+                                      <p className="text-xs md:text-xl">
                                         {alumno.nombre.toUpperCase()}
                                       </p>
                                     </TableCell>
                                     <TableCell>
-                                      <p className="text-xl">
+                                      <p className="text-xs md:text-xl">
                                         {alumno.aPaterno.toUpperCase()}
                                       </p>
                                     </TableCell>
                                     <TableCell>
                                       <p
-                                        className={`text-xl ${
+                                        className={` text-xs md:text-xl ${
                                           !alumno.aMaterno ? "font-bold" : ""
                                         }`}
                                       >
@@ -267,6 +289,13 @@ function ConsultaGrupos() {
           alumnos={alumnos}
           fetchGrupos={fetchGrupos}
           fetchAlumnos={fetchAlumnos}
+        />
+        <ImprimirGrupo
+          grupo={grupoImprimir}
+          alumnos={alumnosGrupo}
+          isOpen={isOpenImprimir}
+          onOpenChange={onOpenChangeImprimir}
+          onOpen={onOpenImprimir}
         />
       </div>
     </MainLayout>

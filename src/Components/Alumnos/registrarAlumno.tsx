@@ -141,6 +141,7 @@ function RegistrarAlumno({
       };
 
       //Se le pasa la información de dataTemp a data
+      //@ts-ignore
       setData(dataTemp);
 
       //Se abre el modal para confirmar el registro
@@ -413,6 +414,7 @@ function RegistrarAlumno({
       <ConfirmarRegistrarAlumno
         data={data}
         isOpen={isConfirmarOpen}
+        onOpenChangeRegitro={onOpenChange}
         onOpenChange={onConfirmarOpenChange}
         nees={nombres}
         fetchAlumnos={fetchAlumnos}
