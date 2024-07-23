@@ -80,7 +80,7 @@ function ConsultaAlumnos() {
 
   const fetchNees = async () => {
     try {
-      const response = await axios.get("/api/nee");
+      const response = await axios.get("/api/NEE");
       if (response.status >= 200 && response.status < 300) {
         setNees(response.data);
       } else {
@@ -137,7 +137,7 @@ function ConsultaAlumnos() {
 
   const obtenerNombreGrupo = (id: number) => {
     const grupo = grupos.find((gr: any) => gr.id === id);
-    //@ts-ignore
+    // @ts-ignore
     if (grupo) return grupo.nombre;
     return null;
   };

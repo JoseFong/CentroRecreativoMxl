@@ -42,6 +42,7 @@ interface Grupo {
 }
 
 interface Props {
+  salidasGrupo: any;
   docentes: Docente[];
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -55,6 +56,7 @@ interface Props {
 }
 
 function ModificarGrupo({
+  salidasGrupo,
   docentes,
   isOpen,
   onOpenChange,
@@ -175,18 +177,7 @@ function ModificarGrupo({
                   : []}
               </Select>
             </div>
-            <Select label="Salidas">
-              {docentesDisponibles
-                ? docentesDisponibles.map(
-                    (docente: any) =>
-                      docente && (
-                        <SelectItem key={docente.id} value={docente.id}>
-                          {docente.nombre}
-                        </SelectItem>
-                      )
-                  )
-                : []}
-            </Select>
+
             <div className="h-80 overflow-auto p-2">
               <Table aria-label="Lista de alumnos">
                 <TableHeader>

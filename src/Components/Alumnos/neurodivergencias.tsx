@@ -37,7 +37,7 @@ function Neurodivergencias() {
 
   const fetchNEE = async () => {
     try {
-      const response = await axios.get("/api/nee");
+      const response = await axios.get("/api/NEE");
       if (response.status === 500) return;
       setNeurodivergencias(response.data);
     } catch (e: any) {
@@ -55,7 +55,7 @@ function Neurodivergencias() {
     };
     setLoading(true);
     try {
-      const response = await axios.post("/api/nee", data);
+      const response = await axios.post("/api/NEE", data);
       if (response.status >= 200 && response.status < 300) {
         toast.success("Se registró la neurodivergencia.");
         setNombre("");
@@ -83,7 +83,7 @@ function Neurodivergencias() {
 
     try {
       const response = await axios.delete(
-        `/api/nee/${neurodivergenciaSeleccionada.id}`
+        `/api/NEE/${neurodivergenciaSeleccionada.id}`
       );
       if (response.status >= 200 && response.status < 300) {
         toast.success("Se eliminó la neurodivergencia.");
@@ -105,7 +105,7 @@ function Neurodivergencias() {
     const data = { nombre: nombre };
     try {
       const response = await axios.put(
-        `/api/nee/${neurodivergenciaSeleccionada.id}`,
+        `/api/NEE/${neurodivergenciaSeleccionada.id}`,
         data
       );
       if (response.status >= 200 && response.status < 300) {

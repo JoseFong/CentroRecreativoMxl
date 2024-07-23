@@ -143,7 +143,7 @@ function ComponenteModAlumno({
   //función para conseguir las NEEs de un alumno especifico
   const fetchNeesDeAlumno = async () => {
     try {
-      const response = await axios.get("/api/nee/neesDeAlumno/" + alumno.id);
+      const response = await axios.get("/api/NEE/neesDeAlumno/" + alumno.id);
       if (response.status >= 200 && response.status < 300) {
         setNeesDeAlumno(response.data); //Se almacenan las NEEs
       } else {

@@ -1,8 +1,8 @@
 import axios from "axios";
 import toast from "react-hot-toast";
-import { button, Button, Spinner, useDisclosure } from "@nextui-org/react";
+import { Button, Spinner, useDisclosure } from "@nextui-org/react";
 import MainLayout from "@/Components/Layout/MainLayout";
-import { SetStateAction, useEffect, useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 import RegistrarGrupo from "@/Components/Grupos/registrarGrupo";
 import ConsultaEspecificaGrupo from "@/Components/Grupos/consultaEspecifica";
 import ModificarGrupo from "@/Components/Grupos/modificarGrupo";
@@ -18,6 +18,7 @@ import {
   TableCell,
 } from "@nextui-org/table";
 import { FaPrint } from "react-icons/fa6";
+import ConsultaSalidas from "../Salidas/consultaSalidas";
 
 function ConsultaGrupos() {
   const [grupos, setGrupos] = useState([]);
@@ -29,6 +30,7 @@ function ConsultaGrupos() {
   const [selectedAlumnos, setSelectedAlumnos] = useState([]);
   const [alumnosGrupo, setAlumnosGrupo] = useState([]);
   const [grupoImprimir, setGrupoImprimir] = useState([]);
+  const [salidas, setSalidas] = useState([]);
 
   //Variables para manejar el modal de registro de grupo
   const {
@@ -39,7 +41,6 @@ function ConsultaGrupos() {
 
   // Estado para manejar el grupo seleccionado
   const {
-    onOpen: onConsultaEspecificaOpen,
     isOpen: isConsultaEspecificaOpen,
     onOpenChange: onConsultaEspecificaOpenChange,
   } = useDisclosure();
@@ -59,7 +60,6 @@ function ConsultaGrupos() {
   } = useDisclosure();
 
   // Función para manejar el click en un grupo
-
   const handleModificarGrupoClick = (
     grupo: React.SetStateAction<null>,
     docente: any,
@@ -76,6 +76,7 @@ function ConsultaGrupos() {
     fetchGrupos();
     fetchDocentes();
     fetchAlumnos();
+    fetchSalidas();
   }, []);
 
   // Función para obtener los grupos desde la API
@@ -133,6 +134,29 @@ function ConsultaGrupos() {
     }
   };
 
+  //Funcion para obtener las salidas
+  const fetchSalidas = async () => {
+    try {
+      const response = await axios.get("/api/salidas/");
+      if (response.status >= 200 && response.status < 300) {
+        setSalidas(response.data);
+      } else {
+        throw new Error(response.data.message || "Error desconocido.");
+      }
+    } catch (e: any) {
+      if (e.response?.status === 404 || e.response?.status === 500) {
+        toast.error(e.response.data.message);
+      } else {
+        toast.error(e.message);
+      }
+    }
+  };
+
+  //Funcion para obtener las salidas de un grupo
+  const salidasPorGrupo = (grupoId: number) => {
+    return salidas.filter((s: any) => s.grupoId === grupoId);
+  };
+
   // Función para obtener los docentes por grupo
   const docentesPorGrupo = (grupoId: number) => {
     const grupo: any = grupos.find((g: any) => g.id === grupoId);
@@ -160,14 +184,27 @@ function ConsultaGrupos() {
           <div className=" flex flex-col md:flex-row">
             <h1 className=" text-4xl font-bold">Grupos</h1>
           </div>
-          <Button
-            color="success"
-            onClick={onRegistarOpen}
-            className=" md:ml-auto bg-verdeFuerte text-[#ffffff] mt-3"
-            startContent={<FaUserEdit />}
-          >
-            Registrar Grupo
-          </Button>
+          <div className="md: ml-auto">
+            <div className="flex flex-col md:flex-row items-center ">
+              <Button
+                color="success"
+                onClick={onRegistarOpen}
+                className=" bg-verdeFuerte text-[#ffffff]"
+                startContent={<FaUserEdit />}
+              >
+                Registrar Grupo
+              </Button>
+              <p className="text-lg px-4 hidden md:block">|</p>
+              <div className=" pt-4 md:pt-0 hidden md:block">
+                <ConsultaSalidas
+                  docentes={docentes}
+                  grupos={grupos}
+                  salidasRegistradas={salidas}
+                  refetch={fetchSalidas}
+                />
+              </div>
+            </div>
+          </div>
         </div>
         <div className="flex flex-col m-4 md:px-10">
           {cargando ? (
@@ -182,18 +219,19 @@ function ConsultaGrupos() {
                 {grupos.map((g: any) => {
                   const docente = docentesPorGrupo(g.id);
                   const alumnos = alumnosPorGrupo(g.id);
+                  // @ts-ignore
                   return (
                     <Tab key={g.id} title={`Grupo: ${g.nombre}`}>
                       <Card
                         className="w-full"
                         isPressable
-                        onPress={() =>
-                          handleModificarGrupoClick(g, docente, alumnos)
-                        }
+                        onPress={() => {
+                          handleModificarGrupoClick(g, docente, alumnos);
+                        }}
                       >
                         <CardBody>
                           <div className="p-2 flex flex-col w-full">
-                            <div className="flex justify-between items-center">
+                            <div className="flex justify-between items-end">
                               <h1 className="font-bold">Grupo: {g.nombre}</h1>
                               <Button isIconOnly onPress={() => imprimir(g)}>
                                 <FaPrint />
@@ -201,12 +239,21 @@ function ConsultaGrupos() {
                             </div>
                             <h1 className="font-bold pb-2">
                               Docente Encargado:{" "}
-                              {docente && docente.nombre
-                                ? docente.nombre + " " + docente.aPaterno
-                                : "Sin docente asignado"}
+                              {
+                                // @ts-ignore
+                                docente && docente.nombre // @ts-ignore
+                                  ? docente.nombre + " " + docente.aPaterno
+                                  : "Sin docente asignado"
+                              }
                             </h1>
                             <h1 className="font-bold">
-                              Salida(s): Sin salidas
+                              Salida(s):{" "}
+                              {
+                                // @ts-ignore
+                                salidasPorGrupo(g.id)
+                                  .map((s: any) => s.nombre)
+                                  .join(", ") || "Sin salidas asignadas"
+                              }
                             </h1>
                           </div>
                           <div className="overflow-y-auto max-h-[32rem]">
@@ -279,6 +326,7 @@ function ConsultaGrupos() {
           alumnos={selectedAlumnos}
         />
         <ModificarGrupo
+          salidasGrupo={salidasPorGrupo}
           selectedGrupo={selectedGrupo}
           selectedDocente={selectedDocente}
           selectedAlumnos={selectedAlumnos}
