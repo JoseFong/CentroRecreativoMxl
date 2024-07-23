@@ -56,9 +56,17 @@ CREATE TABLE "Grupo" (
 CREATE TABLE "Actividad" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "nombre" TEXT NOT NULL,
+    "descripcion" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "GrupoActividad" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "horario" TEXT NOT NULL,
     "grupoId" INTEGER NOT NULL,
-    CONSTRAINT "Actividad_grupoId_fkey" FOREIGN KEY ("grupoId") REFERENCES "Grupo" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    "actividadId" INTEGER NOT NULL,
+    CONSTRAINT "GrupoActividad_grupoId_fkey" FOREIGN KEY ("grupoId") REFERENCES "Grupo" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "GrupoActividad_actividadId_fkey" FOREIGN KEY ("actividadId") REFERENCES "Actividad" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -82,6 +90,8 @@ CREATE TABLE "Pago" (
     "categoria" TEXT NOT NULL,
     "descripcion" TEXT,
     "alumnoId" INTEGER NOT NULL,
+    "mes" TEXT,
+    "materiales" TEXT,
     CONSTRAINT "Pago_alumnoId_fkey" FOREIGN KEY ("alumnoId") REFERENCES "Alumno" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
