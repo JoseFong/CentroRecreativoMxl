@@ -155,3 +155,63 @@ export async function actualizarGrupo(data: any) {
 
   return "actualizado";
 }
+
+/**
+ * Función para encontrar los grupos inscritos en una actividad
+ * @author Fong
+ * @param id id de la actividad
+ * @returns los grupos que están registrados en esa actividad
+ */
+export async function obtenerGruposDeActividad(id:number){
+  const registros = await prisma.grupoActividad.findMany({
+    where:{
+      actividadId:id
+    }
+  })
+
+  let ids:number[] = []
+  registros.map((r:any)=>ids.push(r.grupoId))
+
+  return await prisma.grupo.findMany({
+    where: {
+      id: {
+        in: ids
+      }
+    }
+  })
+}
+
+export async function obtenerGruposDisponibles(id:number){
+  const registros = await prisma.grupoActividad.findMany({
+    where: {
+      actividadId: id
+    }
+  })
+
+  let ids:number[] = []
+  registros.map((reg:any)=>{ids.push(reg.grupoId)})
+
+  const grupos = await prisma.grupo.findMany()
+  let gruposIds:number[] = []
+  grupos.map((gr:any)=>{gruposIds.push(gr.id)})
+
+  const gruposAObtenerId:number[] = gruposIds.filter(item=>!ids.includes(item))
+
+  return await prisma.grupo.findMany({
+    where: {
+      id: {
+        in: gruposAObtenerId
+      }
+    }
+  })
+}
+
+export async function asignarActAGrupo(data:any){
+  return await prisma.grupoActividad.create({
+    data: {
+      horario: data.horario,
+      grupoId: data.grupoId,
+      actividadId: data.actividadId
+    }
+  })
+}

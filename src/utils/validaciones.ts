@@ -52,21 +52,34 @@ export function telefonoInvalido(str: string) {
   return false;
 }
 
-export function ceroNegativo(str: string) {
-  try {
-    const n: number = parseFloat(str);
-    if (n <= 0) return true;
-    return false;
-  } catch (e: any) {
-    return true;
-  }
+export function ceroNegativo(str:string){
+  try{
+    const n : number = parseFloat(str)
+    if(n<=0) return true
+    return false
+  }catch(e:any){
+    return true
+  } 
 }
 
-export function pagoDeOtroAno(str: string) {
-  const partes = str.split("-");
-  const fechaAct = new Date();
-  const anoActual = fechaAct.getFullYear();
-  const ano = parseInt(partes[0]);
-  if (ano !== anoActual) return true;
-  return false;
+export function pagoDeOtroAno(str:string){
+  const partes  = str.split("-")
+  const fechaAct = new Date()
+  const anoActual = fechaAct.getFullYear()
+  const ano = parseInt(partes[0])
+  if(ano!==anoActual) return true
+  return false
+}
+
+export function validarHoras(a:any,b:any){
+  const hi:string = a.toString()
+  const hf:string = b.toString()
+  const i = hi.split(":")
+  const f = hf.split(":")
+  if(f[0]<i[0]) return true
+  if(i[0]===f[0]){
+    if(i[1]>f[1]) return true
+    if(i[1]===f[1]) return true
+  }
+  return false
 }

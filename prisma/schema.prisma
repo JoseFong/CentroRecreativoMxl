@@ -58,21 +58,29 @@ model AlumnoNEE {
 }
 
 model Grupo {
-  id        Int         @id @default(autoincrement())
-  nombre    String
-  alumnos   Alumno[]
-  docente   Docente?    @relation(fields: [docenteId], references: [id])
-  docenteId Int?
-  Salida    Salida[]
-  Actividad Actividad[]
+  id             Int              @id @default(autoincrement())
+  nombre         String
+  alumnos        Alumno[]
+  docente        Docente?         @relation(fields: [docenteId], references: [id])
+  docenteId      Int?
+  Salida         Salida[]
+  GrupoActividad GrupoActividad[]
 }
 
 model Actividad {
-  id      Int    @id @default(autoincrement())
-  nombre  String
-  horario String
-  grupo   Grupo  @relation(fields: [grupoId], references: [id])
-  grupoId Int
+  id             Int              @id @default(autoincrement())
+  nombre         String
+  descripcion    String
+  GrupoActividad GrupoActividad[]
+}
+
+model GrupoActividad {
+  id          Int       @id @default(autoincrement())
+  grupo       Grupo     @relation(fields: [grupoId], references: [id])
+  actividad   Actividad @relation(fields: [actividadId], references: [id])
+  horario     String
+  grupoId     Int
+  actividadId Int
 }
 
 model Salida {
