@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import NeurodivergenciaDeAlumnos from "./NeurodivergenciaAlumnos";
 
-//ESTE ES EL COMPONENTE PRINCIPAL DE ESTE ARCHIVO
+// Componente principal
 function ConsultaEspecificaAlumno({
   isOpen,
   onOpenChange,
@@ -19,7 +19,6 @@ function ConsultaEspecificaAlumno({
   onOpenChange: any;
   alumno: any;
 }) {
-  //CONTENIDO: La información del alumno
   return (
     <>
       <Modal
@@ -36,40 +35,40 @@ function ConsultaEspecificaAlumno({
               </ModalHeader>
               <ModalBody>
                 <div className="flex flex-col">
-                  <p className="mb-3">
+                  <div className="mb-3">
                     <span className="font-bold">Nombre: </span>
                     {alumno.nombre} {alumno.aPaterno} {alumno.aMaterno}
-                  </p>
-                  <p className="mb-3">
+                  </div>
+                  <div className="mb-3">
                     <span className="font-bold">Género: </span>
                     {alumno.genero}
-                  </p>
-                  <p className="mb-3">
+                  </div>
+                  <div className="mb-3">
                     <span className="font-bold">Fecha de Nacimiento: </span>
                     {alumno.fechaNac}
-                  </p>
-                  <p className="mb-3">
+                  </div>
+                  <div className="mb-3">
                     <span className="font-bold">Teléfono del Tutor: </span>
                     {alumno.telefono}
-                  </p>
-                  <p className="mb-3">
+                  </div>
+                  <div className="mb-3">
                     <span className="font-bold">Teléfono del Alumno: </span>
                     {alumno.telefonoAlumno
                       ? alumno.telefonoAlumno
                       : "No registrado"}
-                  </p>
-                  <p className="mb-3">
+                  </div>
+                  <div className="mb-3">
                     <span className="font-bold">Dirección: </span>
                     {alumno.direccion}
-                  </p>
-                  <p className="mb-3">
+                  </div>
+                  <div className="mb-3">
                     <span className="font-bold">CURP: </span>
                     {alumno.curp}
-                  </p>
-                  <p className="mb-3">
+                  </div>
+                  <div className="mb-3">
                     <span className="font-bold">Neurodivergencia(s): </span>
                     {alumno && <NeurodivergenciaDeAlumnos alumno={alumno} />}
-                  </p>
+                  </div>
                 </div>
               </ModalBody>
               <ModalFooter>

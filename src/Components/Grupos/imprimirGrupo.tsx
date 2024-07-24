@@ -52,8 +52,15 @@ const styles = StyleSheet.create({
     margin: "auto",
     flexDirection: "row",
   },
-  tableCol: {
-    width: "33.33%",
+  tableColName: {
+    width: "30%",
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
+  },
+  tableColDay: {
+    width: "2.258%", // (100% - 30%) / 31
     borderStyle: "solid",
     borderWidth: 1,
     borderLeftWidth: 0,
@@ -62,15 +69,36 @@ const styles = StyleSheet.create({
   tableCell: {
     margin: "auto",
     marginTop: 5,
-    fontSize: 10,
+    marginBottom: 5,
+    fontSize: 6,
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
+    marginTop: 10,
   },
   headerImage: {
+    position: "absolute",
+    top: 0,
+    left: 0,
     width: 80,
     height: 60,
+  },
+  headerTextContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  headerText2: {
+    fontSize: 8,
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 
@@ -80,9 +108,15 @@ const MyDocument = ({ grupo, alumnos }: any) => (
     <Page size="A4" style={styles.page}>
       <View style={styles.header}>
         <Image src={logo} style={styles.headerImage} />
+        <View style={styles.headerTextContainer}>
+          <Text style={styles.headerText}>Centros de Atención Múltiple</Text>
+          <Text style={styles.headerText2}>
+            Ana García #3899, Residencias, 21280 Imperiales, B.C.
+          </Text>
+        </View>
       </View>
       <View style={styles.section}>
-        <Text style={styles.title}>Lista de alumnos</Text>
+        <Text style={styles.title}>Lista de asistencia</Text>
         <Text style={styles.subtitle}>Grupo: {grupo.nombre}</Text>
       </View>
       <View style={styles.table}>
@@ -92,42 +126,35 @@ const MyDocument = ({ grupo, alumnos }: any) => (
             { backgroundColor: "#467351", color: "white" },
           ]}
         >
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>Nombre(s)</Text>
+          <View style={styles.tableColName}>
+            <Text style={styles.tableCell}>Nombre completo</Text>
           </View>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>Apellido Paterno</Text>
-          </View>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>Apellido Materno</Text>
-          </View>
+          {[...Array(31)].map((_, index) => (
+            <View style={styles.tableColDay} key={index}>
+              <Text style={styles.tableCell}>{index + 1}</Text>
+            </View>
+          ))}
         </View>
         {alumnos.map((alumno: any, index: any) => (
           <View style={styles.tableRow} key={index}>
-            <View style={styles.tableCol}>
+            <View style={styles.tableColName}>
               <Text style={styles.tableCell}>
-                {alumno.nombre.toUpperCase()}
+                {`${alumno.nombre.toUpperCase()} ${alumno.aPaterno.toUpperCase()} ${
+                  alumno.aMaterno ? alumno.aMaterno.toUpperCase() : ""
+                }`.trim()}
               </Text>
             </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>
-                {alumno.aPaterno.toUpperCase()}
-              </Text>
-            </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>
-                {alumno.aMaterno
-                  ? alumno.aMaterno.toUpperCase()
-                  : "No registrado"}
-              </Text>
-            </View>
+            {[...Array(31)].map((_, dayIndex) => (
+              <View style={styles.tableColDay} key={dayIndex}>
+                <Text style={styles.tableCell}></Text>
+              </View>
+            ))}
           </View>
         ))}
       </View>
     </Page>
   </Document>
 );
-
 function ImprimirGrupo({ grupo, alumnos, isOpen, onOpenChange }: any) {
   const handlePrint = async () => {
     const blob = await pdf(

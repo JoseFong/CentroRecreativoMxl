@@ -37,7 +37,7 @@ function Neurodivergencias() {
 
   const fetchNEE = async () => {
     try {
-      const response = await axios.get("/api/NEE");
+      const response = await axios.get("/api/nee");
       if (response.status === 500) return;
       setNeurodivergencias(response.data);
     } catch (e: any) {
@@ -55,7 +55,7 @@ function Neurodivergencias() {
     };
     setLoading(true);
     try {
-      const response = await axios.post("/api/NEE", data);
+      const response = await axios.post("/api/nee", data);
       if (response.status >= 200 && response.status < 300) {
         toast.success("Se registró la neurodivergencia.");
         setNombre("");

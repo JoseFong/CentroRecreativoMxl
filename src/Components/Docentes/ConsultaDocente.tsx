@@ -19,6 +19,8 @@ import {
   tieneCaracteresEspeciales,
   tieneNumeros,
 } from "@/utils/validaciones";
+import ConsultaEspecificaAlumno from "../Alumnos/consultaEspecifica";
+import ConsultaEspecifica from "./ConsultaEspecifica";
 
 interface Docente {
   id?: number;
@@ -49,6 +51,7 @@ const ConsultaDocente = () => {
     rol: "",
   }); //Estos son los campos que le debes mandar a la api
   const [enviado, setEnviado] = useState(false);
+  const [docenteSeleccionado, setDocenteSeleccionado] = useState();
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -187,6 +190,16 @@ const ConsultaDocente = () => {
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenDetalles,
+    onOpen: onOpenDetalles,
+    onOpenChange: onOpenChangeDetalles,
+  } = useDisclosure();
+
+  const handleDetalles = (docente: any) => {
+    setDocenteSeleccionado(docente);
+    onOpenDetalles();
+  };
 
   return (
     <MainLayout>
@@ -321,11 +334,17 @@ const ConsultaDocente = () => {
               <Button
                 className="bg-blue-400"
                 onPress={() => {
-                  setDocente({ ...docente, id: docente.id }); // Ensure id is included
+                  setDocente({ ...docente, id: docente.id });
                   onOpen();
                 }}
               >
                 Modificar
+              </Button>
+              <Button
+                className="bg-blue-400"
+                onPress={() => handleDetalles(docente)}
+              >
+                Detalles
               </Button>
             </li>
           ))}
@@ -466,6 +485,12 @@ const ConsultaDocente = () => {
           )}
         </ModalContent>
       </Modal>
+      <ConsultaEspecifica
+        isOpen={isOpenDetalles}
+        onOpen={onOpenDetalles}
+        onOpenChange={onOpenChangeDetalles}
+        docente={docenteSeleccionado}
+      />
     </MainLayout>
   );
 };

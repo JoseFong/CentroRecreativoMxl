@@ -80,7 +80,7 @@ function ConsultaAlumnos() {
 
   const fetchNees = async () => {
     try {
-      const response = await axios.get("/api/NEE");
+      const response = await axios.get("/api/nee");
       if (response.status >= 200 && response.status < 300) {
         setNees(response.data);
       } else {
@@ -181,9 +181,7 @@ function ConsultaAlumnos() {
               </Button>
               <p className="text-lg px-4 hidden md:block">|</p>
               <div className=" pt-4 md:pt-0 hidden md:block">
-                <Tooltip content="Gestionar ND">
-                  <Neurodivergencias />
-                </Tooltip>
+                <Neurodivergencias />
               </div>
             </div>
           </div>
