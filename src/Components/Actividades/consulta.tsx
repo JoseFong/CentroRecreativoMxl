@@ -1,4 +1,4 @@
-import { Button, Spinner, useDisclosure } from "@nextui-org/react";
+import { Button, Card, CardBody, Spinner, Tab, Tabs, useDisclosure } from "@nextui-org/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -6,6 +6,8 @@ import ConfirmarEliminarActividad from "./confirmarEliminar";
 import AgregarActividad from "./agregarActividad";
 import ModActividad from "./modActividad";
 import ConsultaEspecificaAct from "./consultaEspecificaActividad";
+import MainLayout from "../Layout/MainLayout";
+import { FaCut } from "react-icons/fa";
 
 function ConsultaActividades() {
   const [cargando, setCargando] = useState(true);
@@ -107,48 +109,79 @@ function ConsultaActividades() {
   };
 
   return (
-    <>
-      <h1>Actividades</h1>
-      <Button onPress={handleAgregar}>Agregar</Button>
-      {cargando ? (
-        <Spinner size="lg" />
-      ) : (
-        <>
-          {actividades.map((act: any) => (
-            <div>
-              {act.nombre} {act.descripcion}
-              <Button color="danger" onPress={() => handleEliminar(act)}>
-                Eliminar
-              </Button>
-              <Button onPress={() => handleGestionar(act)}>Gestionar</Button>
-              <Button onPress={() => handleDetalles(act)}>Ver detalles</Button>
+    <MainLayout>
+      <div className="flex flex-row m-4 md:px-10 md:pt-10 md:pb-4">
+        <h1 className="text-4xl font-bold">Actividades</h1>
+        <div className="ml-auto">
+          <Button onPress={handleAgregar} className=" bg-verdeFuerte text-[#ffffff]" startContent={<FaCut />}>Registrar Actividad</Button>
+        </div>
+      </div>
+      <div className="flex flex-col m-4 md:px-10">
+        {cargando ? (
+            <div className="flex justify-center items-center">
+              <Spinner size="lg" color="warning"/>
             </div>
-          ))}
-        </>
-      )}
-      <ConfirmarEliminarActividad
-        isOpen={isElOpen}
-        onOpenChange={onElOpenChange}
-        actividad={selectedActividad}
-        fetchActividades={fetchActividades}
-      />
-      <AgregarActividad
-        isOpen={isRegOpen}
-        onOpenChange={onRegOpenChange}
-        fetchActividades={fetchActividades}
-      />
-      <ModActividad
-        actividad={selectedActividad}
-        fetchActividades={fetchActividades}
-        isOpen={isGestOpen}
-        onOpenChange={onGestOpenChange}
-      />
-      <ConsultaEspecificaAct
-        actividad={selectedActividad}
-        isOpen={isDetOpen}
-        onOpenChange={onDetOpenChange}
-      />
-    </>
+        ) : (
+          <div className="flex w-full flex-col">
+            <Tabs aria-label="Dynamic tabs">
+              {grupos.map((g: any) => {
+                return (
+                  <Tab key={g.id} title={`Grupo: ${g.nombre}`}>
+                    <Card className="w-full">
+                      <CardBody>
+                        <div className="p-2 flex flex-col w-full">
+                          
+                        </div>
+                      </CardBody>
+                    </Card>
+                  </Tab>
+                )
+              })}
+            </Tabs>
+           
+           
+           
+           
+            {actividades.map((act: any) => (
+              <div>
+                {act.nombre} {act.descripcion}
+                <Button color="danger" onPress={() => handleEliminar(act)}>
+                  Eliminar
+                </Button>
+                <Button onPress={() => handleGestionar(act)}>Gestionar</Button>
+                <Button onPress={() => handleDetalles(act)}>Ver detalles</Button>
+              </div>
+            ))}
+          </div>
+        )}
+
+
+
+        <ConfirmarEliminarActividad
+          isOpen={isElOpen}
+          onOpenChange={onElOpenChange}
+          actividad={selectedActividad}
+          fetchActividades={fetchActividades}
+        />
+        <AgregarActividad
+          isOpen={isRegOpen}
+          onOpenChange={onRegOpenChange}
+          fetchActividades={fetchActividades}
+        />
+        <ModActividad
+          actividad={selectedActividad}
+          fetchActividades={fetchActividades}
+          isOpen={isGestOpen}
+          onOpenChange={onGestOpenChange}
+        />
+        <ConsultaEspecificaAct
+          actividad={selectedActividad}
+          isOpen={isDetOpen}
+          onOpenChange={onDetOpenChange}
+        />
+        
+      </div>
+    </MainLayout>
   );
 }
 
