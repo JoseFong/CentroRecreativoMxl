@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
 });
 
 // Componente PDF
-const MyDocument = ({ grupos, grupo, alumnos }: any) => (
+const MyDocument = ({ docente, grupos, grupo, alumnos }: any) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.header}>
@@ -123,6 +123,9 @@ const MyDocument = ({ grupos, grupo, alumnos }: any) => (
           {grupo
             ? `Grupo: ${grupos.find((g: any) => g.id == grupo)?.nombre}`
             : "Todos los grupos"}
+        </Text>
+        <Text style={styles.subtitle}>
+          {docente ? docente.nombre : "Docente no asignado"}
         </Text>
       </View>
       <View style={styles.table}>
@@ -163,6 +166,7 @@ const MyDocument = ({ grupos, grupo, alumnos }: any) => (
 );
 
 function ListaDeAsistenciaGrupo({
+  docentes,
   grupos,
   alumnos,
   isOpen,
@@ -172,7 +176,12 @@ function ListaDeAsistenciaGrupo({
 
   const handlePrint = async () => {
     const blob = await pdf(
-      <MyDocument grupos={grupos} grupo={grupoId} alumnos={alumnosPorGrupo()} />
+      <MyDocument
+        docente={docentePorGrupo()}
+        grupos={grupos}
+        grupo={grupoId}
+        alumnos={alumnosPorGrupo()}
+      />
     ).toBlob();
     const url = URL.createObjectURL(blob);
     window.open(url, "_blank");
@@ -180,6 +189,14 @@ function ListaDeAsistenciaGrupo({
 
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setGrupoId(e.target.value);
+  };
+
+  const docentePorGrupo = () => {
+    const grupo = grupos.find((g: any) => g.id == grupoId);
+    if (grupo) {
+      return docentes.find((d: any) => d.id == grupo.docenteId) || null;
+    }
+    return null;
   };
 
   const alumnosPorGrupo = () => {
@@ -204,6 +221,7 @@ function ListaDeAsistenciaGrupo({
               <ModalBody className="overflow-auto">
                 <PDFViewer width="100%" height="500px">
                   <MyDocument
+                    docente={docentePorGrupo()}
                     grupos={grupos}
                     grupo={grupoId}
                     alumnos={alumnosPorGrupo()}
@@ -215,7 +233,9 @@ function ListaDeAsistenciaGrupo({
                   onChange={handleSelectionChange}
                 >
                   {grupos.map((grupo: any) => (
-                    <SelectItem key={grupo.id}>{grupo.nombre}</SelectItem>
+                    <SelectItem key={grupo.id} value={grupo.id}>
+                      {grupo.nombre}
+                    </SelectItem>
                   ))}
                 </Select>
               </ModalBody>

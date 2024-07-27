@@ -187,6 +187,7 @@ function DocumentoVacioLogo({ isOpen, onOpenChange }: any) {
               </PDFViewer>{" "}
               <div className="flex flex-row gap-2">
                 <Input
+                  isRequired
                   label="Encargado"
                   placeholder="Encargado"
                   className="pr-2"
@@ -194,6 +195,7 @@ function DocumentoVacioLogo({ isOpen, onOpenChange }: any) {
                   onChange={(e) => setEncargado(e.target.value)}
                 ></Input>
                 <Input
+                  isRequired
                   label="Numero"
                   placeholder="Número telefónico"
                   value={numero}
@@ -201,6 +203,7 @@ function DocumentoVacioLogo({ isOpen, onOpenChange }: any) {
                 ></Input>
               </div>
               <Textarea
+                isRequired
                 value={descripcion}
                 onChange={(e) => setDescripcion(e.target.value)}
                 label="Descripción"

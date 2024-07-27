@@ -8,15 +8,18 @@ import ListaDeAsistenciaGrupo from "./ListaDeAsistenciaGrupo";
 import axios from "axios";
 import toast from "react-hot-toast";
 import ListaDeAsistenciaTodos from "./ListaDeAsistenciaTodos";
+import DocumentoEnBlanco from "./DocumentoEnBlanco";
 
 function ConsultaAlumnos() {
   const [grupos, setGrupos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [alumnos, setAlumnos] = useState([]);
+  const [docentes, setDocentes] = useState([]);
 
   useEffect(() => {
     fetchGrupos();
     fetchAlumnos();
+    fetchDocentes();
   }, []);
 
   // Función para obtener los grupos desde la API
@@ -26,6 +29,23 @@ function ConsultaAlumnos() {
       if (response.status >= 200 && response.status < 300) {
         setGrupos(response.data);
         setCargando(false);
+      } else {
+        throw new Error(response.data.message || "Error desconocido.");
+      }
+    } catch (e: any) {
+      if (e.response.status === 404 || e.response.status === 500) {
+        toast.error(e.response.data.message);
+      } else {
+        toast.error(e.message);
+      }
+    }
+  };
+
+  const fetchDocentes = async () => {
+    try {
+      const response = await axios.get("/api/docentes");
+      if (response.status >= 200 && response.status < 300) {
+        setDocentes(response.data);
       } else {
         throw new Error(response.data.message || "Error desconocido.");
       }
@@ -66,6 +86,11 @@ function ConsultaAlumnos() {
     onOpen: onOpenTodos,
     onOpenChange: onOpenChangeTodos,
   } = useDisclosure();
+  const {
+    isOpen: isOpenBlanco,
+    onOpen: onOpenBlanco,
+    onOpenChange: onOpenChangeBlanco,
+  } = useDisclosure();
 
   const cardsData = [
     {
@@ -76,7 +101,7 @@ function ConsultaAlumnos() {
     },
     {
       title: "Imprimible",
-      description: "Lista de asistencia por grupo",
+      description: "Lista de asistencia (por grupos)",
       image: "https://i.imgur.com/GT3hn6n.png",
       onOpen: onOpenLista,
     },
@@ -87,9 +112,16 @@ function ConsultaAlumnos() {
       onOpen: onOpenTodos,
     },
     {
-      title: "Frontend Radio",
-      description: "12 Tracks",
-      image: "https://nextui.org/images/hero-card-complete.jpeg",
+      title: "Imprimible",
+      description: "Documento en blanco con logo",
+      image: "https://i.imgur.com/aXPJMUu.png",
+      onOpen: onOpenBlanco,
+    },
+    {
+      title: "Imprimible",
+      description: "Falta",
+      image: "https://i.imgur.com/aXPJMUu.png",
+      onOpen: onOpenBlanco,
     },
   ];
 
@@ -129,6 +161,7 @@ function ConsultaAlumnos() {
       </MainLayout>
       <DocumentoVacioLogo isOpen={isOpen} onOpenChange={onOpenChange} />
       <ListaDeAsistenciaGrupo
+        docentes={docentes}
         alumnos={alumnos}
         grupos={grupos}
         isOpen={isOpenLista}
@@ -138,6 +171,10 @@ function ConsultaAlumnos() {
         alumnos={alumnos}
         isOpen={isOpenTodos}
         onOpenChange={onOpenChangeTodos}
+      />
+      <DocumentoEnBlanco
+        isOpen={isOpenBlanco}
+        onOpenChange={onOpenChangeBlanco}
       />
     </div>
   );
