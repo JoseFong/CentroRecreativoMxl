@@ -83,3 +83,7 @@ export function validarHoras(a:any,b:any){
   }
   return false
 }
+
+export function primerLetra(str:string){
+  return str.charAt(0).toUpperCase()+str.slice(1)
+}

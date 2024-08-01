@@ -11,6 +11,7 @@ import {
   SelectItem,
   Spinner,
   TimeInput,
+  useDisclosure,
 } from "@nextui-org/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -20,10 +21,6 @@ interface Dia {
   nombre: string;
   inicio: string;
   fin: string;
-}
-
-interface Horario {
-  dias: Dia[];
 }
 
 function AsignarGrupo({
@@ -88,6 +85,8 @@ export function AsignarGrupoModal({
   const [hfviernes, setHfviernes] = useState("");
   const [hfsabado, setHfsabado] = useState("");
   const [enviado, setEnviado] = useState(false);
+
+  const [horarioString, setHorarioString] = useState("");
 
   useEffect(() => {
     setEnviado(false);
@@ -290,16 +289,18 @@ export function AsignarGrupoModal({
         const f = partes2[0] + ":" + partes2[1];
         horario += "sabado." + i + "." + f + "..";
       }
+
       horario = horario.slice(0, -2);
-      asignar(horario);
+      setHorarioString(horario);
+      onConfOpen();
     } catch (e: any) {
       toast.error(e.message);
     }
   };
 
-  const asignar = async (horario: string) => {
+  const asignar = async (onClose2: any) => {
     const data = {
-      horario: horario,
+      horario: horarioString,
       grupoId: parseInt(grupoId),
       actividadId: actividad.id,
     };
@@ -308,6 +309,10 @@ export function AsignarGrupoModal({
       const response = await axios.post("/api/grupoAct", data);
       if (response.status >= 200 && response.status < 300) {
         toast.success("Se asignó exitosamente el grupo.");
+        onClose2();
+        reset();
+        fetchGrupos();
+        onOpenChange(false);
       } else {
         throw new Error(response.data.message || "Error desconocido.");
       }
@@ -325,7 +330,39 @@ export function AsignarGrupoModal({
     }
   };
 
-  const reset = () => {};
+  const reset = () => {
+    setGrupoId("");
+    setEnviado(false);
+    setLunes(false);
+    setHilunes("");
+    setHflunes("");
+
+    setMartes(false);
+    setHimartes("");
+    setHfmartes("");
+
+    setMiercoles(false);
+    setHimiercoles("");
+    setHfmiercoles("");
+
+    setJueves(false);
+    setHijueves("");
+    setHfjueves("");
+
+    setViernes(false);
+    setHiviernes("");
+    setHfviernes("");
+
+    setSabado(false);
+    setHisabado("");
+    setHfsabado("");
+  };
+
+  const {
+    isOpen: isConfOpen,
+    onOpen: onConfOpen,
+    onOpenChange: onConfOpenChange,
+  } = useDisclosure();
 
   return (
     <>
@@ -477,6 +514,21 @@ export function AsignarGrupoModal({
               <ModalFooter>
                 <Button onPress={onClose}>Cancelar</Button>
                 <Button onPress={handleAceptar}>Aceptar</Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={isConfOpen} onOpenChange={onConfOpenChange}>
+        <ModalContent>
+          {(onClose2) => (
+            <>
+              <ModalHeader>
+                ¿Desea asignar el grupo a la actividad '{actividad.nombre}'?
+              </ModalHeader>
+              <ModalFooter>
+                <Button onPress={onClose2}>Cancelar</Button>
+                <Button onPress={() => asignar(onClose2)}>Aceptar</Button>
               </ModalFooter>
             </>
           )}

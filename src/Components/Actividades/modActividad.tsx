@@ -20,6 +20,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import AsignarGrupo from "./asignarGrupo";
+import VerHorario from "./verHorario";
 
 function ModActividad({
   actividad,
@@ -62,6 +63,7 @@ function ModActividadModal({
   const [enviado, setEnviado] = useState(false);
   const [gruposDeAct, setGruposDeAct] = useState([]);
   const [cargandoGrupos, setCargandoGrupos] = useState(true);
+  const [selectedGrupo, setSelectedGrupo] = useState();
 
   const reset = () => {
     setEnviado(false);
@@ -115,6 +117,18 @@ function ModActividadModal({
     isOpen: isGrupOpen,
   } = useDisclosure();
 
+  const {
+    onOpen: onVHOpen,
+    onOpenChange: onVHOpenChange,
+    isOpen: isVHOpen,
+  } = useDisclosure();
+
+  const {
+    onOpen: onDesOpen,
+    onOpenChange: onDesOpenChange,
+    isOpen: isDesOpen,
+  } = useDisclosure();
+
   const handleModificar = () => {
     setEnviado(true);
     try {
@@ -157,9 +171,50 @@ function ModActividadModal({
     }
   };
 
+  const handleVerHorario = (grupo: any) => {
+    setSelectedGrupo(grupo);
+    onVHOpen();
+  };
+
+  const handleDesasignar = (grupo: any) => {
+    setSelectedGrupo(grupo);
+    onDesOpen();
+  };
+
+  const desasignar = async (onClose: any) => {
+    const data = {
+      grupoId: selectedGrupo?.id,
+      actividadId: actividad.id,
+    };
+    try {
+      const response = await axios.patch(
+        "/api/grupoAct/eliminarGrupoAct",
+        data
+      );
+      if (response.status >= 200 && response.status < 300) {
+        toast.success("Se desasignó exitosamente.");
+        fetchGruposDeActividad();
+        onClose();
+      } else {
+        throw new Error(response.data.message || "Error desconocido.");
+      }
+    } catch (e: any) {
+      if (e.response) {
+        const s = e.response.status;
+        if (s === 404 || s === 500 || s === 400) {
+          toast.error(e.response.data.message);
+        } else {
+          toast.error(e.message);
+        }
+      } else {
+        toast.error(e.message);
+      }
+    }
+  };
+
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="4xl">
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="5xl">
         <ModalContent>
           {(onClose) => (
             <>
@@ -207,9 +262,21 @@ function ModActividadModal({
                               {gruposDeAct.map((grupo: any) => (
                                 <TableRow>
                                   <TableCell>{grupo.nombre}</TableCell>
-                                  <TableCell>Ver horario</TableCell>
+                                  <TableCell>
+                                    <Button
+                                      onPress={() => handleVerHorario(grupo)}
+                                    >
+                                      Ver horario
+                                    </Button>
+                                  </TableCell>
                                   <TableCell>Modificar</TableCell>
-                                  <TableCell>Desasignar</TableCell>
+                                  <TableCell>
+                                    <Button
+                                      onPress={() => handleDesasignar(grupo)}
+                                    >
+                                      Desasignar
+                                    </Button>
+                                  </TableCell>
                                 </TableRow>
                               ))}
                             </TableBody>
@@ -268,6 +335,31 @@ function ModActividadModal({
         fetchGrupos={fetchGruposDeActividad}
         actividad={actividad}
       />
+      <VerHorario
+        grupo={selectedGrupo}
+        actividad={actividad}
+        isOpen={isVHOpen}
+        onOpenChange={onVHOpenChange}
+      />
+      <Modal isOpen={isDesOpen} onOpenChange={onDesOpenChange}>
+        <ModalContent>
+          {(onClose3) => (
+            <>
+              <ModalHeader>
+                ¿Desea desasignar al grupo '{selectedGrupo.nombre}' de '
+                {actividad.nombre}'?
+              </ModalHeader>
+              <ModalBody>
+                <p className="text-red-600">Esta operación es permanente.</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button onPress={onClose3}>Cancelar</Button>
+                <Button onPress={() => desasignar(onClose3)}>Aceptar</Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </>
   );
 }
