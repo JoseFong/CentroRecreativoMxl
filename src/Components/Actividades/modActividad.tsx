@@ -21,6 +21,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import AsignarGrupo from "./asignarGrupo";
 import VerHorario from "./verHorario";
+import ModificarHorario from "./modificarHorario";
 
 function ModActividad({
   actividad,
@@ -129,6 +130,12 @@ function ModActividadModal({
     isOpen: isDesOpen,
   } = useDisclosure();
 
+  const {
+    onOpen: onModHOpen,
+    onOpenChange: onModHOpenChange,
+    isOpen: isModHOpen,
+  } = useDisclosure();
+
   const handleModificar = () => {
     setEnviado(true);
     try {
@@ -181,6 +188,11 @@ function ModActividadModal({
     onDesOpen();
   };
 
+  const handleModificarHorario = (grupo: any) => {
+    setSelectedGrupo(grupo);
+    onModHOpen();
+  };
+
   const desasignar = async (onClose: any) => {
     const data = {
       grupoId: selectedGrupo?.id,
@@ -221,7 +233,7 @@ function ModActividadModal({
               <ModalHeader>Información de {actividad.nombre}</ModalHeader>
               <ModalBody>
                 <div className="flex flex-row gap-5">
-                  <div className="flex flex-col gap-2 items-center w-1/2">
+                  <div className="flex flex-col gap-2 items-center w-1/4">
                     <h1 className="font-bold">Información</h1>
                     <Input
                       isRequired
@@ -242,7 +254,7 @@ function ModActividadModal({
                       onChange={(e) => setDescripcion(e.target.value)}
                     />
                   </div>
-                  <div className="items-center flex flex-col gap-1 w-1/2">
+                  <div className="items-center flex flex-col gap-1 w-3/4">
                     <h1 className="font-bold">Grupos</h1>
                     {cargandoGrupos ? (
                       <Spinner size="lg" />
@@ -269,7 +281,15 @@ function ModActividadModal({
                                       Ver horario
                                     </Button>
                                   </TableCell>
-                                  <TableCell>Modificar</TableCell>
+                                  <TableCell>
+                                    <Button
+                                      onPress={() =>
+                                        handleModificarHorario(grupo)
+                                      }
+                                    >
+                                      Modificar Horario
+                                    </Button>
+                                  </TableCell>
                                   <TableCell>
                                     <Button
                                       onPress={() => handleDesasignar(grupo)}
@@ -340,6 +360,13 @@ function ModActividadModal({
         actividad={actividad}
         isOpen={isVHOpen}
         onOpenChange={onVHOpenChange}
+      />
+      <ModificarHorario
+        grupo={selectedGrupo}
+        isOpen={isModHOpen}
+        onOpenChange={onModHOpenChange}
+        fetchGrupos={fetchGruposDeActividad}
+        actividad={actividad}
       />
       <Modal isOpen={isDesOpen} onOpenChange={onDesOpenChange}>
         <ModalContent>

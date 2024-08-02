@@ -229,76 +229,38 @@ const verificarTraslape = async (horario:string,grupoId:number) => {
     }
   })
 
-  let traslapetest = false
+  let traslape = false
 
-  registros.map((reg:any)=>{
-    const horarioDeClase = reg.horario
-    const traslape = verificarTraslapeEntreDosHorarios(horarioDeClase,horario)
-    if(traslape){
-      traslapetest = true
-    }
+  registros.map((registro:any)=>{
+    const horarioRegistrado = registro.horario
+    const t = verificarTraslapeEntreDosHorarios(horario,horarioRegistrado)
+    if(t) traslape = true
   })
 
-  if(traslapetest) return true
+  if(traslape) return true
   return false
 }
 
-interface Dia {
-  nombre: string,
-  inicio: string,
-  fin: string
-}
+const verificarTraslapeEntreDosHorarios = (horario1:string,horario2:string) => {
+  const h1 = JSON.parse(horario1)
+  const h2 = JSON.parse(horario2)
+  const diasSemana = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
 
-const verificarTraslapeEntreDosHorarios = (horario1: string,horario2:string) => {
-  let dias:string[] = horario1.split("..")
-  
-  let h1o:Dia[] = []
-  let h2o:Dia[] = []
+  for (const dia of diasSemana) {
+    if (h1[dia] && h2[dia]) {
+      const inicio1 = parseInt(h1[dia].inicio.replace(":", ""));
+      const fin1 = parseInt(h1[dia].fin.replace(":", ""));
+      const inicio2 = parseInt(h2[dia].inicio.replace(":", ""));
+      const fin2 = parseInt(h2[dia].fin.replace(":", ""));
 
-  dias.map((d:any)=>{
-    let h:string[] = d.split(".")
-    const dia:Dia = {nombre:h[0],inicio:h[1],fin:h[2]}
-    h1o.push(dia)
-  })
-
-  dias = horario2.split("..")
-  dias.map((d:any)=>{
-    let h = d.split(".")
-    const dia:Dia = {nombre:h[0],inicio:h[1],fin:h[2]}
-    h2o.push(dia)
-  })
-
-  const nombres:string[] = ["lunes","martes","miercoles","jueves","viernes","sabado"]
-
-
-  let traslape = false
-  nombres.map((nombre:string)=>{
-    if(h1o.some((d:Dia)=>d.nombre===nombre)){
-      if(h2o.some((d:Dia)=>d.nombre===nombre)){
-        const d1 = h1o.find((d:Dia)=>d.nombre===nombre)
-        const d2 = h2o.find((d:Dia)=>d.nombre===nombre)
-        if(d1 && d2){
-          const inicio1:number = parseInt(d1.inicio.replace(":",""))
-          const fin1:number = parseInt(d1.fin.replace(":",""))
-          const inicio2:number = parseInt(d2.inicio.replace(":",""))
-          const fin2:number = parseInt(d2.fin.replace(":",""))
-        
-
-          if(inicio1===inicio2) traslape = true
-          if(inicio2>inicio1){
-            if(inicio2<=fin1){
-              traslape = true
-            }
-          }
-          if(inicio2<inicio1){
-            if(fin2>inicio1){
-              traslape = true
-            }
-          }
-        }
+      if (inicio1 === inicio2) return true;
+      if (inicio1 < inicio2) {
+        if (fin1 > inicio2) return true;
+      }
+      if (inicio1 > inicio2) {
+        if (inicio1 < fin2) return true;
       }
     }
-  })
-  if(traslape) return true
+  }
   return false
 }

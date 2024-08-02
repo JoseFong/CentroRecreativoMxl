@@ -21,3 +21,11 @@ export async function eliminarGrupoAct(grupoId:number,actividadId:number){
         }
     })
 }
+
+export async function obtenerGrupoActDeAct(id:number){
+    return prisma.grupoActividad.findMany({
+        where: {
+            actividadId: id
+        }
+    })
+}

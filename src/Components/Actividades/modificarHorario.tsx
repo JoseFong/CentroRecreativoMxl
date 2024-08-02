@@ -2,6 +2,7 @@ import { validarHoras } from "@/utils/validaciones";
 import {
   Button,
   Checkbox,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -23,12 +24,14 @@ interface Dia {
   fin: string;
 }
 
-function AsignarGrupo({
+function ModificarHorario({
+  grupo,
   isOpen,
   onOpenChange,
   fetchGrupos,
   actividad,
 }: {
+  grupo: any;
   isOpen: any;
   onOpenChange: any;
   fetchGrupos: () => void;
@@ -37,7 +40,8 @@ function AsignarGrupo({
   return (
     <>
       {actividad && (
-        <AsignarGrupoModal
+        <ModificarHorarioModal
+          grupo={grupo}
           isOpen={isOpen}
           onOpenChange={onOpenChange}
           fetchGrupos={fetchGrupos}
@@ -48,19 +52,22 @@ function AsignarGrupo({
   );
 }
 
-export function AsignarGrupoModal({
+export function ModificarHorarioModal({
+  grupo,
   isOpen,
   onOpenChange,
   fetchGrupos,
   actividad,
 }: {
+  grupo: any;
   isOpen: any;
   onOpenChange: any;
   fetchGrupos: () => void;
   actividad: any;
 }) {
   const [cargando, setCargando] = useState(false);
-  const [gruposDisponibles, setGruposDisponibles] = useState([]);
+
+  const [registro, setRegistro] = useState();
 
   const [grupoId, setGrupoId] = useState("");
 
@@ -89,19 +96,25 @@ export function AsignarGrupoModal({
   const [horarioString, setHorarioString] = useState("");
 
   useEffect(() => {
-    setEnviado(false);
     setCargando(true);
-    fetchGruposDisponibles();
-  }, [actividad, onOpenChange]);
+    if (grupo && actividad) {
+      setEnviado(false);
+      fetchRegistro();
+    }
+  }, [actividad, onOpenChange, grupo]);
 
-  const fetchGruposDisponibles = async () => {
+  const fetchRegistro = async () => {
+    const data = {
+      grupoId: grupo.id,
+      actividadId: actividad.id,
+    };
     try {
-      const response = await axios.get(
-        "/api/grupos/gruposDisponibles/" + actividad.id
+      const response = await axios.patch(
+        "/api/grupoAct/grupoActEspecifico",
+        data
       );
       if (response.status >= 200 && response.status < 300) {
-        setGruposDisponibles(response.data);
-        setCargando(false);
+        setRegistro(response.data);
       } else {
         throw new Error(response.data.message || "Error desconocido.");
       }
@@ -118,6 +131,10 @@ export function AsignarGrupoModal({
       }
     }
   };
+
+  useEffect(() => {
+    setCargando(false);
+  }, [registro]);
 
   interface Dia {
     inicio: string;
@@ -364,138 +381,127 @@ export function AsignarGrupoModal({
                   <Spinner size="lg" />
                 ) : (
                   <>
-                    {gruposDisponibles.length === 0 ? (
-                      <p>No hay grupos disponibles.</p>
-                    ) : (
-                      <div className="flex flex-col gap-1">
-                        <Select
-                          label="Grupo"
-                          labelPlacement="outside"
-                          placeholder="Grupo"
-                          value={grupoId}
-                          isInvalid={enviado && grupoId === ""}
-                          onChange={(e) => setGrupoId(e.target.value)}
-                        >
-                          {gruposDisponibles.map((gr: any) => (
-                            <SelectItem key={gr.id} value={gr.id}>
-                              {gr.nombre}
-                            </SelectItem>
-                          ))}
-                        </Select>
-                        <div className="flex flex-row justify-around mt-3">
-                          <label>Día</label>
-                          <label>Hora de inicio</label>
-                          <label>Hora de fin</label>
-                        </div>
-                        <div className="flex flex-row gap-2 items-center justify-center">
-                          <label>Lunes</label>
-                          <Checkbox
-                            onChange={() => setLunes(!lunes)}
-                            isSelected={lunes}
-                          />
-
-                          <TimeInput
-                            isDisabled={!lunes}
-                            value={hilunes}
-                            onChange={setHilunes}
-                          />
-                          <TimeInput
-                            isDisabled={!lunes}
-                            value={hflunes}
-                            onChange={setHflunes}
-                          />
-                        </div>
-                        <div className="flex flex-row gap-2 items-center justify-center">
-                          <label>Martes</label>
-                          <Checkbox
-                            onChange={() => setMartes(!martes)}
-                            isSelected={martes}
-                          />
-                          <TimeInput
-                            isDisabled={!martes}
-                            value={himartes}
-                            onChange={setHimartes}
-                          />
-                          <TimeInput
-                            isDisabled={!martes}
-                            value={hfmartes}
-                            onChange={setHfmartes}
-                          />
-                        </div>
-
-                        <div className="flex flex-row gap-2 items-center justify-center">
-                          <label>Miércoles</label>
-                          <Checkbox
-                            onChange={() => setMiercoles(!miercoles)}
-                            isSelected={miercoles}
-                          />
-                          <TimeInput
-                            isDisabled={!miercoles}
-                            value={himiercoles}
-                            onChange={setHimiercoles}
-                          />
-                          <TimeInput
-                            isDisabled={!miercoles}
-                            value={hfmiercoles}
-                            onChange={setHfmiercoles}
-                          />
-                        </div>
-
-                        <div className="flex flex-row gap-2 items-center justify-center">
-                          <label>Jueves</label>
-                          <Checkbox
-                            onChange={() => setJueves(!jueves)}
-                            isSelected={jueves}
-                          />
-                          <TimeInput
-                            isDisabled={!jueves}
-                            value={hijueves}
-                            onChange={setHijueves}
-                          />
-                          <TimeInput
-                            isDisabled={!jueves}
-                            value={hfjueves}
-                            onChange={setHfjueves}
-                          />
-                        </div>
-
-                        <div className="flex flex-row gap-2 items-center justify-center">
-                          <label>Viernes</label>
-                          <Checkbox
-                            onChange={() => setViernes(!viernes)}
-                            isSelected={viernes}
-                          />
-                          <TimeInput
-                            isDisabled={!viernes}
-                            value={hiviernes}
-                            onChange={setHiviernes}
-                          />
-                          <TimeInput
-                            isDisabled={!viernes}
-                            value={hfviernes}
-                            onChange={setHfviernes}
-                          />
-                        </div>
-
-                        <div className="flex flex-row gap-2 items-center justify-center">
-                          <label>Sábado</label>
-                          <Checkbox
-                            onChange={() => setSabado(!sabado)}
-                            isSelected={sabado}
-                          />
-                          <TimeInput
-                            isDisabled={!sabado}
-                            value={hisabado}
-                            onChange={setHisabado}
-                          />
-                          <TimeInput
-                            isDisabled={!sabado}
-                            value={hfsabado}
-                            onChange={setHfsabado}
-                          />
-                        </div>
+                    <div className="flex flex-col gap-1">
+                      <Input
+                        placeholder="Grupo"
+                        value={grupo.nombre}
+                        isReadOnly
+                        label="Grupo"
+                        labelPlacement="outside"
+                      />
+                      <div className="flex flex-row justify-around mt-3">
+                        <label>Día</label>
+                        <label>Hora de inicio</label>
+                        <label>Hora de fin</label>
                       </div>
-                    )}
+                      <div className="flex flex-row gap-2 items-center justify-center">
+                        <label>Lunes</label>
+                        <Checkbox
+                          onChange={() => setLunes(!lunes)}
+                          isSelected={lunes}
+                        />
+
+                        <TimeInput
+                          isDisabled={!lunes}
+                          value={hilunes}
+                          onChange={setHilunes}
+                        />
+                        <TimeInput
+                          isDisabled={!lunes}
+                          value={hflunes}
+                          onChange={setHflunes}
+                        />
+                      </div>
+                      <div className="flex flex-row gap-2 items-center justify-center">
+                        <label>Martes</label>
+                        <Checkbox
+                          onChange={() => setMartes(!martes)}
+                          isSelected={martes}
+                        />
+                        <TimeInput
+                          isDisabled={!martes}
+                          value={himartes}
+                          onChange={setHimartes}
+                        />
+                        <TimeInput
+                          isDisabled={!martes}
+                          value={hfmartes}
+                          onChange={setHfmartes}
+                        />
+                      </div>
+
+                      <div className="flex flex-row gap-2 items-center justify-center">
+                        <label>Miércoles</label>
+                        <Checkbox
+                          onChange={() => setMiercoles(!miercoles)}
+                          isSelected={miercoles}
+                        />
+                        <TimeInput
+                          isDisabled={!miercoles}
+                          value={himiercoles}
+                          onChange={setHimiercoles}
+                        />
+                        <TimeInput
+                          isDisabled={!miercoles}
+                          value={hfmiercoles}
+                          onChange={setHfmiercoles}
+                        />
+                      </div>
+
+                      <div className="flex flex-row gap-2 items-center justify-center">
+                        <label>Jueves</label>
+                        <Checkbox
+                          onChange={() => setJueves(!jueves)}
+                          isSelected={jueves}
+                        />
+                        <TimeInput
+                          isDisabled={!jueves}
+                          value={hijueves}
+                          onChange={setHijueves}
+                        />
+                        <TimeInput
+                          isDisabled={!jueves}
+                          value={hfjueves}
+                          onChange={setHfjueves}
+                        />
+                      </div>
+
+                      <div className="flex flex-row gap-2 items-center justify-center">
+                        <label>Viernes</label>
+                        <Checkbox
+                          onChange={() => setViernes(!viernes)}
+                          isSelected={viernes}
+                        />
+                        <TimeInput
+                          isDisabled={!viernes}
+                          value={hiviernes}
+                          onChange={setHiviernes}
+                        />
+                        <TimeInput
+                          isDisabled={!viernes}
+                          value={hfviernes}
+                          onChange={setHfviernes}
+                        />
+                      </div>
+
+                      <div className="flex flex-row gap-2 items-center justify-center">
+                        <label>Sábado</label>
+                        <Checkbox
+                          onChange={() => setSabado(!sabado)}
+                          isSelected={sabado}
+                        />
+                        <TimeInput
+                          isDisabled={!sabado}
+                          value={hisabado}
+                          onChange={setHisabado}
+                        />
+                        <TimeInput
+                          isDisabled={!sabado}
+                          value={hfsabado}
+                          onChange={setHfsabado}
+                        />
+                      </div>
+                    </div>
                   </>
                 )}
               </ModalBody>
@@ -526,4 +532,4 @@ export function AsignarGrupoModal({
   );
 }
 
-export default AsignarGrupo;
+export default ModificarHorario;

@@ -65,19 +65,30 @@ function VerHorarioModal({
   const [info, setInfo] = useState<GrupoActividad>();
   const [display, setDisplay] = useState<Dia[]>([]);
 
-  let dias: Dia[] = [];
-
   useEffect(() => {
-    dias = [];
     if (info) {
-      const horario = info.horario;
-      const ds = horario.split("..");
-      ds.map((d: string) => {
-        const p = d.split(".");
-        const dia: Dia = { nombre: p[0], inicio: p[1], fin: p[2] };
-        dias.push(dia);
-      });
-      setDisplay(dias);
+      let ds: Dia[] = [];
+      const horario = JSON.parse(info.horario);
+      const dias = [
+        "lunes",
+        "martes",
+        "miercoles",
+        "jueves",
+        "viernes",
+        "sabado",
+      ];
+      for (const dia of dias) {
+        if (horario[dia]) {
+          const d: Dia = {
+            nombre: primerLetra(dia),
+            inicio: horario[dia].inicio,
+            fin: horario[dia].fin,
+          };
+          ds.push(d);
+        }
+      }
+      setDisplay(ds);
+      setCargando(false);
     }
   }, [info]);
 
@@ -136,9 +147,9 @@ function VerHorarioModal({
                       <TableColumn>Fin</TableColumn>
                     </TableHeader>
                     <TableBody>
-                      {display?.map((d: Dia) => (
+                      {display.map((d: any) => (
                         <TableRow>
-                          <TableCell>{primerLetra(d.nombre)}</TableCell>
+                          <TableCell>{d.nombre}</TableCell>
                           <TableCell>{d.inicio}</TableCell>
                           <TableCell>{d.fin}</TableCell>
                         </TableRow>
