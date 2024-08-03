@@ -10,6 +10,12 @@ import {
   Select,
   SelectItem,
   Spinner,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
   TimeInput,
   useDisclosure,
 } from "@nextui-org/react";
@@ -92,6 +98,7 @@ export function AsignarGrupoModal({
     setEnviado(false);
     setCargando(true);
     fetchGruposDisponibles();
+    reset();
   }, [actividad, onOpenChange]);
 
   const fetchGruposDisponibles = async () => {
@@ -127,155 +134,120 @@ export function AsignarGrupoModal({
   const handleAceptar = () => {
     setEnviado(true);
     try {
-      if (grupoId === "") throw new Error("Seleccione un grupo.");
+      const horario: { [key: string]: Dia } = {};
+
+      if (grupoId === "") throw new Error("Seleccione un grupo");
+
       if (!lunes && !martes && !miercoles && !jueves && !viernes && !sabado)
-        throw new Error("Seleccione al menos un día.");
+        throw new Error("Seleccione por lo menos un día.");
+
       if (lunes) {
-        if (
-          !hilunes ||
-          hilunes === "undefined" ||
-          hilunes === "null" ||
-          hilunes === ""
-        )
-          throw new Error("Seleccione una hora de inicio para el día Lunes.");
-        if (
-          !hflunes ||
-          hflunes === "undefined" ||
-          hflunes === "null" ||
-          hflunes === ""
-        )
-          throw new Error("Seleccione una hora de fin para el día Lunes.");
+        if (hilunes === "" || hilunes === undefined)
+          throw new Error(
+            "Seleccione una hora de inicio válida para el día Lunes."
+          );
+        if (hflunes === "" || hflunes === undefined)
+          throw new Error(
+            "Seleccione una hora de fin válida para el día Lunes."
+          );
         if (validarHoras(hilunes, hflunes))
-          throw new Error("Seleccione horas válidas en Lunes.");
+          throw new Error("Seleccione horas válidas para el día Lunes.");
       }
+
       if (martes) {
-        if (
-          !himartes ||
-          himartes === "undefined" ||
-          himartes === "null" ||
-          himartes === ""
-        )
-          throw new Error("Seleccione una hora de inicio para el día Martes.");
-        if (
-          !hfmartes ||
-          hfmartes === "undefined" ||
-          hfmartes === "null" ||
-          hfmartes === ""
-        )
-          throw new Error("Seleccione una hora de fin para el día Martes.");
+        if (himartes === "" || himartes === undefined)
+          throw new Error(
+            "Seleccione una hora de inicio válida para el día Martes."
+          );
+        if (hfmartes === "" || hfmartes === undefined)
+          throw new Error(
+            "Seleccione una hora de fin válida para el día Martes."
+          );
         if (validarHoras(himartes, hfmartes))
-          throw new Error("Seleccione horas válidas en Martes.");
+          throw new Error("Seleccione horas válidas para el día Martes.");
       }
 
       if (miercoles) {
-        if (
-          !himiercoles ||
-          himiercoles === "undefined" ||
-          himiercoles === "null" ||
-          himiercoles === ""
-        )
+        if (himiercoles === "" || himiercoles === undefined)
           throw new Error(
-            "Seleccione una hora de inicio para el día Miércoles."
+            "Seleccione una hora de inicio válida para el día Miércoles."
           );
-        if (
-          !hfmiercoles ||
-          hfmiercoles === "undefined" ||
-          hfmiercoles === "null" ||
-          hfmiercoles === ""
-        )
-          throw new Error("Seleccione una hora de fin para el día Miércoles.");
+        if (hfmiercoles === "" || hfmiercoles === undefined)
+          throw new Error(
+            "Seleccione una hora de fin válida para el día Miércoles."
+          );
         if (validarHoras(himiercoles, hfmiercoles))
-          throw new Error("Seleccione horas válidas en Miércoles.");
+          throw new Error("Seleccione horas válidas para el día Miércoles.");
       }
 
       if (jueves) {
-        if (
-          !hijueves ||
-          hijueves === "undefined" ||
-          hijueves === "null" ||
-          hijueves === ""
-        )
-          throw new Error("Seleccione una hora de inicio para el día Jueves.");
-        if (
-          !hfjueves ||
-          hfjueves === "undefined" ||
-          hfjueves === "null" ||
-          hfjueves === ""
-        )
-          throw new Error("Seleccione una hora de fin para el día Jueves.");
+        if (hijueves === "" || hijueves === undefined)
+          throw new Error(
+            "Seleccione una hora de inicio válida para el día Jueves."
+          );
+        if (hfjueves === "" || hfjueves === undefined)
+          throw new Error(
+            "Seleccione una hora de fin válida para el día Jueves."
+          );
         if (validarHoras(hijueves, hfjueves))
-          throw new Error("Seleccione horas válidas en Jueves.");
+          throw new Error("Seleccione horas válidas para el día Jueves.");
       }
 
       if (viernes) {
-        if (
-          !hiviernes ||
-          hiviernes === "undefined" ||
-          hiviernes === "null" ||
-          hiviernes === ""
-        )
-          throw new Error("Seleccione una hora de inicio para el día Viernes.");
-        if (
-          !hfviernes ||
-          hfviernes === "undefined" ||
-          hfviernes === "null" ||
-          hfviernes === ""
-        )
-          throw new Error("Seleccione una hora de fin para el día Viernes.");
+        if (hiviernes === "" || hiviernes === undefined)
+          throw new Error(
+            "Seleccione una hora de inicio válida para el día Viernes."
+          );
+        if (hfviernes === "" || hfviernes === undefined)
+          throw new Error(
+            "Seleccione una hora de fin válida para el día Viernes."
+          );
         if (validarHoras(hiviernes, hfviernes))
-          throw new Error("Seleccione horas válidas en Viernes.");
+          throw new Error("Seleccione horas válidas para el día Viernes.");
       }
 
       if (sabado) {
-        if (
-          !hisabado ||
-          hisabado === "undefined" ||
-          hisabado === "null" ||
-          hisabado === ""
-        )
-          throw new Error("Seleccione una hora de inicio para el día Sábado.");
-        if (
-          !hfsabado ||
-          hfsabado === "undefined" ||
-          hfsabado === "null" ||
-          hfsabado === ""
-        )
-          throw new Error("Seleccione una hora de fin para el día Sábado.");
+        if (hisabado === "" || hisabado === undefined)
+          throw new Error(
+            "Seleccione una hora de inicio válida para el día Sábado."
+          );
+        if (hfsabado === "" || hfsabado === undefined)
+          throw new Error(
+            "Seleccione una hora de fin válida para el día Sábado."
+          );
         if (validarHoras(hisabado, hfsabado))
-          throw new Error("Seleccione horas válidas en Sábado.");
+          throw new Error("Seleccione horas válidas para el día Sábado.");
       }
-
-      const horario: { [key: string]: Dia } = {};
 
       if (lunes)
         horario.lunes = {
-          inicio: hilunes.toString().slice(0, -3),
-          fin: hflunes.toString().slice(0, -3),
+          inicio: hilunes,
+          fin: hflunes,
         };
       if (martes)
         horario.martes = {
-          inicio: himartes.toString().slice(0, -3),
-          fin: hfmartes.toString().slice(0, -3),
+          inicio: himartes,
+          fin: hfmartes,
         };
       if (miercoles)
         horario.miercoles = {
-          inicio: himiercoles.toString().slice(0, -3),
-          fin: hfmiercoles.toString().slice(0, -3),
+          inicio: himiercoles,
+          fin: hfmiercoles,
         };
       if (jueves)
         horario.jueves = {
-          inicio: hijueves.toString().slice(0, -3),
-          fin: hfjueves.toString().slice(0, -3),
+          inicio: hijueves,
+          fin: hfjueves,
         };
       if (viernes)
         horario.viernes = {
-          inicio: hiviernes.toString().slice(0, -3),
-          fin: hfviernes.toString().slice(0, -3),
+          inicio: hiviernes,
+          fin: hfviernes,
         };
       if (sabado)
         horario.sabado = {
-          inicio: hisabado.toString().slice(0, -3),
-          fin: hfsabado.toString().slice(0, -3),
+          inicio: hisabado,
+          fin: hfsabado,
         };
 
       const hs = JSON.stringify(horario);
@@ -382,118 +354,240 @@ export function AsignarGrupoModal({
                             </SelectItem>
                           ))}
                         </Select>
-                        <div className="flex flex-row justify-around mt-3">
-                          <label>Día</label>
-                          <label>Hora de inicio</label>
-                          <label>Hora de fin</label>
-                        </div>
-                        <div className="flex flex-row gap-2 items-center justify-center">
-                          <label>Lunes</label>
-                          <Checkbox
-                            onChange={() => setLunes(!lunes)}
-                            isSelected={lunes}
-                          />
+                        <table className="mt-3">
+                          <thead>
+                            <tr>
+                              <th>Día</th>
+                              <th>Hora de inicio</th>
+                              <th>Hora de fin</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>
+                                <div className="flex flex-row items-center justify-between">
+                                  <label>Lunes</label>
+                                  <Checkbox
+                                    onChange={() => setLunes(!lunes)}
+                                    isSelected={lunes}
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div className="flex items-center justify-center">
+                                  <input
+                                    className="bg-white"
+                                    type="time"
+                                    value={hilunes}
+                                    onChange={(e) => setHilunes(e.target.value)}
+                                    disabled={!lunes}
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div className="flex items-center justify-center">
+                                  <input
+                                    className="bg-white"
+                                    type="time"
+                                    value={hflunes}
+                                    onChange={(e) => setHflunes(e.target.value)}
+                                    disabled={!lunes}
+                                  />
+                                </div>
+                              </td>
+                            </tr>
 
-                          <TimeInput
-                            isDisabled={!lunes}
-                            value={hilunes}
-                            onChange={setHilunes}
-                          />
-                          <TimeInput
-                            isDisabled={!lunes}
-                            value={hflunes}
-                            onChange={setHflunes}
-                          />
-                        </div>
-                        <div className="flex flex-row gap-2 items-center justify-center">
-                          <label>Martes</label>
-                          <Checkbox
-                            onChange={() => setMartes(!martes)}
-                            isSelected={martes}
-                          />
-                          <TimeInput
-                            isDisabled={!martes}
-                            value={himartes}
-                            onChange={setHimartes}
-                          />
-                          <TimeInput
-                            isDisabled={!martes}
-                            value={hfmartes}
-                            onChange={setHfmartes}
-                          />
-                        </div>
+                            <tr>
+                              <td>
+                                <div className="flex flex-row items-center justify-between">
+                                  <label>Martes</label>
+                                  <Checkbox
+                                    onChange={() => setMartes(!martes)}
+                                    isSelected={martes}
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div className="flex items-center justify-center">
+                                  <input
+                                    className="bg-white"
+                                    type="time"
+                                    value={himartes}
+                                    onChange={(e) =>
+                                      setHimartes(e.target.value)
+                                    }
+                                    disabled={!martes}
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div className="flex items-center justify-center">
+                                  <input
+                                    className="bg-white"
+                                    type="time"
+                                    value={hfmartes}
+                                    onChange={(e) =>
+                                      setHfmartes(e.target.value)
+                                    }
+                                    disabled={!martes}
+                                  />
+                                </div>
+                              </td>
+                            </tr>
 
-                        <div className="flex flex-row gap-2 items-center justify-center">
-                          <label>Miércoles</label>
-                          <Checkbox
-                            onChange={() => setMiercoles(!miercoles)}
-                            isSelected={miercoles}
-                          />
-                          <TimeInput
-                            isDisabled={!miercoles}
-                            value={himiercoles}
-                            onChange={setHimiercoles}
-                          />
-                          <TimeInput
-                            isDisabled={!miercoles}
-                            value={hfmiercoles}
-                            onChange={setHfmiercoles}
-                          />
-                        </div>
+                            <tr>
+                              <td>
+                                <div className="flex flex-row items-center justify-between">
+                                  <label>Miércoles</label>
+                                  <Checkbox
+                                    onChange={() => setMiercoles(!miercoles)}
+                                    isSelected={miercoles}
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div className="flex items-center justify-center">
+                                  <input
+                                    className="bg-white"
+                                    type="time"
+                                    value={himiercoles}
+                                    onChange={(e) =>
+                                      setHimiercoles(e.target.value)
+                                    }
+                                    disabled={!miercoles}
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div className="flex items-center justify-center">
+                                  <input
+                                    className="bg-white"
+                                    type="time"
+                                    value={hfmiercoles}
+                                    onChange={(e) =>
+                                      setHfmiercoles(e.target.value)
+                                    }
+                                    disabled={!miercoles}
+                                  />
+                                </div>
+                              </td>
+                            </tr>
 
-                        <div className="flex flex-row gap-2 items-center justify-center">
-                          <label>Jueves</label>
-                          <Checkbox
-                            onChange={() => setJueves(!jueves)}
-                            isSelected={jueves}
-                          />
-                          <TimeInput
-                            isDisabled={!jueves}
-                            value={hijueves}
-                            onChange={setHijueves}
-                          />
-                          <TimeInput
-                            isDisabled={!jueves}
-                            value={hfjueves}
-                            onChange={setHfjueves}
-                          />
-                        </div>
+                            <tr>
+                              <td>
+                                <div className="flex flex-row items-center justify-between">
+                                  <label>Jueves</label>
+                                  <Checkbox
+                                    onChange={() => setJueves(!jueves)}
+                                    isSelected={jueves}
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div className="flex items-center justify-center">
+                                  <input
+                                    className="bg-white"
+                                    type="time"
+                                    value={hijueves}
+                                    onChange={(e) =>
+                                      setHijueves(e.target.value)
+                                    }
+                                    disabled={!jueves}
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div className="flex items-center justify-center">
+                                  <input
+                                    className="bg-white"
+                                    type="time"
+                                    value={hfjueves}
+                                    onChange={(e) =>
+                                      setHfjueves(e.target.value)
+                                    }
+                                    disabled={!jueves}
+                                  />
+                                </div>
+                              </td>
+                            </tr>
 
-                        <div className="flex flex-row gap-2 items-center justify-center">
-                          <label>Viernes</label>
-                          <Checkbox
-                            onChange={() => setViernes(!viernes)}
-                            isSelected={viernes}
-                          />
-                          <TimeInput
-                            isDisabled={!viernes}
-                            value={hiviernes}
-                            onChange={setHiviernes}
-                          />
-                          <TimeInput
-                            isDisabled={!viernes}
-                            value={hfviernes}
-                            onChange={setHfviernes}
-                          />
-                        </div>
+                            <tr>
+                              <td>
+                                <div className="flex flex-row items-center justify-between">
+                                  <label>Viernes</label>
+                                  <Checkbox
+                                    onChange={() => setViernes(!viernes)}
+                                    isSelected={viernes}
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div className="flex items-center justify-center">
+                                  <input
+                                    className="bg-white"
+                                    type="time"
+                                    value={hiviernes}
+                                    onChange={(e) =>
+                                      setHiviernes(e.target.value)
+                                    }
+                                    disabled={!viernes}
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div className="flex items-center justify-center">
+                                  <input
+                                    className="bg-white"
+                                    type="time"
+                                    value={hfviernes}
+                                    onChange={(e) =>
+                                      setHfviernes(e.target.value)
+                                    }
+                                    disabled={!viernes}
+                                  />
+                                </div>
+                              </td>
+                            </tr>
 
-                        <div className="flex flex-row gap-2 items-center justify-center">
-                          <label>Sábado</label>
-                          <Checkbox
-                            onChange={() => setSabado(!sabado)}
-                            isSelected={sabado}
-                          />
-                          <TimeInput
-                            isDisabled={!sabado}
-                            value={hisabado}
-                            onChange={setHisabado}
-                          />
-                          <TimeInput
-                            isDisabled={!sabado}
-                            value={hfsabado}
-                            onChange={setHfsabado}
-                          />
-                        </div>
+                            <tr>
+                              <td>
+                                <div className="flex flex-row items-center justify-between">
+                                  <label>Sábado</label>
+                                  <Checkbox
+                                    onChange={() => setSabado(!sabado)}
+                                    isSelected={sabado}
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div className="flex items-center justify-center">
+                                  <input
+                                    className="bg-white"
+                                    type="time"
+                                    value={hisabado}
+                                    onChange={(e) =>
+                                      setHisabado(e.target.value)
+                                    }
+                                    disabled={!sabado}
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div className="flex items-center justify-center">
+                                  <input
+                                    className="bg-white"
+                                    type="time"
+                                    value={hfsabado}
+                                    onChange={(e) =>
+                                      setHfsabado(e.target.value)
+                                    }
+                                    disabled={!sabado}
+                                  />
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                     )}
                   </>

@@ -1,5 +1,6 @@
 import { obtenerGrupoActDeAct } from "@/Controllers/grupoActividadController";
 import { NextRequest, NextResponse } from "next/server";
+import {Grupo} from "@prisma/client"
 
 interface Params{
     id: string

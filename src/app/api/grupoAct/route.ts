@@ -1,4 +1,4 @@
-import { eliminarGrupoAct, obtenerGrupoActividades } from "@/Controllers/grupoActividadController";
+import { eliminarGrupoAct, modificarHorario, obtenerGrupoActividades } from "@/Controllers/grupoActividadController";
 import { asignarActAGrupo } from "@/Controllers/grupoController";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -25,3 +25,14 @@ export async function GET(req:NextRequest){
     }
 }
 
+export async function PATCH(req:NextRequest){
+    try{
+        const data = await req.json()
+        const response = await modificarHorario(data)
+        if(!response) return NextResponse.json({message:"Error al modificar el horario."},{status:404})
+        if(response!=="modificado") return NextResponse.json({message:response},{status:400})
+        return NextResponse.json({message:"Exito"},{status:200})
+    }catch(e:any){
+        return NextResponse.json({message:e.message},{status:500})
+    }
+}

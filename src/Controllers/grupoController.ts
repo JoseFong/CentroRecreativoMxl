@@ -207,7 +207,7 @@ export async function obtenerGruposDisponibles(id:number){
 }
 
 export async function asignarActAGrupo(data:any){
-  const traslape = await verificarTraslape(data.horario,data.grupoId)
+  const traslape = await verificarTraslape(data.horario,data.grupoId,-1)
 
   if(traslape) return "Este grupo ya tiene una actividad a esta hora."
 
@@ -222,19 +222,23 @@ export async function asignarActAGrupo(data:any){
   return "registrado"
 }
 
-const verificarTraslape = async (horario:string,grupoId:number) => {
+export async function verificarTraslape (horario:string,grupoId:number,modificar:number){
+  
   const registros = await prisma.grupoActividad.findMany({
     where: {
       grupoId: grupoId
     }
   })
 
+
   let traslape = false
 
   registros.map((registro:any)=>{
-    const horarioRegistrado = registro.horario
-    const t = verificarTraslapeEntreDosHorarios(horario,horarioRegistrado)
-    if(t) traslape = true
+    if(registro.id!==modificar){
+      const horarioRegistrado = registro.horario
+      const t = verificarTraslapeEntreDosHorarios(horario,horarioRegistrado)
+      if(t) traslape = true
+    }
   })
 
   if(traslape) return true
