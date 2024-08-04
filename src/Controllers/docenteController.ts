@@ -99,6 +99,24 @@ export async function actualizarDocente(id: number, data: any) {
  * @returns Docente eliminado
  */
 export async function eliminarDocente(id: number) {
+  const idNumber:number = parseInt(id.toString())
+
+  await prisma.salida.deleteMany({
+    where: {
+      docenteId: idNumber
+    }
+  })
+
+  await prisma.grupo.updateMany({
+    where: {
+      docenteId: idNumber
+    },
+    data: {
+      docenteId: undefined
+    }
+  })
+
+
   return await prisma.docente.delete({
     where: { id: Number(id) },
   });

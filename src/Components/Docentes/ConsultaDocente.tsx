@@ -274,9 +274,9 @@ const ConsultaDocente = () => {
       />
       <ConfirmarEliminar
         isOpen={isOpenEliminar}
-        onOpen={onOpenEliminar}
         onOpenChange={onOpenChangeEliminar}
         docente={docenteSeleccionado}
+        fetchDocentes={fetchDocentes}
       />
       <ModificarDocente
         isOpen={isOpenModificar}

@@ -10,12 +10,19 @@ import axios from "axios";
 import React from "react";
 import toast from "react-hot-toast";
 
-function confirmarEliminar({ isOpen, onOpenChange, docente }: any) {
-  const handleEliminar = async (id: number) => {
+function confirmarEliminar({
+  isOpen,
+  onOpenChange,
+  docente,
+  fetchDocentes,
+}: any) {
+  const handleEliminar = async (id: number, onClose: any) => {
     try {
       const response = await axios.delete(`/api/docentes/${id}`);
       console.log("Docente eliminado:", response.data);
       toast.success("Docente eliminado con éxito");
+      fetchDocentes();
+      onClose();
     } catch (error) {
       console.error("Error al eliminar docente:", error);
       toast.error("Error al eliminar docente");
@@ -41,7 +48,7 @@ function confirmarEliminar({ isOpen, onOpenChange, docente }: any) {
                   </Button>
                   <Button
                     className=" bg-verdeFuerte text-[#ffffff]"
-                    onPress={() => handleEliminar(docente.id)}
+                    onPress={() => handleEliminar(docente.id, onClose)}
                   >
                     Eliminar
                   </Button>
