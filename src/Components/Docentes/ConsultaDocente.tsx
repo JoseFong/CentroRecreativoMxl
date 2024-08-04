@@ -4,23 +4,27 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import MainLayout from "../Layout/MainLayout";
-import { useDisclosure, Button, Input, Select } from "@nextui-org/react";
 import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@nextui-org/modal";
-import {
-  fechaFutura,
-  telefonoInvalido,
-  textoVacio,
-  tieneCaracteresEspeciales,
-  tieneNumeros,
-} from "@/utils/validaciones";
-import ConsultaEspecificaAlumno from "../Alumnos/consultaEspecifica";
+  useDisclosure,
+  Button,
+  Input,
+  Select,
+  Spinner,
+  Table,
+  TableHeader,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableRow,
+  Tooltip,
+} from "@nextui-org/react";
 import ConsultaEspecifica from "./ConsultaEspecifica";
+import { CgDetailsMore } from "react-icons/cg";
+import { FaUserEdit, FaRegEdit } from "react-icons/fa";
+import { MdOutlineDelete } from "react-icons/md";
+import RegistrarDocente from "./registrarDocente";
+import ConfirmarEliminar from "./confirmarEliminar";
+import ModificarDocente from "./modificarDocente";
 
 interface Docente {
   id?: number;
@@ -50,16 +54,14 @@ const ConsultaDocente = () => {
     contrasena: "",
     rol: "",
   }); //Estos son los campos que le debes mandar a la api
-  const [enviado, setEnviado] = useState(false);
   const [docenteSeleccionado, setDocenteSeleccionado] = useState();
+  const [cargando, setCargando] = useState(false);
 
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setDocente({ ...docente, [name]: value });
-  };
+  const [grupos, setGrupos] = useState([]);
 
   useEffect(() => {
     fetchDocentes();
+    fetchGrupos();
   }, []);
 
   const fetchDocentes = async () => {
@@ -82,114 +84,47 @@ const ConsultaDocente = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const fetchGrupos = async () => {
     try {
-      setEnviado(true);
-
-      if (
-        textoVacio(docente.nombre) ||
-        textoVacio(docente.aPaterno) ||
-        textoVacio(docente.aMaterno) ||
-        textoVacio(docente.fechaNac) ||
-        textoVacio(docente.telefono) ||
-        textoVacio(docente.curp) ||
-        textoVacio(docente.correo) ||
-        textoVacio(docente.usuario) ||
-        textoVacio(docente.contrasena) ||
-        textoVacio(docente.rol)
-      ) {
-        throw new Error("No deje campos vacíos.");
+      const response = await axios.get("/api/grupos");
+      if (response.status >= 200 && response.status < 300) {
+        setGrupos(response.data);
+      } else {
+        throw new Error(response.data.message || "Error desconocido.");
       }
-
-      if (
-        tieneNumeros(docente.nombre) ||
-        tieneNumeros(docente.aPaterno) ||
-        tieneNumeros(docente.aMaterno)
-      )
-        throw new Error("El nombre no puede contener números.");
-
-      if (
-        tieneCaracteresEspeciales(docente.nombre) ||
-        tieneCaracteresEspeciales(docente.aPaterno) ||
-        tieneCaracteresEspeciales(docente.aMaterno)
-      ) {
-        throw new Error("El nombre no puede tener caracteres especiales.");
+    } catch (e: any) {
+      if (e.response) {
+        if (
+          e.response.status === 404 ||
+          e.response.status === 500 ||
+          e.response.status === 400
+        ) {
+          toast.error(e.response.data.message);
+        } else {
+          toast.error(e.message);
+        }
+      } else {
+        toast.error(e.message);
       }
-
-      if (fechaFutura(docente.fechaNac))
-        throw new Error("No puede ingresar una fecha de nacimiento futura.");
-
-      if (telefonoInvalido(docente.telefono))
-        throw new Error("Ingrese un teléfono válido.");
-
-      if (docente.curp.trim().length !== 18)
-        throw new Error("Ingrese una CURP con un formato correcto.");
-
-      // Email validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(docente.correo))
-        throw new Error("Ingrese un correo electrónico válido.");
-
-      // Password strength validation (example: at least 8 characters)
-      if (docente.contrasena.length < 8)
-        throw new Error("La contraseña debe tener al menos 8 caracteres.");
-
-      const formattedDate = new Date(docente.fechaNac)
-        .toISOString()
-        .split("T")[0];
-
-      const response = await axios.post("/api/docentes", {
-        ...docente,
-        nombre: docente.nombre.trim().toUpperCase(),
-        aPaterno: docente.aPaterno.trim().toUpperCase(),
-        aMaterno: docente.aMaterno.trim().toUpperCase(),
-        curp: docente.curp.trim().toUpperCase(),
-        fechaNac: formattedDate, // Usa la fecha formateada
-      });
-
-      console.log("Docente registrado:", response.data);
-      toast.success("Docente registrado con éxito");
-      setEnviado(false);
-      // Reset form or fetch updated list of docentes
-      fetchDocentes();
-    } catch (error: any) {
-      console.error("Error al registrar el docente:", error);
-      toast.error(error.message || "Error al registrar el docente");
     }
   };
 
-  const handleEliminar = async (id: number) => {
-    try {
-      const response = await axios.delete(`/api/docentes/${id}`);
-      console.log("Docente eliminado:", response.data);
-      toast.success("Docente eliminado con éxito");
-      fetchDocentes();
-    } catch (error) {
-      console.error("Error al eliminar docente:", error);
-      toast.error("Error al eliminar docente");
-    }
-  };
+  const {
+    isOpen: isOpenModificar,
+    onOpen: onOpenModificar,
+    onOpenChange: onOpenChangeModificar,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenEliminar,
+    onOpen: onOpenEliminar,
+    onOpenChange: onOpenChangeEliminar,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenRegistro,
+    onOpen: onOpenRegistro,
+    onOpenChange: onOpenChangeRegistro,
+  } = useDisclosure();
 
-  const handleModificar = async () => {
-    if (!docente.id) {
-      toast.error("ID de docente no disponible");
-      return;
-    }
-
-    try {
-      const response = await axios.put(`/api/docentes/${docente.id}`, docente);
-      console.log("Docente modificado:", response.data);
-      toast.success("Docente modificado con éxito");
-      onClose();
-      fetchDocentes();
-    } catch (error) {
-      console.error("Error al modificar docente:", error);
-      toast.error("Error al modificar docente");
-    }
-  };
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenDetalles,
     onOpen: onOpenDetalles,
@@ -201,294 +136,152 @@ const ConsultaDocente = () => {
     onOpenDetalles();
   };
 
+  const handleEliminar = (docente: any) => {
+    setDocenteSeleccionado(docente);
+    onOpenEliminar();
+  };
+
+  const handleModificar = (docente: any) => {
+    setDocenteSeleccionado(docente);
+    onOpenModificar();
+  };
+
+  const obtenerNombreGrupo = (id: number) => {
+    const grupo = grupos.find((gr: any) => gr.id === id);
+    // @ts-ignore
+    if (grupo) return grupo.nombre;
+    return null;
+  };
+
   return (
     <MainLayout>
       <div>
-        <form onSubmit={handleSubmit}>
-          <div>
-            REGISTRO
-            <label>
-              Nombre:
-              <Input
-                type="text"
-                name="nombre"
-                value={docente.nombre}
-                onChange={handleChange}
-              />
-            </label>
+        <div className="flex flex-row m-4 md:px-10 md:pt-10 md:pb-4">
+          <div className="flex flex-col md:flex-row">
+            <h1 className="text-4xl font-bold">Docentes</h1>
           </div>
-          <div>
-            <label>
-              Apellido Paterno:
-              <Input
-                type="text"
-                name="aPaterno"
-                value={docente.aPaterno}
-                onChange={handleChange}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              Apellido Materno:
-              <Input
-                type="text"
-                name="aMaterno"
-                value={docente.aMaterno}
-                onChange={handleChange}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              Teléfono:
-              <Input
-                type="text"
-                name="telefono"
-                value={docente.telefono}
-                onChange={handleChange}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              Fecha de Nacimiento:
-              <Input
-                type="date"
-                name="fechaNac"
-                value={docente.fechaNac}
-                onChange={handleChange}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              CURP:
-              <Input
-                type="text"
-                name="curp"
-                value={docente.curp}
-                onChange={handleChange}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              Correo:
-              <Input
-                type="email"
-                name="correo"
-                value={docente.correo}
-                onChange={handleChange}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              Usuario:
-              <Input
-                type="text"
-                name="usuario"
-                value={docente.usuario}
-                onChange={handleChange}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              Contraseña:
-              <Input
-                type="password"
-                name="contrasena"
-                value={docente.contrasena}
-                onChange={handleChange}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              Rol:
-              <Input
-                type="text"
-                name="rol"
-                value={docente.rol}
-                onChange={handleChange}
-              />
-            </label>
-          </div>
-          <div>
-            <button type="submit">Guardar</button>
-          </div>
-        </form>
-        <h2 className=" font-bold">Lista de Docentes</h2>
-        <ul>
-          {docentes.map((docente: any, index) => (
-            <li key={index}>
-              {docente.nombre}{" "}
+          <div className=" ml-auto">
+            <div className="flex flex-col md:flex-row items-center ">
               <Button
-                onClick={() => handleEliminar(docente.id)}
-                className=" bg-slate-500"
+                onPress={onOpenRegistro}
+                className=" bg-verdeFuerte text-[#ffffff]"
+                startContent={<FaUserEdit />}
               >
-                ELIMINAR
+                Registrar docente
               </Button>
-              <Button
-                className="bg-blue-400"
-                onPress={() => {
-                  setDocente({ ...docente, id: docente.id });
-                  onOpen();
-                }}
-              >
-                Modificar
-              </Button>
-              <Button
-                className="bg-blue-400"
-                onPress={() => handleDetalles(docente)}
-              >
-                Detalles
-              </Button>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Modal Title
-              </ModalHeader>
-              <ModalBody>
-                <div>
-                  <form onSubmit={handleSubmit}>
-                    <div>
-                      <label>
-                        Nombre:
-                        <Input
-                          type="text"
-                          name="nombre"
-                          value={docente.nombre}
-                          onChange={handleChange}
-                        />
-                      </label>
-                    </div>
-                    <div>
-                      <label>
-                        Apellido Paterno:
-                        <Input
-                          type="text"
-                          name="aPaterno"
-                          value={docente.aPaterno}
-                          onChange={handleChange}
-                        />
-                      </label>
-                    </div>
-                    <div>
-                      <label>
-                        Apellido Materno:
-                        <Input
-                          type="text"
-                          name="aMaterno"
-                          value={docente.aMaterno}
-                          onChange={handleChange}
-                        />
-                      </label>
-                    </div>
-                    <div>
-                      <label>
-                        Teléfono:
-                        <Input
-                          type="text"
-                          name="telefono"
-                          value={docente.telefono}
-                          onChange={handleChange}
-                        />
-                      </label>
-                    </div>
-                    <div>
-                      <label>
-                        Fecha de Nacimiento:
-                        <Input
-                          type="date"
-                          name="fechaNac"
-                          value={docente.fechaNac}
-                          onChange={handleChange}
-                        />
-                      </label>
-                    </div>
-                    <div>
-                      <label>
-                        CURP:
-                        <Input
-                          type="text"
-                          name="curp"
-                          value={docente.curp}
-                          onChange={handleChange}
-                        />
-                      </label>
-                    </div>
-                    <div>
-                      <label>
-                        Correo:
-                        <Input
-                          type="email"
-                          name="correo"
-                          value={docente.correo}
-                          onChange={handleChange}
-                        />
-                      </label>
-                    </div>
-                    <div>
-                      <label>
-                        Usuario:
-                        <Input
-                          type="text"
-                          name="usuario"
-                          value={docente.usuario}
-                          onChange={handleChange}
-                        />
-                      </label>
-                    </div>
-                    <div>
-                      <label>
-                        Contraseña:
-                        <Input
-                          type="password"
-                          name="contrasena"
-                          value={docente.contrasena}
-                          onChange={handleChange}
-                        />
-                      </label>
-                    </div>
-                    <div>
-                      <label>
-                        Rol:
-                        <Input
-                          type="text"
-                          name="rol"
-                          value={docente.rol}
-                          onChange={handleChange}
-                        />
-                      </label>
-                    </div>
-                  </form>
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Cerrar
-                </Button>
-                <Button color="primary" onPress={handleModificar}>
-                  Modificar
-                </Button>
-              </ModalFooter>
-            </>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col m-4 md:px-10">
+          {cargando ? (
+            <div className="flex justify-center items-center">
+              <Spinner size="lg" color="warning" />
+            </div>
+          ) : (
+            <div className="overflow-y-auto max-h-[40rem] border-1 rounded-xl">
+              <Table aria-label="Example static collection table">
+                <TableHeader>
+                  <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
+                    docente
+                  </TableColumn>
+                  <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
+                    Grupo
+                  </TableColumn>
+                  <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
+                    Teléfono
+                  </TableColumn>
+                  <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4 ">
+                    <div className="flex justify-center">Acciones</div>
+                  </TableColumn>
+                </TableHeader>
+                <TableBody>
+                  {docentes.map((docente: any, index: any) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <p className=" text-lg">
+                          {`${docente.nombre} ${docente.aPaterno} ${
+                            docente.aMaterno ? docente.aMaterno : ""
+                          }`}
+                        </p>
+                      </TableCell>
+                      <TableCell>
+                        {docente.grupoId ? (
+                          <p className=" text-lg">
+                            {obtenerNombreGrupo(docente.grupoId)}
+                          </p>
+                        ) : (
+                          <p className="text-lg">Sin grupo</p>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <p className=" text-lg">{`${docente.telefono}`}</p>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-col md:flex-row justify-center items-center">
+                          <Tooltip content="Detalles">
+                            <Button
+                              isIconOnly
+                              size="md"
+                              className=" bg-verde"
+                              onPress={() => handleDetalles(docente)}
+                            >
+                              <CgDetailsMore />
+                            </Button>
+                          </Tooltip>
+                          <Tooltip content="Editar">
+                            <Button
+                              isIconOnly
+                              size="md"
+                              className="bg-verdeDetails mx-0  my-2 md:mx-3 md:my-0"
+                              onPress={() => handleModificar(docente)}
+                            >
+                              <FaRegEdit style={{ fontSize: "15px" }} />
+                            </Button>
+                          </Tooltip>
+                          <Tooltip content="Eliminar">
+                            <Button
+                              isIconOnly
+                              size="md"
+                              className=" bg-verdeFuerte"
+                              onClick={() => handleEliminar(docente)}
+                            >
+                              <MdOutlineDelete style={{ fontSize: "15px" }} />
+                            </Button>
+                          </Tooltip>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
-        </ModalContent>
-      </Modal>
+        </div>
+      </div>
+
+      <RegistrarDocente
+        isOpen={isOpenRegistro}
+        onOpen={onOpenRegistro}
+        onOpenChange={onOpenChangeRegistro}
+        docente={docente}
+        setDocente={setDocente}
+      />
       <ConsultaEspecifica
         isOpen={isOpenDetalles}
         onOpen={onOpenDetalles}
         onOpenChange={onOpenChangeDetalles}
+        docente={docenteSeleccionado}
+      />
+      <ConfirmarEliminar
+        isOpen={isOpenEliminar}
+        onOpen={onOpenEliminar}
+        onOpenChange={onOpenChangeEliminar}
+        docente={docenteSeleccionado}
+      />
+      <ModificarDocente
+        isOpen={isOpenModificar}
+        onOpen={onOpenModificar}
+        onOpenChange={onOpenChangeModificar}
         docente={docenteSeleccionado}
       />
     </MainLayout>
