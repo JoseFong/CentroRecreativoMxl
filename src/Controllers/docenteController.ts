@@ -69,8 +69,6 @@ export async function crearDocente(data: any) {
 export async function actualizarDocente(id: number, data: any) {
   // Se verifica si existe un docente con la misma CURP
 
-  const partes = data.fechaNac.split("-");
-  const fecha = partes[2] + "/" + partes[1] + "/" + partes[0];
 
   // Se modifica la información del docente
   const docenteModificado = await prisma.docente.update({
@@ -80,7 +78,7 @@ export async function actualizarDocente(id: number, data: any) {
       aPaterno: data.aPaterno,
       aMaterno: data.aMaterno,
       telefono: data.telefono,
-      fechaNac: fecha,
+      fechaNac: data.fechaNac,
       curp: data.curp,
       correo: data.correo,
       usuario: data.usuario,

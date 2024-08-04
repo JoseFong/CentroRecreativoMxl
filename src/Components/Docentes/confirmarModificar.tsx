@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 function confirmarModificar({ isOpen, onOpenChange, data, docente }: any) {
   const handleAceptar = async () => {
     try {
-      const response = await axios.put(`/api/docentes/${docente.id}`, docente);
+      const response = await axios.put(`/api/docentes/${docente.id}`, data);
       console.log("Docente modificado:", response.data);
       toast.success("Docente modificado con éxito");
     } catch (error) {
