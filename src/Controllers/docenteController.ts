@@ -23,7 +23,7 @@ export async function crearDocente(data: any) {
     },
   });
   // Si existe uno se avisa
-  if (docenteCURP) return "Ya existe un docente con esa CURP";
+  if (docenteCURP) return { error: "Ya existe un docente con esa CURP" };
 
   // Se busca si un docente ya existe con ese usuario
   const docenteUser = await prisma.docente.findFirst({
@@ -32,7 +32,7 @@ export async function crearDocente(data: any) {
     },
   });
   // Si existe uno se avisa
-  if (docenteUser) return "Ya existe un docente con este usuario";
+  if (docenteUser) return { error: "Ya existe un docente con este usuario" };
 
   // Se formatea la fecha al formato correcto
   const partes = data.fechaNac.split("-");
@@ -69,7 +69,6 @@ export async function crearDocente(data: any) {
 export async function actualizarDocente(id: number, data: any) {
   // Se verifica si existe un docente con la misma CURP
 
-
   // Se modifica la información del docente
   const docenteModificado = await prisma.docente.update({
     where: { id: Number(id) },
@@ -99,23 +98,22 @@ export async function actualizarDocente(id: number, data: any) {
  * @returns Docente eliminado
  */
 export async function eliminarDocente(id: number) {
-  const idNumber:number = parseInt(id.toString())
+  const idNumber: number = parseInt(id.toString());
 
   await prisma.salida.deleteMany({
     where: {
-      docenteId: idNumber
-    }
-  })
+      docenteId: idNumber,
+    },
+  });
 
   await prisma.grupo.updateMany({
     where: {
-      docenteId: idNumber
+      docenteId: idNumber,
     },
     data: {
-      docenteId: undefined
-    }
-  })
-
+      docenteId: undefined,
+    },
+  });
 
   return await prisma.docente.delete({
     where: { id: Number(id) },

@@ -21,7 +21,7 @@ import {
 } from "@/utils/validaciones";
 import toast from "react-hot-toast";
 
-function modificarDocente({ isOpen, onOpenChange, docente }: any) {
+function modificarDocente({ isOpen, onOpenChange, docente, setRefetch }: any) {
   const [nombre, setNombre] = useState("");
   const [aPaterno, setAPaterno] = useState("");
   const [aMaterno, setAMaterno] = useState("");
@@ -274,6 +274,8 @@ function modificarDocente({ isOpen, onOpenChange, docente }: any) {
         onOpenChange={onConfirmarOpenChange}
         data={data}
         docente={docente}
+        setRefetch={setRefetch}
+        onOpenChangeForm={onOpenChange}
       />
     </Modal>
   );

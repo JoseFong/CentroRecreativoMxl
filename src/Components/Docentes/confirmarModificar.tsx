@@ -10,12 +10,22 @@ import axios from "axios";
 import React from "react";
 import toast from "react-hot-toast";
 
-function confirmarModificar({ isOpen, onOpenChange, data, docente }: any) {
+function confirmarModificar({
+  isOpen,
+  onOpenChange,
+  data,
+  docente,
+  setRefetch,
+  onOpenChangeForm,
+}: any) {
   const handleAceptar = async () => {
     try {
       const response = await axios.put(`/api/docentes/${docente.id}`, data);
       console.log("Docente modificado:", response.data);
       toast.success("Docente modificado con éxito");
+      setRefetch(true);
+      onOpenChange(false);
+      onOpenChangeForm(false);
     } catch (error) {
       console.error("Error al modificar docente:", error);
       toast.error("Error al modificar docente");

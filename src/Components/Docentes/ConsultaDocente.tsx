@@ -56,6 +56,7 @@ const ConsultaDocente = () => {
   }); //Estos son los campos que le debes mandar a la api
   const [docenteSeleccionado, setDocenteSeleccionado] = useState();
   const [cargando, setCargando] = useState(false);
+  const [refetch, setRefetch] = useState(false);
 
   const [grupos, setGrupos] = useState([]);
 
@@ -63,6 +64,11 @@ const ConsultaDocente = () => {
     fetchDocentes();
     fetchGrupos();
   }, []);
+
+  useEffect(() => {
+    fetchDocentes();
+    setRefetch(false);
+  }, [refetch]);
 
   const fetchDocentes = async () => {
     try {
@@ -265,6 +271,7 @@ const ConsultaDocente = () => {
         onOpenChange={onOpenChangeRegistro}
         docente={docente}
         setDocente={setDocente}
+        setRefetch={setRefetch}
       />
       <ConsultaEspecifica
         isOpen={isOpenDetalles}
@@ -283,6 +290,7 @@ const ConsultaDocente = () => {
         onOpen={onOpenModificar}
         onOpenChange={onOpenChangeModificar}
         docente={docenteSeleccionado}
+        setRefetch={setRefetch}
       />
     </MainLayout>
   );

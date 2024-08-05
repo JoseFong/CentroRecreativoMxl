@@ -7,34 +7,39 @@ import {
   ModalHeader,
 } from "@nextui-org/react";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-function confirmarRegistro({ isOpen, onOpenChange, data }: any) {
+function confirmarRegistro({
+  isOpen,
+  onOpenChange,
+  data,
+  isOpenForm,
+  isOpenChangeForm,
+  setRefetch,
+}: any) {
   const [loading, setLoading] = useState(false);
 
   const handleAceptar = async () => {
     setLoading(true);
-
     try {
       const response = await axios.post("/api/docentes", data);
-      if (response.status >= 200 && response.status < 300) {
-        toast.success("Docente registrado exitosamente.");
-      } else {
-        throw new Error(response.data.message || "Error desconocido.");
+      if (response.data.error) {
+        // Si hay un error en la respuesta, lanzamos una excepción
+        throw new Error(response.data.error);
       }
+      toast.success(
+        response.data.message || "Docente registrado exitosamente."
+      );
+      onOpenChange(false);
+      isOpenChangeForm(false);
+      setRefetch(true);
     } catch (e: any) {
-      if (e.response) {
-        if (
-          e.response.status === 404 ||
-          e.response.status === 500 ||
-          e.response.status === 400
-        ) {
-          toast.error(e.response.data.message);
-        } else {
-          toast.error(e.message);
-        }
+      if (axios.isAxiosError(e)) {
+        // Error de red o respuesta del servidor
+        toast.error(e.response?.data?.message || e.message);
       } else {
+        // Error lanzado manualmente (como duplicado de CURP o usuario)
         toast.error(e.message);
       }
     } finally {

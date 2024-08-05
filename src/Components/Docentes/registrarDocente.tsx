@@ -21,7 +21,7 @@ import {
 } from "@/utils/validaciones";
 import ConfirmarRegistro from "./confirmarRegistro";
 
-function RegistrarDocente({ isOpen, onOpen, onOpenChange }: any) {
+function RegistrarDocente({ isOpen, onOpen, onOpenChange, setRefetch }: any) {
   const [nombre, setNombre] = useState("");
   const [aPaterno, setAPaterno] = useState("");
   const [aMaterno, setAMaterno] = useState("");
@@ -253,7 +253,10 @@ function RegistrarDocente({ isOpen, onOpen, onOpenChange }: any) {
       <ConfirmarRegistro
         isOpen={isConfirmarOpen}
         onOpenChange={onConfirmarOpenChange}
+        isOpenForm={isOpen}
+        isOpenChangeForm={onOpenChange}
         data={data}
+        setRefetch={setRefetch}
       />
     </Modal>
   );
