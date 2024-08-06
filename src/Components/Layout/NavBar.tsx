@@ -14,6 +14,7 @@ export default function NavBar() {
     { nombre: "Gastos", path: "/gastos" },
     { nombre: "Documentos", path: "/documentos" },
     { nombre: "Grupos", path: "/grupos" },
+    { nombre: "Actividades", path: "/actividades" },
   ]);
 
   return (
