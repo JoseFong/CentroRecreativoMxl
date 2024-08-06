@@ -1,6 +1,6 @@
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Button, Spinner, useDisclosure } from "@nextui-org/react";
+import { Button, Spinner, Tooltip, useDisclosure } from "@nextui-org/react";
 import MainLayout from "@/Components/Layout/MainLayout";
 import React, { SetStateAction, useEffect, useState } from "react";
 import RegistrarGrupo from "@/Components/Grupos/registrarGrupo";
@@ -19,6 +19,9 @@ import {
 } from "@nextui-org/table";
 import { FaPrint } from "react-icons/fa6";
 import ConsultaSalidas from "../Salidas/consultaSalidas";
+import VerHorario from "./grupoHorario";
+import horarioIcon from "@/Assets/horarioIcon.png";
+import Image from "next/image";
 
 function ConsultaGrupos() {
   const [grupos, setGrupos] = useState([]);
@@ -70,6 +73,12 @@ function ConsultaGrupos() {
     setSelectedAlumnos(alumnos);
     onModificarOpen();
   };
+
+  const {
+    onOpen: onHorOpen,
+    isOpen: isHorOpen,
+    onOpenChange: onHorOpenChange,
+  } = useDisclosure();
 
   //Traer la informacion de todos los grupos
   useEffect(() => {
@@ -177,6 +186,11 @@ function ConsultaGrupos() {
     onOpenImprimir();
   };
 
+  const handleVerHorario = (grupo: any) => {
+    setSelectedGrupo(grupo);
+    onHorOpen();
+  };
+
   return (
     <MainLayout>
       <div>
@@ -233,6 +247,20 @@ function ConsultaGrupos() {
                           <div className="p-2 flex flex-col w-full">
                             <div className="flex justify-between items-end">
                               <h1 className="font-bold">Grupo: {g.nombre}</h1>
+                              <Tooltip content="Ver horario">
+                                <Button
+                                  isIconOnly
+                                  onPress={() => handleVerHorario(g)}
+                                >
+                                  <Image
+                                    src={horarioIcon}
+                                    alt="Ver Horario"
+                                    className="w-5"
+                                    title="Ver horario"
+                                  />
+                                </Button>
+                              </Tooltip>
+
                               <Button isIconOnly onPress={() => imprimir(g)}>
                                 <FaPrint />
                               </Button>
@@ -344,6 +372,11 @@ function ConsultaGrupos() {
           isOpen={isOpenImprimir}
           onOpenChange={onOpenChangeImprimir}
           onOpen={onOpenImprimir}
+        />
+        <VerHorario
+          isOpen={isHorOpen}
+          onOpenChange={onHorOpenChange}
+          grupo={selectedGrupo}
         />
       </div>
     </MainLayout>

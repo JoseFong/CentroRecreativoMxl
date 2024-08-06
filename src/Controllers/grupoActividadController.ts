@@ -64,3 +64,11 @@ export async function modificarHorario(data:any){
     }
     
 }
+
+export async function obtenerGrupoActDeGrupo(id:number){
+    return await prisma.grupoActividad.findMany({
+        where: {
+            grupoId: id
+        }
+    })
+}
