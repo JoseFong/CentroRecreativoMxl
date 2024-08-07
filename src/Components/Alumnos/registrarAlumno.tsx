@@ -67,6 +67,21 @@ function RegistrarAlumno({
     onOpenChange: onConfirmarOpenChange,
   } = useDisclosure();
 
+  useEffect(() => {
+    setNombre("");
+    setAPaterno("");
+    setAMaterno("");
+    setGenero("");
+    setFechaNac("");
+    setTelefono("");
+    setTelefonoAl("");
+    setDireccion("");
+    setCurp("");
+    setGrupoId("");
+    setIds([]);
+    setNombres([]);
+    setEnviado(false);
+  }, [isOpen === false]);
   //Función para agregar el alumno, se ejecuta cuando se presiona registrar
   const handleAgregar = () => {
     try {

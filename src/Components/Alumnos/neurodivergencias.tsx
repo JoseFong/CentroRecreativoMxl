@@ -83,7 +83,7 @@ function Neurodivergencias() {
 
     try {
       const response = await axios.delete(
-        `/api/NEE/${neurodivergenciaSeleccionada.id}`
+        `/api/nee/${neurodivergenciaSeleccionada.id}`
       );
       if (response.status >= 200 && response.status < 300) {
         toast.success("Se eliminó la neurodivergencia.");
@@ -94,6 +94,8 @@ function Neurodivergencias() {
       }
     } catch (e: any) {
       toast.error(e.response?.data?.message || e.message);
+    } finally {
+      setNombre("");
     }
   };
 
@@ -105,7 +107,7 @@ function Neurodivergencias() {
     const data = { nombre: nombre };
     try {
       const response = await axios.put(
-        `/api/NEE/${neurodivergenciaSeleccionada.id}`,
+        `/api/nee/${neurodivergenciaSeleccionada.id}`,
         data
       );
       if (response.status >= 200 && response.status < 300) {
@@ -152,6 +154,11 @@ function Neurodivergencias() {
   useEffect(() => {
     fetchNEE();
   }, []);
+
+  const [isOpenPop, setIsOpenPop] = React.useState(false);
+  useEffect(() => {
+    setNombre("");
+  }, [isOpenPop]);
 
   return (
     <div>
@@ -216,7 +223,13 @@ function Neurodivergencias() {
           )}
         </ModalContent>
       </Modal>
-      <Popover placement="bottom" showArrow offset={10}>
+      <Popover
+        placement="bottom"
+        showArrow
+        offset={10}
+        isOpen={isOpenPop}
+        onOpenChange={(open) => setIsOpenPop(open)}
+      >
         <PopoverTrigger>
           <Button isIconOnly className=" bg-verdeFuerte text-[#ffffff]">
             <HiSquaresPlus />
@@ -246,6 +259,7 @@ function Neurodivergencias() {
               type="text"
               placeholder="Ingrese el nombre de la NEE"
               onChange={(e) => setNombre(e.target.value)}
+              value={nombre}
             />
             <div className="flex justify-center pt-2">
               <Button
