@@ -6,71 +6,50 @@ import Logo from "../../Assets/Logo.png";
 import Link from "next/link";
 
 export default function NavBar() {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const [opciones, setOpciones] = useState([
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [opciones] = useState([
     { nombre: "Alumnos", path: "/alumnos" },
     { nombre: "Docentes", path: "/docentes" },
     { nombre: "Pagos", path: "/pagos" },
     { nombre: "Gastos", path: "/gastos" },
     { nombre: "Documentos", path: "/documentos" },
     { nombre: "Grupos", path: "/grupos" },
+    { nombre: "Actividades", path: "/actividades" },
   ]);
 
   return (
-    <header>
-      <nav
-        x-data="{ open: false }"
-        className="flex h-auto w-auto  bg-headerNav shadow-lg justify-between md:h-20"
-      >
-        <div className="flex w-full justify-between ">
-          <div
-            className={`flex px-6 w-1/2 items-center font-semibold md:w-1/5 md:px-1 md:flex md:items-center md:justify-center ${
-              isMenuOpen ? "hidden" : "flex"
-            }`}
-          >
-            <Image src={Logo} alt="Logo" className="w-24 h-20 p-2" />
+    <header className="bg-headerNav shadow-lg">
+      <nav className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-20">
+          <div className="flex items-center">
+            <Image
+              src={Logo}
+              alt="Logo"
+              width={96}
+              height={80}
+              className="p-2"
+            />
           </div>
 
-          <div
-            className={`flex flex-col w-full h-auto md:hidden ${
-              isMenuOpen ? "flex" : "hidden"
-            }`}
-          >
-            <div className="flex flex-col items-center justify-center gap-2">
-              {opciones.map((opc, index) => (
-                <Link href={opc.path} key={index}>
-                  <Button
-                    key={index}
-                    color="success"
-                    variant="light"
-                    size="lg"
-                    className="text-[#ffffff]"
-                  >
-                    {opc.nombre}
-                  </Button>
-                </Link>
-              ))}
-            </div>
-          </div>
-          <div className="hidden w-2/4 items-center justify-evenly font-semibold md:flex">
+          <div className="hidden md:flex space-x-4">
             {opciones.map((opc, index) => (
               <Link href={opc.path} key={index}>
                 <Button
-                  key={index}
                   color="success"
                   variant="light"
-                  size="lg"
-                  className="text-[#ffffff]"
+                  size="md"
+                  className="text-white"
                 >
                   {opc.nombre}
                 </Button>
               </Link>
             ))}
           </div>
-          <div className="hidden w-1/5 items-center justify-evenly font-semibold md:flex">
+
+          <div className="hidden md:flex items-center">
             <Tooltip content="Cerrar sesión">
               <Button
-                className=" bg-verdeFuerte text-[#ffffff]"
+                className="bg-verdeFuerte text-white"
                 variant="solid"
                 isIconOnly
                 size="lg"
@@ -79,33 +58,71 @@ export default function NavBar() {
               </Button>
             </Tooltip>
           </div>
-          <button
-            className="text-white w-10 h-10 relative focus:outline-none bg-headerNav md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <span className="sr-only">Open main menu</span>
-            <div className="block w-5 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <span
-                aria-hidden="true"
-                className={`block absolute h-0.5 w-5 bg-current transform transition duration-500 ease-in-out ${
-                  isMenuOpen ? "rotate-45" : "-translate-y-1.5"
-                }`}
-              ></span>
-              <span
-                aria-hidden="true"
-                className={`block absolute h-0.5 w-5 bg-current transform transition duration-500 ease-in-out ${
-                  isMenuOpen ? "opacity-0" : ""
-                }`}
-              ></span>
-              <span
-                aria-hidden="true"
-                className={`block absolute h-0.5 w-5 bg-current transform transition duration-500 ease-in-out ${
-                  isMenuOpen ? "-rotate-45" : "translate-y-1.5"
-                }`}
-              ></span>
-            </div>
-          </button>
+
+          <div className="md:hidden">
+            <button
+              className="text-white focus:outline-none"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                {isMenuOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
+
+        {isMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              {opciones.map((opc, index) => (
+                <Link href={opc.path} key={index}>
+                  <Button
+                    color="success"
+                    variant="light"
+                    size="sm"
+                    className="text-white w-full justify-start"
+                  >
+                    {opc.nombre}
+                  </Button>
+                </Link>
+              ))}
+            </div>
+            <div className="pt-4 pb-3 border-t border-gray-700">
+              <Tooltip content="Cerrar sesión">
+                <Button
+                  className="bg-verdeFuerte text-white w-full"
+                  variant="solid"
+                  size="lg"
+                >
+                  <IoLogOutOutline
+                    style={{ fontSize: "22px" }}
+                    className="mr-2"
+                  />
+                  Cerrar sesión
+                </Button>
+              </Tooltip>
+            </div>
+          </div>
+        )}
       </nav>
     </header>
   );

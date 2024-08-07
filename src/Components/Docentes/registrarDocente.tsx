@@ -10,7 +10,7 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import {
   fechaFutura,
@@ -37,6 +37,19 @@ function RegistrarDocente({ isOpen, onOpen, onOpenChange, setRefetch }: any) {
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRol(e.target.value);
   };
+
+  useEffect(() => {
+    setNombre("");
+    setAPaterno("");
+    setAMaterno("");
+    setTelefono("");
+    setFechaNac("");
+    setCurp("");
+    setCorreo("");
+    setUsuario("");
+    setContrasena("");
+    setRol("");
+  }, [isOpen === false]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     try {

@@ -9,6 +9,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import ListaDeAsistenciaTodos from "./ListaDeAsistenciaTodos";
 import DocumentoEnBlanco from "./DocumentoEnBlanco";
+import DocumentoPermiso from "./DocumentoPermiso";
 
 function ConsultaAlumnos() {
   const [grupos, setGrupos] = useState([]);
@@ -91,6 +92,11 @@ function ConsultaAlumnos() {
     onOpen: onOpenBlanco,
     onOpenChange: onOpenChangeBlanco,
   } = useDisclosure();
+  const {
+    isOpen: isOpenPermiso,
+    onOpen: onOpenPermiso,
+    onOpenChange: onOpenChangePermiso,
+  } = useDisclosure();
 
   const cardsData = [
     {
@@ -119,9 +125,9 @@ function ConsultaAlumnos() {
     },
     {
       title: "Imprimible",
-      description: "Falta",
-      image: "https://i.imgur.com/aXPJMUu.png",
-      onOpen: onOpenBlanco,
+      description: "Permiso de salida",
+      image: "https://i.imgur.com/quniSrB.png",
+      onOpen: onOpenPermiso,
     },
   ];
 
@@ -134,7 +140,7 @@ function ConsultaAlumnos() {
               <h1 className="text-4xl font-bold">Documentos</h1>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 m-4 ">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-4 m-4 ">
             {cardsData.map((card, index) => (
               <Card
                 key={index}
@@ -175,6 +181,10 @@ function ConsultaAlumnos() {
       <DocumentoEnBlanco
         isOpen={isOpenBlanco}
         onOpenChange={onOpenChangeBlanco}
+      />
+      <DocumentoPermiso
+        isOpen={isOpenPermiso}
+        onOpenChange={onOpenChangePermiso}
       />
     </div>
   );

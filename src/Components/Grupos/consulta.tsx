@@ -22,6 +22,7 @@ import ConsultaSalidas from "../Salidas/consultaSalidas";
 import VerHorario from "./grupoHorario";
 import horarioIcon from "@/Assets/horarioIcon.png";
 import Image from "next/image";
+import { FaCalendarDays } from "react-icons/fa6";
 
 function ConsultaGrupos() {
   const [grupos, setGrupos] = useState([]);
@@ -193,7 +194,7 @@ function ConsultaGrupos() {
 
   return (
     <MainLayout>
-      <div>
+      <div className="h-screen">
         <div className="flex flex-col md:flex-row m-4 md:px-10 md:pt-10 md:pb-4">
           <div className=" flex flex-col md:flex-row">
             <h1 className=" text-4xl font-bold">Grupos</h1>
@@ -247,23 +248,26 @@ function ConsultaGrupos() {
                           <div className="p-2 flex flex-col w-full">
                             <div className="flex justify-between items-end">
                               <h1 className="font-bold">Grupo: {g.nombre}</h1>
-                              <Tooltip content="Ver horario">
-                                <Button
-                                  isIconOnly
-                                  onPress={() => handleVerHorario(g)}
-                                >
-                                  <Image
-                                    src={horarioIcon}
-                                    alt="Ver Horario"
-                                    className="w-5"
-                                    title="Ver horario"
-                                  />
-                                </Button>
-                              </Tooltip>
+                              <div>
+                                <Tooltip content="Ver horario">
+                                  <Button
+                                    className="mr-2 mt-1"
+                                    isIconOnly
+                                    onPress={() => handleVerHorario(g)}
+                                  >
+                                    <FaCalendarDays />
+                                  </Button>
+                                </Tooltip>
 
-                              <Button isIconOnly onPress={() => imprimir(g)}>
-                                <FaPrint />
-                              </Button>
+                                <Tooltip content={"Imprimir"}>
+                                  <Button
+                                    isIconOnly
+                                    onPress={() => imprimir(g)}
+                                  >
+                                    <FaPrint />
+                                  </Button>
+                                </Tooltip>
+                              </div>
                             </div>
                             <h1 className="font-bold pb-2">
                               Docente Encargado:{" "}
