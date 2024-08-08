@@ -92,14 +92,28 @@ function ConsultaGastos() {
 
   const filteredGastos = gastos
     .filter((gasto) => {
+      //@ts-ignore
       const concepto = gasto.concepto.toLowerCase();
       return concepto.includes(searchText.toLowerCase());
     })
     .sort((a, b) => {
+      //@ts-ignore
       const conceptoA = a.concepto.toLowerCase();
+      //@ts-ignore
       const conceptoB = b.concepto.toLowerCase();
       return conceptoA.localeCompare(conceptoB);
     });
+
+  const formatFecha = (fecha: string) => {
+    // Dividimos la fecha original en un array de año, mes y día
+    const partesFecha = fecha.split("-");
+    const año = partesFecha[0];
+    const mes = partesFecha[1];
+    const dia = partesFecha[2];
+
+    // Reconstruimos la fecha en el formato deseado
+    return `${dia}/${mes}/${año}`;
+  };
 
   return (
     <MainLayout>
@@ -134,7 +148,7 @@ function ConsultaGastos() {
                   <div className="p-2 flex flex-col w-full">
                     <div className="flex justify-between items-center py-4">
                       <h1 className="font-bold">
-                        Total de gastos: {totalGastos}
+                        Total de gastos: ${totalGastos}
                       </h1>
                     </div>
                   </div>
@@ -164,7 +178,7 @@ function ConsultaGastos() {
                               <p className=" text-lg">${g.cantidad}</p>
                             </TableCell>
                             <TableCell>
-                              <p className=" text-lg">{g.fecha}</p>
+                              <p className=" text-lg">{formatFecha(g.fecha)}</p>
                             </TableCell>
                             <TableCell>
                               <div className="flex flex-col md:flex-row justify-center items-center">

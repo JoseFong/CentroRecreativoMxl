@@ -61,10 +61,11 @@ const styles = StyleSheet.create({
   cuerpo: {
     flex: 1,
     padding: 20,
+    flexWrap: "wrap",
   },
   textoCuerpo: {
-    fontSize: 15,
-    lineHeight: 2,
+    fontSize: 12,
+    lineHeight: 1.5,
   },
   pie: { marginTop: "auto" },
 });
@@ -163,7 +164,15 @@ function DocumentoVacioLogo({ isOpen, onOpenChange }: any) {
       setNumero(value);
     }
   };
+  const splitText = (text: string, chunkSize: number) => {
+    const chunks = [];
+    for (let i = 0; i < text.length; i += chunkSize) {
+      chunks.push(text.slice(i, i + chunkSize));
+    }
+    return chunks;
+  };
 
+  const textLines = splitText(descripcion, 81);
   return (
     <Modal
       isOpen={isOpen}
@@ -180,7 +189,7 @@ function DocumentoVacioLogo({ isOpen, onOpenChange }: any) {
             <ModalBody>
               <PDFViewer width="100%" height="500px">
                 <MyDocument
-                  descripcion={descripcion}
+                  descripcion={textLines}
                   encargado={encargado}
                   numero={numero}
                 />
