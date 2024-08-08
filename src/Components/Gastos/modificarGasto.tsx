@@ -9,6 +9,7 @@ import {
 } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import ConfirmarModificarGasto from "./confirmarModificarGasto";
+import toast from "react-hot-toast";
 
 function ModificarGasto({
   gasto,
@@ -42,6 +43,22 @@ function ModificarGasto({
   };
 
   const handleModificar = () => {
+    const [ano, mes, dia] = fecha.split("-");
+    const fechaIngresada = new Date(
+      parseInt(ano),
+      parseInt(mes) - 1,
+      parseInt(dia)
+    ); //Se crea una fecha con la fecha ingresada
+    const fechaHoy = new Date(); //Se crea una fecha con el día de hoy
+
+    //Se verifica si la fecha es superior a la fecha actual
+    if (fechaIngresada > fechaHoy) {
+      toast.error("La fecha no puede superar la fecha actual");
+    } else if (fechaIngresada.getMonth() < fechaHoy.getMonth()) {
+      toast.error("La fecha no puede ser del mes anterior.");
+      return;
+    }
+
     if (gasto) {
       const dataTemp = {
         ...gasto,
@@ -65,12 +82,12 @@ function ModificarGasto({
             onValueChange={setConcepto}
           />
           <Input
+            type="number"
             label="Cantidad"
             value={cantidad}
             onValueChange={setCantidad}
           />
           <Input
-            disabled
             label="Fecha"
             type="date"
             value={fecha}

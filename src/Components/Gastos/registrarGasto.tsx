@@ -8,7 +8,7 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@nextui-org/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ConfirmarRegistrarGasto from "./confirmarRegistrarGasto";
 
@@ -24,8 +24,6 @@ function RegistrarGasto({
   const [concepto, setConcepto] = useState("");
   const [cantidad, setCantidad] = useState("");
   const [fecha, setFecha] = useState("");
-
-  const [errorFecha, setErrorFecha] = useState(false);
 
   const {
     onOpen: onConfirmarOpen,
@@ -59,7 +57,9 @@ function RegistrarGasto({
     //Se verifica si la fecha es superior a la fecha actual
     if (fechaIngresada > fechaHoy) {
       toast.error("La fecha no puede superar la fecha actual.");
-      setErrorFecha(true);
+      return;
+    } else if (fechaIngresada.getMonth() < fechaHoy.getMonth()) {
+      toast.error("La fecha no puede ser del mes anterior.");
       return;
     }
 
@@ -73,6 +73,10 @@ function RegistrarGasto({
     setCantidad("");
     setFecha("");
   };
+
+  useEffect(() => {
+    reset();
+  }, [isOpen === false]);
 
   return (
     <>
@@ -103,7 +107,13 @@ function RegistrarGasto({
             />
           </ModalBody>
           <ModalFooter>
-            <Button onClick={() => onOpenChange(false)} className=" bg-verde">
+            <Button
+              onClick={() => {
+                onOpenChange(false);
+                reset();
+              }}
+              className=" bg-verde"
+            >
               Cancelar
             </Button>
 

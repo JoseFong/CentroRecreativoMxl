@@ -60,14 +60,16 @@ const styles = StyleSheet.create({
   cuerpo: {
     flex: 1,
     padding: 20,
+    flexWrap: "wrap",
   },
   textoCuerpo: {
-    fontSize: 15,
-    lineHeight: 2,
+    fontSize: 12,
+    lineHeight: 1.5,
   },
   pie: { marginTop: "auto" },
   firma: { marginTop: "auto" },
 });
+
 const logo = "https://i.imgur.com/6hTa0ZR.png";
 const hoy = new Date();
 const ano = hoy.getFullYear();
@@ -109,21 +111,21 @@ const MyDocument = ({ descripcion, encargado, numero }: any) => (
         <View style={styles.textoCuerpo}>
           <Text>{descripcion}</Text>
         </View>
+      </View>
 
-        <View style={styles.pie}>
-          <View style={{ alignItems: "center", justifyContent: "center" }}>
-            <Text>________________________________________</Text>
-            <Text style={{ paddingTop: 10 }}>Firma de enterado</Text>
-          </View>
-          <Text style={{ fontSize: 18, paddingBottom: 10, paddingTop: 20 }}>
-            A T E N T A M E N T E
-          </Text>
-          <Text style={{ fontSize: 15, paddingBottom: 8 }}>{encargado}</Text>
-          <Text style={{ fontSize: 15, paddingBottom: 8 }}>
-            Encargado/a del centro Recreativo
-          </Text>
-          <Text style={{ fontSize: 15, paddingBottom: 8 }}>{numero}</Text>
+      <View style={styles.pie}>
+        <View style={{ alignItems: "center", justifyContent: "center" }}>
+          <Text>________________________________________</Text>
+          <Text style={{ paddingTop: 10 }}>Firma de enterado</Text>
         </View>
+        <Text style={{ fontSize: 18, paddingBottom: 90, paddingTop: 20 }}>
+          A T E N T A M E N T E
+        </Text>
+        <Text style={{ fontSize: 15, paddingBottom: 8 }}>{encargado}</Text>
+        <Text style={{ fontSize: 15, paddingBottom: 8 }}>
+          Encargado/a del centro Recreativo
+        </Text>
+        <Text style={{ fontSize: 15, paddingBottom: 8 }}>{numero}</Text>
       </View>
     </Page>
   </Document>
@@ -168,6 +170,15 @@ function DocumentoPermiso({ isOpen, onOpenChange }: any) {
       setNumero(value);
     }
   };
+  const splitText = (text: string, chunkSize: number) => {
+    const chunks = [];
+    for (let i = 0; i < text.length; i += chunkSize) {
+      chunks.push(text.slice(i, i + chunkSize));
+    }
+    return chunks;
+  };
+
+  const textLines = splitText(descripcion, 81);
 
   return (
     <Modal
@@ -185,7 +196,7 @@ function DocumentoPermiso({ isOpen, onOpenChange }: any) {
             <ModalBody>
               <PDFViewer width="100%" height="500px">
                 <MyDocument
-                  descripcion={descripcion}
+                  descripcion={textLines}
                   encargado={encargado}
                   numero={numero}
                 />
