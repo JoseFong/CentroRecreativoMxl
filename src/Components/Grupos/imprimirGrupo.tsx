@@ -109,9 +109,9 @@ const MyDocument = ({ grupo, alumnos }: any) => (
       <View style={styles.header}>
         <Image src={logo} style={styles.headerImage} />
         <View style={styles.headerTextContainer}>
-          <Text style={styles.headerText}>Centros de Atención Múltiple</Text>
+          <Text style={styles.headerText}>Centro de Atención Múltiple</Text>
           <Text style={styles.headerText2}>
-            Ana García #3899, Residencias, 21280 Imperiales, B.C.
+            Ana García #3899, Residencias Imperiales, 21280, B.C.
           </Text>
         </View>
       </View>
