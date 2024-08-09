@@ -110,8 +110,8 @@ function AgregarActividad({
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button onPress={onClose}>Cancelar</Button>
-                <Button onPress={handleRegistrar}>Aceptar</Button>
+                <Button onPress={onClose} className="bg-verde">Cancelar</Button>
+                <Button onPress={handleRegistrar} className="text-white bg-verdeFuerte">Aceptar</Button>
               </ModalFooter>
             </>
           )}
@@ -139,8 +139,8 @@ function AgregarActividad({
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button onPress={onClose2}>Cancelar</Button>
-                <Button onPress={() => handleConfirmar(onClose2)}>
+                <Button onPress={onClose2} className="bg-verde">Cancelar</Button>
+                <Button onPress={() => handleConfirmar(onClose2)} className="text-white bg-verdeFuerte">
                   Aceptar
                 </Button>
               </ModalFooter>

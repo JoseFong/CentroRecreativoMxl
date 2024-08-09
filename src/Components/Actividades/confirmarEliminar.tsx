@@ -55,7 +55,7 @@ function ConfirmarEliminarActividad({
               <p className="text-red-600">Esta acción es permanente.</p>
             </ModalBody>
             <ModalFooter>
-              <Button onPress={onClose}>Cancelar</Button>
+              <Button onPress={onClose} className="bg-verde">Cancelar</Button>
               <Button color="danger" onPress={() => handleEliminar(onClose)}>
                 Eliminar
               </Button>

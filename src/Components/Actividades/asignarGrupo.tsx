@@ -594,8 +594,8 @@ export function AsignarGrupoModal({
                 )}
               </ModalBody>
               <ModalFooter>
-                <Button onPress={onClose}>Cancelar</Button>
-                <Button onPress={handleAceptar}>Aceptar</Button>
+                <Button onPress={onClose} className="bg-verde">Cancelar</Button>
+                <Button onPress={handleAceptar} className="bg-verdeFuerte text-white">Aceptar</Button>
               </ModalFooter>
             </>
           )}
@@ -609,8 +609,8 @@ export function AsignarGrupoModal({
                 ¿Desea asignar el grupo a la actividad '{actividad.nombre}'?
               </ModalHeader>
               <ModalFooter>
-                <Button onPress={onClose2}>Cancelar</Button>
-                <Button onPress={() => asignar(onClose2)}>Aceptar</Button>
+                <Button onPress={onClose2} className="bg-verde">Cancelar</Button>
+                <Button onPress={() => asignar(onClose2)} className="bg-verdeFuerte text-white">Aceptar</Button>
               </ModalFooter>
             </>
           )}

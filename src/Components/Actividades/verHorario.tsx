@@ -138,13 +138,13 @@ function VerHorarioModal({
               </ModalHeader>
               <ModalBody>
                 {cargando ? (
-                  <Spinner size="lg" />
+                  <Spinner size="lg" color="warning" />
                 ) : (
                   <Table>
                     <TableHeader>
-                      <TableColumn>Día</TableColumn>
-                      <TableColumn>Inicio</TableColumn>
-                      <TableColumn>Fin</TableColumn>
+                      <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Día</TableColumn>
+                      <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Inicio</TableColumn>
+                      <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Fin</TableColumn>
                     </TableHeader>
                     <TableBody>
                       {display.map((d: any) => (
@@ -159,7 +159,7 @@ function VerHorarioModal({
                 )}
               </ModalBody>
               <ModalFooter>
-                <Button onPress={onClose}>Cerrar</Button>
+                <Button onPress={onClose} className="bg-verde">Cerrar</Button>
               </ModalFooter>
             </>
           )}

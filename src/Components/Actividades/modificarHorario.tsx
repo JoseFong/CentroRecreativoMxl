@@ -374,7 +374,7 @@ export function ModificarHorarioModal({
               </ModalHeader>
               <ModalBody>
                 {cargando ? (
-                  <Spinner size="lg" />
+                  <Spinner size="lg" color="warning" />
                 ) : (
                   <>
                     <div className="flex flex-col gap-1">
@@ -606,8 +606,8 @@ export function ModificarHorarioModal({
                 )}
               </ModalBody>
               <ModalFooter>
-                <Button onPress={onClose}>Cancelar</Button>
-                <Button onPress={handleAceptar}>Aceptar</Button>
+                <Button onPress={onClose} className=" bg-verde">Cancelar</Button>
+                <Button onPress={handleAceptar} className=" bg-verdeFuerte text-[#ffffff]">Aceptar</Button>
               </ModalFooter>
             </>
           )}
@@ -622,8 +622,8 @@ export function ModificarHorarioModal({
                 {actividad.nombre}'?
               </ModalHeader>
               <ModalFooter>
-                <Button onPress={onClose2}>Cancelar</Button>
-                <Button onPress={() => modificar(onClose2)}>Aceptar</Button>
+                <Button onPress={onClose2} className=" bg-verde">Cancelar</Button>
+                <Button onPress={() => modificar(onClose2)} className=" bg-verdeFuerte text-[#ffffff]">Aceptar</Button>
               </ModalFooter>
             </>
           )}

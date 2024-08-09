@@ -63,7 +63,7 @@ function ConsultaEspecificaActModal({
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button onPress={onClose}>Cerrar</Button>
+                <Button onPress={onClose} className=" bg-verdeFuerte text-[#ffffff]">Cerrar</Button>
               </ModalFooter>
             </>
           )}
