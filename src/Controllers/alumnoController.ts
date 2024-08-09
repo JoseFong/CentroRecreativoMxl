@@ -97,11 +97,11 @@ export async function eliminarAlumno(id:number){
     })
 
     //Se elimina el alumno
-    return await prisma.alumno.delete({
+    return prisma.alumno.delete({
         where: {
-            id:id
+            id: id
         }
-    })
+    });
 }
 
 /**

@@ -1,5 +1,9 @@
-import { actualizarGrupo } from "@/Controllers/grupoController";
+import { actualizarGrupo, eliminarGrupo } from "@/Controllers/grupoController";
 import { NextRequest, NextResponse } from "next/server";
+
+interface Params {
+    id: string;
+}
 
 /**
  * Función handler para actualizar un grupo
@@ -23,5 +27,18 @@ export async function PATCH(request:NextRequest) {
         return NextResponse.json(response)
     } catch (e: any) {
         return NextResponse.json({message: e.message}, {status: 500})
+    }
+}
+
+export async function DELETE(request:NextRequest, {params}:{params:Params}) {
+    try {
+        const id = parseInt(params.id);
+        const response = await eliminarGrupo(id);
+        if (!response) {
+            return NextResponse.json({ message: "Error al eliminar el grupo." }, { status: 404 });
+        }
+        return NextResponse.json(response);
+    } catch (e: any) {
+        return NextResponse.json({ message: e.message }, { status: 500 });
     }
 }
