@@ -29,9 +29,13 @@ interface Evento {
   titulo: string;
 }
 
-function Calendario() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
+function Calendario({
+  isOpen,
+  onOpenChange,
+}: {
+  isOpen: any;
+  onOpenChange: any;
+}) {
   const [salidas, setSalidas] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [grupos, setGrupos] = useState([]);
@@ -177,7 +181,10 @@ function Calendario() {
       let ss: Evento[] = [];
       salidas.map((s: any) => {
         const partes = s.fecha.split("-");
-        if (parseInt(partes[1]) === mesActualNum && anoActual === partes[0]) {
+        if (
+          parseInt(partes[1]) === mesActualNum &&
+          anoActual === parseInt(partes[0])
+        ) {
           const f: number = parseInt(partes[2]);
           const salida: Evento = {
             grupo: nombreGrupo(s.grupoId),
@@ -213,7 +220,6 @@ function Calendario() {
 
   return (
     <>
-      <Button onPress={onOpen}>Ver Calendario</Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="4xl">
         <ModalContent>
           {(onClose) => (

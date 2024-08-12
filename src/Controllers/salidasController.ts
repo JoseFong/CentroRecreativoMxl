@@ -24,7 +24,11 @@ export async function registrarSalida(data:any) {
     const nombre = data.nombre
 
     //Validaciones
-    if(Date.now() > Date.parse(fecha)) return "La fecha no puede ser anterior a la actual"
+    const partes = fecha.split("-")
+    const fechaSalida = new Date(parseInt(partes[0]),(parseInt(partes[1])-1),parseInt(partes[2]))
+    const fechaHoy = new Date()
+
+    if(fechaHoy>fechaSalida) return "La fecha no puede ser anterior a la actual"
 
     await prisma.salida.create({
         data: {

@@ -20,8 +20,6 @@ import {
 import { FaPrint } from "react-icons/fa6";
 import ConsultaSalidas from "../Salidas/consultaSalidas";
 import VerHorario from "./grupoHorario";
-import horarioIcon from "@/Assets/horarioIcon.png";
-import Image from "next/image";
 import { FaCalendarDays } from "react-icons/fa6";
 
 function ConsultaGrupos() {

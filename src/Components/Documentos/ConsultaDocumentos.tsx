@@ -10,6 +10,8 @@ import toast from "react-hot-toast";
 import ListaDeAsistenciaTodos from "./ListaDeAsistenciaTodos";
 import DocumentoEnBlanco from "./DocumentoEnBlanco";
 import DocumentoPermiso from "./DocumentoPermiso";
+import CalendarioImg from "@/Assets/calendarioImg.png";
+import Calendario from "../Calendario/Calendario";
 
 function ConsultaAlumnos() {
   const [grupos, setGrupos] = useState([]);
@@ -98,6 +100,12 @@ function ConsultaAlumnos() {
     onOpenChange: onOpenChangePermiso,
   } = useDisclosure();
 
+  const {
+    isOpen: isOpenCalendario,
+    onOpen: onOpenCalendario,
+    onOpenChange: onOpenChangeCalendario,
+  } = useDisclosure();
+
   const cardsData = [
     {
       title: "Imprimible",
@@ -128,6 +136,12 @@ function ConsultaAlumnos() {
       description: "Permiso de salida",
       image: "https://i.imgur.com/quniSrB.png",
       onOpen: onOpenPermiso,
+    },
+    {
+      title: "Imprimible",
+      description: "Calendario de salidas",
+      image: "https://i.imgur.com/CYwhXFD.png",
+      onOpen: onOpenCalendario,
     },
   ];
 
@@ -185,6 +199,10 @@ function ConsultaAlumnos() {
       <DocumentoPermiso
         isOpen={isOpenPermiso}
         onOpenChange={onOpenChangePermiso}
+      />
+      <Calendario
+        isOpen={isOpenCalendario}
+        onOpenChange={onOpenChangeCalendario}
       />
     </div>
   );
