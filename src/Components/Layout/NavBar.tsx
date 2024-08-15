@@ -22,13 +22,15 @@ export default function NavBar() {
       <nav className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
-            <Image
-              src={Logo}
-              alt="Logo"
-              width={96}
-              height={80}
-              className="p-2"
-            />
+            <Link href={"/"}>
+              <Image
+                src={Logo}
+                alt="Logo"
+                width={96}
+                height={80}
+                className="p-2"
+              />
+            </Link>
           </div>
 
           <div className="hidden md:flex space-x-4">
