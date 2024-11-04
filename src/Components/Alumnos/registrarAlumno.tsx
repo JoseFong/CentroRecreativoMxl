@@ -26,6 +26,7 @@ import {
   textoVacio,
   tieneCaracteresEspeciales,
   tieneNumeros,
+  validarCURP,
 } from "@/utils/validaciones";
 
 function RegistrarAlumno({
@@ -126,6 +127,9 @@ function RegistrarAlumno({
 
       if (curp.trim().length !== 18)
         throw new Error("Ingrese una CURP con un formáto correcto.");
+
+      if (!validarCURP(curp.trim()))
+        throw new Error("Ingrese una CURP con un formato correcto.");
 
       if (ids.length === 0)
         throw new Error("Seleccione al menos una neurodivergencia.");

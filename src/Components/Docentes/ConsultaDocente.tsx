@@ -152,12 +152,14 @@ const ConsultaDocente = () => {
     onOpenModificar();
   };
 
-  const obtenerNombreGrupo = (id: number) => {
-    const grupo = grupos.find((gr: any) => gr.id === id);
-    // @ts-ignore
-    if (grupo) return grupo.nombre;
-    return null;
-  };
+  function obtenerNombresGrupos(docenteId: any) {
+    const nombresDeGrupos = grupos
+      .filter((grupo: any) => grupo.docenteId === docenteId)
+      .map((gr: any) => gr.nombre);
+    const str = nombresDeGrupos.join(", ");
+    if (str === "") return "Sin Grupo";
+    return str;
+  }
 
   return (
     <MainLayout>
@@ -188,10 +190,10 @@ const ConsultaDocente = () => {
               <Table aria-label="Example static collection table">
                 <TableHeader>
                   <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
-                    docente
+                    Docente
                   </TableColumn>
                   <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
-                    Grupo
+                    Grupo(s)
                   </TableColumn>
                   <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
                     Teléfono
@@ -210,15 +212,7 @@ const ConsultaDocente = () => {
                           }`}
                         </p>
                       </TableCell>
-                      <TableCell>
-                        {docente.grupoId ? (
-                          <p className=" text-lg">
-                            {obtenerNombreGrupo(docente.grupoId)}
-                          </p>
-                        ) : (
-                          <p className="text-lg">Sin grupo</p>
-                        )}
-                      </TableCell>
+                      <TableCell>{obtenerNombresGrupos(docente.id)}</TableCell>
                       <TableCell>
                         <p className=" text-lg">{`${docente.telefono}`}</p>
                       </TableCell>

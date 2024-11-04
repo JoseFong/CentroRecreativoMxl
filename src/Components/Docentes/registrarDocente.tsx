@@ -18,6 +18,7 @@ import {
   textoVacio,
   tieneCaracteresEspeciales,
   tieneNumeros,
+  validarCURP,
 } from "@/utils/validaciones";
 import ConfirmarRegistro from "./confirmarRegistro";
 
@@ -29,14 +30,7 @@ function RegistrarDocente({ isOpen, onOpen, onOpenChange, setRefetch }: any) {
   const [fechaNac, setFechaNac] = useState("");
   const [curp, setCurp] = useState("");
   const [correo, setCorreo] = useState("");
-  const [usuario, setUsuario] = useState("");
-  const [contrasena, setContrasena] = useState("");
-  const [rol, setRol] = useState("");
   const [data, setData] = useState({});
-
-  const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setRol(e.target.value);
-  };
 
   useEffect(() => {
     setNombre("");
@@ -46,9 +40,6 @@ function RegistrarDocente({ isOpen, onOpen, onOpenChange, setRefetch }: any) {
     setFechaNac("");
     setCurp("");
     setCorreo("");
-    setUsuario("");
-    setContrasena("");
-    setRol("");
   }, [isOpen === false]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -60,10 +51,7 @@ function RegistrarDocente({ isOpen, onOpen, onOpenChange, setRefetch }: any) {
         textoVacio(fechaNac) ||
         textoVacio(telefono) ||
         textoVacio(curp) ||
-        textoVacio(correo) ||
-        textoVacio(usuario) ||
-        textoVacio(contrasena) ||
-        textoVacio(rol)
+        textoVacio(correo)
       ) {
         throw new Error("No deje campos vacíos.");
       }
@@ -92,14 +80,13 @@ function RegistrarDocente({ isOpen, onOpen, onOpenChange, setRefetch }: any) {
       if (curp.trim().length !== 18)
         throw new Error("Ingrese una CURP con un formato correcto.");
 
+      if (!validarCURP(curp.trim()))
+        throw new Error("Ingrese una CURP con formato correcto.");
+
       // Email validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(correo))
         throw new Error("Ingrese un correo electrónico válido.");
-
-      // Password strength validation (example: at least 8 characters)
-      if (contrasena.length < 8)
-        throw new Error("La contraseña debe tener al menos 8 caracteres.");
 
       const dataDocente = {
         nombre: nombre.trim().toUpperCase(),
@@ -109,9 +96,6 @@ function RegistrarDocente({ isOpen, onOpen, onOpenChange, setRefetch }: any) {
         fechaNac: fechaNac.trim(), // Usa la fecha formateada
         curp: curp.trim().toUpperCase(),
         correo,
-        usuario,
-        contrasena,
-        rol,
       };
 
       setData(dataDocente);
@@ -214,37 +198,6 @@ function RegistrarDocente({ isOpen, onOpen, onOpenChange, setRefetch }: any) {
                     onValueChange={setCorreo}
                   />
                 </div>
-                <div className=" flex flex-row gap-2  pt-4">
-                  <Input
-                    type="text"
-                    name="usuario"
-                    value={usuario}
-                    label="Usuario"
-                    labelPlacement="outside"
-                    placeholder="Ej. Usuario"
-                    onValueChange={setUsuario}
-                  />
-                  <Input
-                    type="password"
-                    name="contrasena"
-                    value={contrasena}
-                    label="Contraseña"
-                    labelPlacement="outside"
-                    placeholder="Ej. Usuario1"
-                    onValueChange={setContrasena}
-                  />
-                </div>
-                <Select
-                  label="Rol del docente"
-                  placeholder="Seleccione el rol"
-                  selectedKeys={[rol]}
-                  onChange={handleSelectionChange}
-                  labelPlacement="outside"
-                  className=" pt-4"
-                >
-                  <SelectItem key={"doc"}>Docente</SelectItem>
-                  <SelectItem key={"dir"}>Director</SelectItem>
-                </Select>
               </div>
             </ModalBody>
             <ModalFooter>

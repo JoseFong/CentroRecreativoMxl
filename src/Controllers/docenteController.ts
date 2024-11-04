@@ -25,15 +25,6 @@ export async function crearDocente(data: any) {
   // Si existe uno se avisa
   if (docenteCURP) return { error: "Ya existe un docente con esa CURP" };
 
-  // Se busca si un docente ya existe con ese usuario
-  const docenteUser = await prisma.docente.findFirst({
-    where: {
-      usuario: data.usuario,
-    },
-  });
-  // Si existe uno se avisa
-  if (docenteUser) return { error: "Ya existe un docente con este usuario" };
-
   // Se formatea la fecha al formato correcto
   const partes = data.fechaNac.split("-");
   const fecha = partes[2] + "/" + partes[1] + "/" + partes[0];
@@ -48,9 +39,6 @@ export async function crearDocente(data: any) {
       fechaNac: fecha,
       curp: data.curp,
       correo: data.correo,
-      usuario: data.usuario,
-      contrasena: data.contrasena,
-      rol: data.rol,
     },
   });
 
@@ -79,10 +67,7 @@ export async function actualizarDocente(id: number, data: any) {
       telefono: data.telefono,
       fechaNac: data.fechaNac,
       curp: data.curp,
-      correo: data.correo,
-      usuario: data.usuario,
-      contrasena: data.contrasena,
-      rol: data.rol,
+      correo: data.correo
     },
   });
 
@@ -100,10 +85,13 @@ export async function actualizarDocente(id: number, data: any) {
 export async function eliminarDocente(id: number) {
   const idNumber: number = parseInt(id.toString());
 
-  await prisma.salida.deleteMany({
+  await prisma.salida.updateMany({
     where: {
       docenteId: idNumber,
     },
+    data: {
+      docenteId: undefined
+    }
   });
 
   await prisma.grupo.updateMany({

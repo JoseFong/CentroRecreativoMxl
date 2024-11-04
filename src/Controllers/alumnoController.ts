@@ -96,6 +96,13 @@ export async function eliminarAlumno(id:number){
         }
     })
 
+    //Se eliminan los pagos realizados por el alumno para evitar errores de llaves foreaneas.
+    await prisma.pago.deleteMany({
+        where: {
+            alumnoId: id
+        }
+    })
+
     //Se elimina el alumno
     return prisma.alumno.delete({
         where: {

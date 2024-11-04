@@ -7,10 +7,7 @@ CREATE TABLE "Docente" (
     "telefono" TEXT NOT NULL,
     "fechaNac" TEXT NOT NULL,
     "curp" TEXT NOT NULL,
-    "correo" TEXT NOT NULL,
-    "usuario" TEXT NOT NULL,
-    "contrasena" TEXT NOT NULL,
-    "rol" TEXT NOT NULL
+    "correo" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -74,10 +71,10 @@ CREATE TABLE "Salida" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "nombre" TEXT NOT NULL,
     "fecha" TEXT NOT NULL,
-    "docenteId" INTEGER NOT NULL,
+    "docenteId" INTEGER,
     "grupoId" INTEGER NOT NULL,
     "horaDeSalida" TEXT NOT NULL,
-    CONSTRAINT "Salida_docenteId_fkey" FOREIGN KEY ("docenteId") REFERENCES "Docente" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "Salida_docenteId_fkey" FOREIGN KEY ("docenteId") REFERENCES "Docente" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT "Salida_grupoId_fkey" FOREIGN KEY ("grupoId") REFERENCES "Grupo" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
@@ -105,9 +102,6 @@ CREATE TABLE "Gasto" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Docente_curp_key" ON "Docente"("curp");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Docente_usuario_key" ON "Docente"("usuario");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Alumno_curp_key" ON "Alumno"("curp");

@@ -87,3 +87,8 @@ export function validarHoras(a:any,b:any){
 export function primerLetra(str:string){
   return str.charAt(0).toUpperCase()+str.slice(1)
 }
+
+export function validarCURP(curp:string){
+  const regex = /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]{2}$/;
+    return regex.test(curp);
+}

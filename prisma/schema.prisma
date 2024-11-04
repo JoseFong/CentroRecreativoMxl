@@ -11,19 +11,16 @@ datasource db {
 }
 
 model Docente {
-  id         Int      @id @default(autoincrement())
-  nombre     String
-  aPaterno   String
-  aMaterno   String?
-  telefono   String
-  fechaNac   String
-  curp       String   @unique
-  correo     String
-  usuario    String   @unique
-  contrasena String
-  rol        String // dir o doc (Director o docente)
-  Grupo      Grupo[]
-  Salida     Salida[]
+  id       Int      @id @default(autoincrement())
+  nombre   String
+  aPaterno String
+  aMaterno String?
+  telefono String
+  fechaNac String
+  curp     String   @unique
+  correo   String
+  Grupo    Grupo[]
+  Salida   Salida[]
 }
 
 model Alumno {
@@ -84,12 +81,12 @@ model GrupoActividad {
 }
 
 model Salida {
-  id           Int     @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   nombre       String
   fecha        String
-  docente      Docente @relation(fields: [docenteId], references: [id])
-  docenteId    Int
-  grupo        Grupo   @relation(fields: [grupoId], references: [id])
+  docente      Docente? @relation(fields: [docenteId], references: [id])
+  docenteId    Int?
+  grupo        Grupo    @relation(fields: [grupoId], references: [id])
   grupoId      Int
   horaDeSalida String
 }

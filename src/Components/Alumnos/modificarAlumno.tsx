@@ -26,6 +26,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ConfirmarModificarAlumno from "./confirmarModificarAlumno";
 import { Grupo } from "@prisma/client";
+import { validarCURP } from "@/utils/validaciones";
 
 function ModificarAlumno({
   alumno,
@@ -229,6 +230,11 @@ function ComponenteModAlumno({
 
     //validación para saber si la curp es de 18 caracteres
     if (curp.trim().length !== 18) {
+      toast.error("Ingrese una CURP con formato correcto.");
+      return;
+    }
+
+    if (!validarCURP(curp.trim())) {
       toast.error("Ingrese una CURP con formato correcto.");
       return;
     }
