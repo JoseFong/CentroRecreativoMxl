@@ -277,6 +277,7 @@ function ConsultaAlumnos() {
           nees={nees}
           fetchAlumnos={fetchAlumnos}
           grupos={grupos}
+          fetchNees={fetchNees}
         />
         <ConsultaEspecificaAlumno
           isOpen={isDetallesOpen}

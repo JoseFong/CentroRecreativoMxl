@@ -19,8 +19,8 @@ export default function NavBar() {
 
   return (
     <header className="bg-headerNav shadow-lg">
-      <nav className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
+      <nav className=" mx-auto px-4">
+        <div className="flex justify-center	items-center h-20">
           <div className="flex items-center">
             <Link href={"/"}>
               <Image
@@ -46,19 +46,6 @@ export default function NavBar() {
                 </Button>
               </Link>
             ))}
-          </div>
-
-          <div className="hidden md:flex items-center">
-            <Tooltip content="Cerrar sesión">
-              <Button
-                className="bg-verdeFuerte text-white"
-                variant="solid"
-                isIconOnly
-                size="lg"
-              >
-                <IoLogOutOutline style={{ fontSize: "22px" }} />
-              </Button>
-            </Tooltip>
           </div>
 
           <div className="md:hidden">
@@ -107,21 +94,6 @@ export default function NavBar() {
                   </Button>
                 </Link>
               ))}
-            </div>
-            <div className="pt-4 pb-3 border-t border-gray-700">
-              <Tooltip content="Cerrar sesión">
-                <Button
-                  className="bg-verdeFuerte text-white w-full"
-                  variant="solid"
-                  size="lg"
-                >
-                  <IoLogOutOutline
-                    style={{ fontSize: "22px" }}
-                    className="mr-2"
-                  />
-                  Cerrar sesión
-                </Button>
-              </Tooltip>
             </div>
           </div>
         )}

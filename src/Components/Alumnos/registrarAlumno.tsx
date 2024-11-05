@@ -35,12 +35,14 @@ function RegistrarAlumno({
   nees,
   grupos,
   fetchAlumnos,
+  fetchNees,
 }: {
   isOpen: any;
   onOpenChange: any;
   nees: any;
   grupos: any;
   fetchAlumnos: () => void;
+  fetchNees: () => void;
 }) {
   //useStates para guardar la información del alumno a registrar
   const [nombre, setNombre] = useState("");
@@ -82,6 +84,7 @@ function RegistrarAlumno({
     setIds([]);
     setNombres([]);
     setEnviado(false);
+    fetchNees();
   }, [isOpen === false]);
   //Función para agregar el alumno, se ejecuta cuando se presiona registrar
   const handleAgregar = () => {
@@ -371,6 +374,7 @@ function RegistrarAlumno({
                               color="warning"
                               isSelected={nees.length === ids.length}
                               onChange={selectAll}
+                              isDisabled={nees.length === 0 ? true : false}
                             />
                           </TableColumn>
                         </TableHeader>

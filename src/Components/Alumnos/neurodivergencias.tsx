@@ -160,6 +160,12 @@ function Neurodivergencias() {
     setNombre("");
   }, [isOpenPop]);
 
+  const [nombreEditar, setNombreEditar] = useState("");
+  useEffect(() => {
+    setNombreEditar(nombre);
+    setIsOpenPop(false);
+  }, [isEditOpen]);
+
   return (
     <div>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
@@ -195,7 +201,9 @@ function Neurodivergencias() {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader>Modificar Neurodivergencia</ModalHeader>
+              <ModalHeader>
+                Modificar Neurodivergencia "{nombreEditar}"
+              </ModalHeader>
               <ModalBody>
                 <Input
                   type="text"
