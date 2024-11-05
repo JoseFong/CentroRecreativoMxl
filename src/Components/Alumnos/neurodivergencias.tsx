@@ -19,7 +19,7 @@ import toast from "react-hot-toast";
 import { HiSquaresPlus } from "react-icons/hi2";
 import NeurodivergenciaPlantilla from "./neurodivergenciaPlantilla";
 
-function Neurodivergencias() {
+function Neurodivergencias(fetchAlumnos: any) {
   const [neurodivergencias, setNeurodivergencias] = useState<
     Neurodivergencia[]
   >([]);
@@ -60,6 +60,7 @@ function Neurodivergencias() {
         toast.success("Se registró la neurodivergencia.");
         setNombre("");
         fetchNEE();
+        fetchAlumnos();
       } else {
         throw new Error(response.data.message || "Error desconocido.");
       }
@@ -88,6 +89,7 @@ function Neurodivergencias() {
       if (response.status >= 200 && response.status < 300) {
         toast.success("Se eliminó la neurodivergencia.");
         fetchNEE();
+        fetchAlumnos();
         onClose();
       } else {
         throw new Error(response.data.message || "Error desconocido.");
@@ -115,6 +117,7 @@ function Neurodivergencias() {
         setNombre("");
         setNeurodivergenciaSeleccionada(null);
         fetchNEE();
+        fetchAlumnos();
         onEditOpenChange();
       } else {
         throw new Error(response.data.message || "Error desconocido.");

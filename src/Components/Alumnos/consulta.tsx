@@ -181,7 +181,7 @@ function ConsultaAlumnos() {
               </Button>
               <p className="text-lg px-4 hidden md:block">|</p>
               <div className=" pt-4 md:pt-0 hidden md:block">
-                <Neurodivergencias />
+                <Neurodivergencias fetchAlumnos={fetchAlumnos}/>
               </div>
             </div>
           </div>
