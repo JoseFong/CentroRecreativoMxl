@@ -41,7 +41,15 @@ export async function registrarNEE(data:any) {
  * @param id - ID de la neurodivergencia a eliminar
  * @returns La neurodivergencia eliminada
  */
-export async function eliminarNEE(id:number) {
+export async function eliminarNEE(id: number) {
+    // Desvincula a todos los alumnos de la neurodivergencia
+    await prisma.alumnoNEE.deleteMany({
+        where: {
+            neurodivergenciaId: id
+        }
+    });
+
+    // Elimina la neurodivergencia
     return prisma.neurodivergencia.delete({
         where: {
             id: id
