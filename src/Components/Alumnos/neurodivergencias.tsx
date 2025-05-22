@@ -60,17 +60,17 @@ function Neurodivergencias(fetchAlumnos: any) {
         toast.success("Se registró la neurodivergencia.");
         setNombre("");
         fetchNEE();
-        fetchAlumnos();
+        // fetchAlumnos();
       } else {
         throw new Error(response.data.message || "Error desconocido.");
       }
     } catch (e: any) {
       if (
-        e.response.status === 404 ||
-        e.response.status === 500 ||
-        e.response.status === 400
+        e.response?.status === 404 ||
+        e.response?.status === 500 ||
+        e.response?.status === 400
       ) {
-        toast.error(e.response.data.message);
+        toast.error(e.response?.data.message);
       } else {
         toast.error(e.message);
       }
@@ -89,7 +89,7 @@ function Neurodivergencias(fetchAlumnos: any) {
       if (response.status >= 200 && response.status < 300) {
         toast.success("Se eliminó la neurodivergencia.");
         fetchNEE();
-        fetchAlumnos();
+        // fetchAlumnos();
         onClose();
       } else {
         throw new Error(response.data.message || "Error desconocido.");
@@ -117,16 +117,16 @@ function Neurodivergencias(fetchAlumnos: any) {
         setNombre("");
         setNeurodivergenciaSeleccionada(null);
         fetchNEE();
-        fetchAlumnos();
+        // fetchAlumnos();
         onEditOpenChange();
       } else {
         throw new Error(response.data.message || "Error desconocido.");
       }
     } catch (e: any) {
       if (
-        e.response.status === 404 ||
-        e.response.status === 500 ||
-        e.response.status === 400
+        e.response?.status === 404 ||
+        e.response?.status === 500 ||
+        e.response?.status === 400
       ) {
         toast.error(e.response.data.message);
       } else {

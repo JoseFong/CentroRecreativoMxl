@@ -94,7 +94,6 @@ function RegistrarAlumno({
       if (
         textoVacio(nombre) ||
         textoVacio(aPaterno) ||
-        textoVacio(aMaterno) ||
         textoVacio(fechaNac) ||
         textoVacio(genero) ||
         textoVacio(telefono) ||

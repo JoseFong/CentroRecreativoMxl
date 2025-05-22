@@ -56,7 +56,7 @@ export default function consultaEspecifica({
                       {docente.curp}
                     </p>
                   </div>
-                  <div className="mb-3">
+                  {/* <div className="mb-3">
                     <p>
                       <span className="font-bold">Usuario: </span>
                       {docente.usuario}
@@ -67,7 +67,7 @@ export default function consultaEspecifica({
                       <span className="font-bold">Contraseña: </span>
                       {docente.contrasena}
                     </p>
-                  </div>
+                  </div> */}
                   <div className="mb-3">
                     <p>
                       <span className="font-bold">Rol: </span>

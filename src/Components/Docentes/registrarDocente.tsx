@@ -47,7 +47,6 @@ function RegistrarDocente({ isOpen, onOpen, onOpenChange, setRefetch }: any) {
       if (
         textoVacio(nombre) ||
         textoVacio(aPaterno) ||
-        textoVacio(aMaterno) ||
         textoVacio(fechaNac) ||
         textoVacio(telefono) ||
         textoVacio(curp) ||
