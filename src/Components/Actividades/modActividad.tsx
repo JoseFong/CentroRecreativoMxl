@@ -66,6 +66,9 @@ function ModActividadModal({
   const [cargandoGrupos, setCargandoGrupos] = useState(true);
   const [selectedGrupo, setSelectedGrupo] = useState();
 
+  const nombreinit = actividad.nombre;
+  const descripcioninit = actividad.descripcion;
+
   const reset = () => {
     setEnviado(false);
     setNombre(actividad.nombre);
@@ -230,7 +233,9 @@ function ModActividadModal({
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="text-xl">Información de {actividad.nombre}</ModalHeader>
+              <ModalHeader className="text-xl">
+                Información de {actividad.nombre}
+              </ModalHeader>
               <ModalBody>
                 <div className="flex flex-row gap-5">
                   <div className="flex flex-col gap-4 items-center w-1/4">
@@ -257,7 +262,7 @@ function ModActividadModal({
                   <div className="items-center flex flex-col gap-1 w-3/4">
                     <h1 className="font-bold">Grupos</h1>
                     {cargandoGrupos ? (
-                      <Spinner size="lg" color="warning"/>
+                      <Spinner size="lg" color="warning" />
                     ) : (
                       <>
                         {gruposDeAct.length === 0 ? (
@@ -265,10 +270,18 @@ function ModActividadModal({
                         ) : (
                           <Table>
                             <TableHeader>
-                              <TableColumn className=" bg-headerNav text-[#ffffff] ">Grupo</TableColumn>
-                              <TableColumn className=" bg-headerNav text-[#ffffff] ">Horario</TableColumn>
-                              <TableColumn className=" bg-headerNav text-[#ffffff] ">Modificar</TableColumn>
-                              <TableColumn className=" bg-headerNav text-[#ffffff] ">Desasignar</TableColumn>
+                              <TableColumn className=" bg-headerNav text-[#ffffff] ">
+                                Grupo
+                              </TableColumn>
+                              <TableColumn className=" bg-headerNav text-[#ffffff] ">
+                                Horario
+                              </TableColumn>
+                              <TableColumn className=" bg-headerNav text-[#ffffff] ">
+                                Modificar
+                              </TableColumn>
+                              <TableColumn className=" bg-headerNav text-[#ffffff] ">
+                                Desasignar
+                              </TableColumn>
                             </TableHeader>
                             <TableBody>
                               {gruposDeAct.map((grupo: any) => (
@@ -307,15 +320,34 @@ function ModActividadModal({
                         )}
                       </>
                     )}
-                    <Button onPress={onGrupOpen} className="mt-4 bg-verdeFuerte text-[#ffffff] border-1">
+                    <Button
+                      onPress={onGrupOpen}
+                      className="mt-4 bg-verdeFuerte text-[#ffffff] border-1"
+                    >
                       Asignar grupo
                     </Button>
                   </div>
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button onPress={onClose} className="bg-verde">Cancelar</Button>
-                <Button onPress={handleModificar} className="bg-verdeFuerte text-[#ffffff]">Modificar</Button>
+                <Button onPress={onClose} className="bg-verde">
+                  Cancelar
+                </Button>
+                {nombre === nombreinit && descripcion === descripcioninit ? (
+                  <Button
+                    isDisabled={1 === 1}
+                    className="bg-verdeFuerte text-[#ffffff]"
+                  >
+                    Modificar
+                  </Button>
+                ) : (
+                  <Button
+                    onPress={handleModificar}
+                    className="bg-verdeFuerte text-[#ffffff]"
+                  >
+                    Modificar
+                  </Button>
+                )}
               </ModalFooter>
             </>
           )}
@@ -343,7 +375,9 @@ function ModActividadModal({
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button onPress={onClose2} className="bg-verde">Cancelar</Button>
+                <Button onPress={onClose2} className="bg-verde">
+                  Cancelar
+                </Button>
                 <Button onPress={() => handleConfirmar(onClose2)}>
                   Aceptar
                 </Button>
@@ -383,7 +417,9 @@ function ModActividadModal({
                 <p className="text-red-600">Esta operación es permanente.</p>
               </ModalBody>
               <ModalFooter>
-                <Button onPress={onClose3} className="bg-verde">Cancelar</Button>
+                <Button onPress={onClose3} className="bg-verde">
+                  Cancelar
+                </Button>
                 <Button onPress={() => desasignar(onClose3)}>Aceptar</Button>
               </ModalFooter>
             </>

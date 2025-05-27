@@ -1,4 +1,5 @@
 import {prisma} from "@/utils/prisma";
+import { Salida } from "@prisma/client";
 
 
 /**
@@ -7,6 +8,8 @@ import {prisma} from "@/utils/prisma";
  *  @returns array de todas las salidas
  */
 export async function obtenerSalidas() {
+    await eliminarSalidasDelMesPasado() //agregado por Fong, solo elimina las salidas del mes pasado
+
     return prisma.salida.findMany();
 }
 
@@ -90,4 +93,40 @@ export async function eliminarSalida(id:number) {
     })
 
     return "eliminado"
+}
+
+/**
+ * Función para eliminar las salidas que sean de meses o años pasados al mes y año actuales
+ * @author Fong
+ */
+export async function eliminarSalidasDelMesPasado(){
+    const salidas = await prisma.salida.findMany()
+
+    let ids:number[] = []
+    const fechaDeHoy = new Date();
+
+    salidas.forEach((s:Salida)=>{
+        const [year,month,day] = s.fecha.split("-").map(Number)
+        const fechaDeSalida = new Date(Date.UTC(year,month-1,day))
+
+        if(fechaDeSalida.getFullYear()<fechaDeHoy.getFullYear()){
+            ids.push(s.id)
+        }else{
+            if(fechaDeSalida.getFullYear()===fechaDeHoy.getFullYear()){
+                if(fechaDeSalida.getMonth()<fechaDeHoy.getMonth()){
+                    ids.push(s.id)
+                }
+            }
+        }
+    })
+
+    if(ids.length>0){
+        await prisma.salida.deleteMany({
+                where:{
+                    id: {
+                        in: ids
+                    }
+                }
+            })
+    }
 }
