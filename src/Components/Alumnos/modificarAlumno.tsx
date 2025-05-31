@@ -35,6 +35,7 @@ function ModificarAlumno({
   nees,
   fetchAlumnos,
   grupos,
+  fetchNees,
 }: {
   alumno: any;
   onOpenChange: any;
@@ -42,6 +43,7 @@ function ModificarAlumno({
   nees: any;
   fetchAlumnos: () => void;
   grupos: Grupo[];
+  fetchNees: any;
 }) {
   return (
     <>
@@ -53,6 +55,7 @@ function ModificarAlumno({
           nees={nees}
           fetchAlumnos={fetchAlumnos}
           grupos={grupos}
+          fetchNees={fetchNees}
         />
       )}
     </>
@@ -66,6 +69,7 @@ function ComponenteModAlumno({
   nees,
   fetchAlumnos,
   grupos,
+  fetchNees,
 }: {
   alumno: any;
   onOpenChange: any;
@@ -73,6 +77,7 @@ function ComponenteModAlumno({
   nees: any;
   fetchAlumnos: () => void;
   grupos: Grupo[];
+  fetchNees: any;
 }) {
   //useStates para guardar la información del alumno a registrar
   const [nombre, setNombre] = useState(alumno.nombre);
@@ -129,6 +134,7 @@ function ComponenteModAlumno({
       setNombreGrupo("Sin grupo");
     }
 
+    fetchNees(); //Se obtienen las NEEs
     fetchNeesDeAlumno(); //Se consiguen las NEEs del alumno
   }, [alumno, onOpenChange]);
 
