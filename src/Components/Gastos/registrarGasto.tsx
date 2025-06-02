@@ -61,10 +61,12 @@ function RegistrarGasto({
     } else if (fechaIngresada.getMonth() < fechaHoy.getMonth()) {
       toast.error("La fecha no puede ser del mes anterior.");
       return;
+    } else if (fechaIngresada.getFullYear() < fechaHoy.getFullYear()) {
+      toast.error("La fecha no puede ser del año anterior.");
+      return;
     }
 
     setConcepto(concepto.toUpperCase());
-
     onConfirmarOpen();
   };
 
