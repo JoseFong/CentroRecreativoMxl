@@ -52,11 +52,23 @@ function ModificarGasto({
     const fechaHoy = new Date(); //Se crea una fecha con el día de hoy
 
     //Se verifica si la fecha es superior a la fecha actual
+    if( concepto.trim() === "" || cantidad.trim() === "" || fecha.trim() === "") {
+        toast.error("No deje campos en blanco.");
+        return;
+    }
+    if( parseFloat(cantidad) < 0) {
+        toast.error("La cantidad no puede ser negativa.");
+        return;
+    }
     if (fechaIngresada > fechaHoy) {
       toast.error("La fecha no puede superar la fecha actual");
+      return;
     } else if (fechaIngresada.getMonth() < fechaHoy.getMonth()) {
       toast.error("La fecha no puede ser del mes anterior.");
       return;
+    } else if (fechaIngresada.getFullYear() < fechaHoy.getFullYear()) {
+        toast.error("La fecha no puede ser de un año anterior.");
+        return;
     }
 
     if (gasto) {
