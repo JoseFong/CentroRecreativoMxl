@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Button, Spinner, useDisclosure, Tooltip } from "@nextui-org/react";
-import MainLayout from "@/Components/Layout/MainLayout";
-import RegistrarGasto from "@/Components/Gastos/registrarGasto";
-import ModificarGasto from "@/Components/Gastos/modificarGasto";
+import MainLayout from "@/aaaaaaa/Layout/MainLayout";
+import RegistrarGasto from "@/aaaaaaa/Gastos/registrarGasto";
+import ModificarGasto from "@/aaaaaaa/Gastos/modificarGasto";
 import FiltroGastos from "./filtroGastos";
 import {
   Table,

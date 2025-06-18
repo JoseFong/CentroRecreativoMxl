@@ -11,7 +11,7 @@ import ModificarAlumno from "./modificarAlumno";
 import { MdOutlineDelete } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import { CgDetailsMore } from "react-icons/cg";
-import Neurodivergencias from "@/Components/Alumnos/neurodivergencias";
+import Neurodivergencias from "@/aaaaaaa/Alumnos/neurodivergencias";
 import {
   Table,
   TableHeader,
