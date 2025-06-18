@@ -20,6 +20,7 @@ import {
   TimeInput,
   useDisclosure,
 } from "@nextui-org/react";
+import { GrupoActividad } from "@prisma/client";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -73,7 +74,7 @@ export function ModificarHorarioModal({
 }) {
   const [cargando, setCargando] = useState(false);
 
-  const [info, setInfo] = useState();
+  const [info, setInfo] = useState<GrupoActividad>();
 
   const [lunes, setLunes] = useState(false);
   const [miercoles, setMiercoles] = useState(false);
@@ -606,8 +607,15 @@ export function ModificarHorarioModal({
                 )}
               </ModalBody>
               <ModalFooter>
-                <Button onPress={onClose} className=" bg-verde">Cancelar</Button>
-                <Button onPress={handleAceptar} className=" bg-verdeFuerte text-[#ffffff]">Aceptar</Button>
+                <Button onPress={onClose} className=" bg-verde">
+                  Cancelar
+                </Button>
+                <Button
+                  onPress={handleAceptar}
+                  className=" bg-verdeFuerte text-[#ffffff]"
+                >
+                  Aceptar
+                </Button>
               </ModalFooter>
             </>
           )}
@@ -622,8 +630,15 @@ export function ModificarHorarioModal({
                 {actividad.nombre}'?
               </ModalHeader>
               <ModalFooter>
-                <Button onPress={onClose2} className=" bg-verde">Cancelar</Button>
-                <Button onPress={() => modificar(onClose2)} className=" bg-verdeFuerte text-[#ffffff]">Aceptar</Button>
+                <Button onPress={onClose2} className=" bg-verde">
+                  Cancelar
+                </Button>
+                <Button
+                  onPress={() => modificar(onClose2)}
+                  className=" bg-verdeFuerte text-[#ffffff]"
+                >
+                  Aceptar
+                </Button>
               </ModalFooter>
             </>
           )}

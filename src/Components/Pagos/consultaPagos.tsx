@@ -23,7 +23,7 @@ import FiltroAlumnos from "../Alumnos/FiltroAlumnos";
 interface AlumnosPago {
   alumno: string;
   otros: Pago[];
-  inscripcion: Pago;
+  inscripcion?: Pago;
   mensualidades: Pago[];
   materiales: Pago[];
 }
@@ -71,7 +71,7 @@ function ConsultaPagos() {
         const pagosDeAlumno: Pago[] = pagos.filter(
           (pag: any) => pag.alumnoId === id
         );
-        const pagoIns: Pago = pagosDeAlumno.find(
+        const pagoIns = pagosDeAlumno.find(
           (pag: Pago) => pag.categoria === "Inscripcion"
         );
         const pagosMens = pagosDeAlumno.filter(
@@ -151,7 +151,7 @@ function ConsultaPagos() {
     onMultOpen();
   };
 
-  const handleVerInscripcion = (alumno: string, pago: Pago) => {
+  const handleVerInscripcion = (alumno: string, pago?: Pago) => {
     setSelectedAlumno(alumno);
     setSelectedPago(pago);
     onInsOpen();
@@ -168,7 +168,7 @@ function ConsultaPagos() {
   return (
     <MainLayout>
       <div>
-      <div className="flex flex-row m-4 md:px-10 md:pt-10">
+        <div className="flex flex-row m-4 md:px-10 md:pt-10">
           <div className="flex flex-col md:flex-row">
             <h1 className="text-4xl font-bold">Pagos de Alumnos</h1>
             <FiltroAlumnos
@@ -187,109 +187,136 @@ function ConsultaPagos() {
               </Button>
             </div>
           </div>
-      </div>
-      <div className="flex flex-row m-4 md:px-10 md:pt-4">
-      {cargando ? (
-        <div className="w-full">
-          <div className="flex justify-center items-center">
-              <Spinner size="lg" color="warning" />
-          </div>
         </div>
-      ) : (
-        <>
-          <Table aria-label="Tabla Pagos" >
-            <TableHeader>
-              <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Alumno</TableColumn>
-              <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Inscripción</TableColumn>
-              <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Materiales</TableColumn>
-              <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">Mensualidades</TableColumn>
-              <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4" align="center">Otros</TableColumn>
-            </TableHeader>
-            <TableBody emptyContent={"No hay alumnos registrados."}>
-              {filteredAlumnosPagos.map((alp: AlumnosPago) => (
-                <TableRow>
-                  <TableCell>{alp.alumno}</TableCell>
-                  <TableCell>
-                    {alp.inscripcion && alp.inscripcion.cantidad > 0 ? (
-                      <Button className="border-2 border-green-500 bg-green-100 hover:bg-green-200" 
-                        onPress={() =>
-                          handleVerInscripcion(alp.alumno, alp.inscripcion)
-                        }
-                      >
-                        PAGADO
-                      </Button>
-                    ) : (
-                      <Button className="border-2 border-gray-500 bg-gray-100"
+        <div className="flex flex-row m-4 md:px-10 md:pt-4">
+          {cargando ? (
+            <div className="w-full">
+              <div className="flex justify-center items-center">
+                <Spinner size="lg" color="warning" />
+              </div>
+            </div>
+          ) : (
+            <>
+              <Table aria-label="Tabla Pagos">
+                <TableHeader>
+                  <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
+                    Alumno
+                  </TableColumn>
+                  <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
+                    Inscripción
+                  </TableColumn>
+                  <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
+                    Materiales
+                  </TableColumn>
+                  <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
+                    Mensualidades
+                  </TableColumn>
+                  <TableColumn
+                    className=" bg-headerNav text-[#ffffff] text-md w-1/4"
+                    align="center"
+                  >
+                    Otros
+                  </TableColumn>
+                </TableHeader>
+                <TableBody emptyContent={"No hay alumnos registrados."}>
+                  {filteredAlumnosPagos.map((alp: AlumnosPago) => (
+                    <TableRow>
+                      <TableCell>{alp.alumno}</TableCell>
+                      <TableCell>
+                        {alp.inscripcion && alp.inscripcion.cantidad > 0 ? (
+                          <Button
+                            className="border-2 border-green-500 bg-green-100 hover:bg-green-200"
+                            onPress={() =>
+                              handleVerInscripcion(alp.alumno, alp.inscripcion)
+                            }
+                          >
+                            PAGADO
+                          </Button>
+                        ) : (
+                          <Button
+                            className="border-2 border-gray-500 bg-gray-100"
+                            onPress={() =>
+                              handleVerInscripcion(alp.alumno, alp.inscripcion)
+                            }
+                          >
+                            NO HA PAGADO
+                          </Button>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          className={
+                            alp.materiales.length === 2
+                              ? "border-2 border-green-500 bg-green-100 hover:bg-green-200"
+                              : "border-2 border-gray-500 bg-gray-100 hover:bg-gray-200"
+                          }
                           onPress={() =>
-                            handleVerInscripcion(alp.alumno, alp.inscripcion)
+                            handleVerPagos(
+                              "Materiales",
+                              alp.materiales,
+                              alp.alumno
+                            )
                           }
                         >
-                          NO HA PAGADO
-                      </Button>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      className={alp.materiales.length === 2 ? "border-2 border-green-500 bg-green-100 hover:bg-green-200" : "border-2 border-gray-500 bg-gray-100 hover:bg-gray-200"}
-                      onPress={() =>
-                        handleVerPagos("Materiales", alp.materiales, alp.alumno)
-                      }
-                    >
-                      {alp.materiales.length}/2
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                    className={alp.mensualidades.length === 12 ? "border-2 border-green-500 bg-green-100 hover:bg-green-200" : "border-2 border-gray-500 bg-gray-100 hover:bg-gray-200"}
-                      onPress={() =>
-                        handleVerPagos(
-                          "Mensualidades",
-                          alp.mensualidades,
-                          alp.alumno
-                        )
-                      }
-                    >
-                      {alp.mensualidades.length}/12
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Button
+                          {alp.materiales.length}/2
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          className={
+                            alp.mensualidades.length === 12
+                              ? "border-2 border-green-500 bg-green-100 hover:bg-green-200"
+                              : "border-2 border-gray-500 bg-gray-100 hover:bg-gray-200"
+                          }
+                          onPress={() =>
+                            handleVerPagos(
+                              "Mensualidades",
+                              alp.mensualidades,
+                              alp.alumno
+                            )
+                          }
+                        >
+                          {alp.mensualidades.length}/12
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
                           className="border-2 border-gray-500 bg-gray-100 hover:bg-gray-200"
                           onPress={() =>
                             handleVerPagos("Otros", alp.otros, alp.alumno)
                           }
                         >
                           Ver otros ({alp.otros.length})
-                      </Button>   
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </>
-      )}
-      <ListadoPagos
-        isOpen={isMultOpen}
-        onOpenChange={onMultOpenChange}
-        tipo={tipo}
-        alumno={selectedAlumno}
-        pagos={selectedPagos}
-        fetchPagos={fetchPagos}
-      />
-      <ConsultaInscripcion
-        isOpen={isInsOpen}
-        onOpenChange={onInsOpenChange}
-        pago={selectedPago}
-        alumno={selectedAlumno}
-        fetchPagos={fetchPagos}
-      />
-      <RegistrarPago
-        isOpen={isRegOpen}
-        onOpenChange={onRegOpenChange}
-        alumnos={alumnos}
-        fetchPagos={fetchPagos}
-      />
-      </div>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </>
+          )}
+          <ListadoPagos
+            isOpen={isMultOpen}
+            onOpenChange={onMultOpenChange}
+            tipo={tipo}
+            alumno={selectedAlumno}
+            pagos={selectedPagos}
+            fetchPagos={fetchPagos}
+          />
+          <ConsultaInscripcion
+            isOpen={isInsOpen}
+            onOpenChange={onInsOpenChange}
+            pago={selectedPago}
+            alumno={selectedAlumno}
+            fetchPagos={fetchPagos}
+          />
+          <RegistrarPago
+            isOpen={isRegOpen}
+            onOpenChange={onRegOpenChange}
+            alumnos={alumnos}
+            fetchPagos={fetchPagos}
+          />
+        </div>
       </div>
     </MainLayout>
   );

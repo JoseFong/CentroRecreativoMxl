@@ -12,7 +12,9 @@ import {
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+// @ts-ignore
 import html2pdf from "html2pdf.js";
+import { Grupo } from "@prisma/client";
 
 interface Dia {
   id: number;
@@ -38,7 +40,7 @@ function Calendario({
 }) {
   const [salidas, setSalidas] = useState([]);
   const [cargando, setCargando] = useState(true);
-  const [grupos, setGrupos] = useState([]);
+  const [grupos, setGrupos] = useState<Grupo[]>([]);
   const [mesActual, setMesActual] = useState("");
   const [limit, setLimit] = useState<number>();
   const [empieza, setEmpieza] = useState<number>();
@@ -114,7 +116,7 @@ function Calendario({
       if (i === empieza) {
         open = true;
       }
-      if (cont === limit + 1) open = false;
+      if (limit && cont === limit + 1) open = false;
       if (open) {
         const dia: Dia = { id: i, fecha: cont };
         dias.push(dia);
@@ -187,7 +189,7 @@ function Calendario({
         ) {
           const f: number = parseInt(partes[2]);
           const salida: Evento = {
-            grupo: nombreGrupo(s.grupoId),
+            grupo: nombreGrupo(s.grupoId) + "",
             titulo: s.nombre,
             fecha: f,
           };
@@ -201,7 +203,7 @@ function Calendario({
 
   const nombreGrupo = (id: number) => {
     const grupo = grupos.find((gr: any) => gr.id === id);
-    if (!grupo) return null;
+    if (!grupo) return "Desconocido.";
     return grupo.nombre;
   };
 

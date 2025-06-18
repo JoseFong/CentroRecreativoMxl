@@ -22,6 +22,7 @@ import toast from "react-hot-toast";
 import AsignarGrupo from "./asignarGrupo";
 import VerHorario from "./verHorario";
 import ModificarHorario from "./modificarHorario";
+import { Grupo } from "@prisma/client";
 
 function ModActividad({
   actividad,
@@ -64,7 +65,7 @@ function ModActividadModal({
   const [enviado, setEnviado] = useState(false);
   const [gruposDeAct, setGruposDeAct] = useState([]);
   const [cargandoGrupos, setCargandoGrupos] = useState(true);
-  const [selectedGrupo, setSelectedGrupo] = useState();
+  const [selectedGrupo, setSelectedGrupo] = useState<Grupo>();
 
   const nombreinit = actividad.nombre;
   const descripcioninit = actividad.descripcion;
@@ -405,27 +406,29 @@ function ModActividadModal({
         fetchGrupos={fetchGruposDeActividad}
         actividad={actividad}
       />
-      <Modal isOpen={isDesOpen} onOpenChange={onDesOpenChange}>
-        <ModalContent>
-          {(onClose3) => (
-            <>
-              <ModalHeader>
-                ¿Desea desasignar al grupo '{selectedGrupo.nombre}' de '
-                {actividad.nombre}'?
-              </ModalHeader>
-              <ModalBody>
-                <p className="text-red-600">Esta operación es permanente.</p>
-              </ModalBody>
-              <ModalFooter>
-                <Button onPress={onClose3} className="bg-verde">
-                  Cancelar
-                </Button>
-                <Button onPress={() => desasignar(onClose3)}>Aceptar</Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      {selectedGrupo && (
+        <Modal isOpen={isDesOpen} onOpenChange={onDesOpenChange}>
+          <ModalContent>
+            {(onClose3) => (
+              <>
+                <ModalHeader>
+                  ¿Desea desasignar al grupo '{selectedGrupo.nombre}' de '
+                  {actividad.nombre}'?
+                </ModalHeader>
+                <ModalBody>
+                  <p className="text-red-600">Esta operación es permanente.</p>
+                </ModalBody>
+                <ModalFooter>
+                  <Button onPress={onClose3} className="bg-verde">
+                    Cancelar
+                  </Button>
+                  <Button onPress={() => desasignar(onClose3)}>Aceptar</Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
     </>
   );
 }

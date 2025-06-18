@@ -61,7 +61,7 @@ function RegistrarPago({
   const [mens, setMens] = useState(false);
   const [mat, setMat] = useState(false);
 
-  const [data, setData] = useState();
+  const [data, setData] = useState<any>();
 
   const {
     isOpen: isConfOpen,

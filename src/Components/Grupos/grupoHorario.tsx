@@ -8,6 +8,7 @@ import {
   ModalHeader,
   Spinner,
 } from "@nextui-org/react";
+import { Actividad } from "@prisma/client";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -57,7 +58,7 @@ function VerHorarioModal({
   const [cargando, setCargando] = useState(true);
   const [info, setInfo] = useState([]);
   const [display, setDisplay] = useState<Horario[]>([]);
-  const [clases, setClases] = useState([]);
+  const [clases, setClases] = useState<Actividad[]>([]);
 
   useEffect(() => {
     setCargando(true);
@@ -132,7 +133,7 @@ function VerHorarioModal({
             ds.push(d);
           }
         }
-        const h: Horario = { clase: nombreClase(i.actividadId), dias: ds };
+        const h: Horario = { clase: nombreClase(i.actividadId) + "", dias: ds };
         hs.push(h);
       });
       setDisplay(hs);
