@@ -19,7 +19,7 @@ import {
 } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import ConfirmarRegistrarGrupo from "@/aaaaaaa/Grupos/confrmarRegistrarGrupo";
+import ConfirmarRegistrarGrupo from "@/components/Grupos/confrmarRegistrarGrupo";
 
 function RegistrarGrupo({
   isOpen,

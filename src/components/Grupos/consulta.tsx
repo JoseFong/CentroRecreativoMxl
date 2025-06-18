@@ -10,11 +10,11 @@ import {
   Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
-import MainLayout from "@/aaaaaaa/Layout/MainLayout";
+import MainLayout from "@/components/Layout/MainLayout";
 import React, { SetStateAction, useEffect, useState } from "react";
-import RegistrarGrupo from "@/aaaaaaa/Grupos/registrarGrupo";
-import ConsultaEspecificaGrupo from "@/aaaaaaa/Grupos/consultaEspecifica";
-import ModificarGrupo from "@/aaaaaaa/Grupos/modificarGrupo";
+import RegistrarGrupo from "@/components/Grupos/registrarGrupo";
+import ConsultaEspecificaGrupo from "@/components/Grupos/consultaEspecifica";
+import ModificarGrupo from "@/components/Grupos/modificarGrupo";
 import ImprimirGrupo from "./imprimirGrupo";
 import { FaUserEdit } from "react-icons/fa";
 import {
