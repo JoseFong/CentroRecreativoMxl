@@ -1,4 +1,4 @@
-import { obtenerTodasNEE, registrarNEE } from "@/Controllers/NEE/neurodivergenciaController";
+import { obtenerTodasNEE, registrarNEE } from "@/Controllers/nee/neurodivergenciaController";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
