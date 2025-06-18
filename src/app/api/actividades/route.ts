@@ -1,5 +1,7 @@
 import { obtenerActividades, registrarActividad } from "@/Controllers/actividadController";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken"
 
 /**
  * Función handler para obtener las actividades
@@ -9,6 +11,12 @@ import { NextRequest, NextResponse } from "next/server";
  */
 export async function GET(request:NextRequest){
     try{
+        const cookieStore = cookies();
+            const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+            if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+            const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+            if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
         const actividades = await obtenerActividades()
         if(!actividades){
             return NextResponse.json({message:"Error al obtener las actividades."},{status:404})
@@ -27,6 +35,12 @@ export async function GET(request:NextRequest){
  */
 export async function POST(req:NextRequest){
     try{
+        const cookieStore = cookies();
+            const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+            if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+            const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+            if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
         const data = await req.json()
         const response = await registrarActividad(data)
         if(!response) return NextResponse.json({message:"Error al registrar la actividad."},{status:404})

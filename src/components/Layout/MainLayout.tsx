@@ -1,3 +1,4 @@
+"use client";
 import React, { ReactNode, FC } from "react";
 import NavBar from "./NavBar";
 

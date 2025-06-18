@@ -1,5 +1,7 @@
 import { eliminarNEE, actualizarNEE } from "@/Controllers/nee/neurodivergenciaController";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken"
 
 interface Params {
     id: string
@@ -14,6 +16,12 @@ interface Params {
  */
 export async function DELETE(request:NextRequest, {params}:{params:Params}) {
     try {
+        const cookieStore = cookies();
+                    const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+                    if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+                    const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+                    if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
         const idNum: number = parseInt(params.id)
         const neurodivergencia = await eliminarNEE(idNum)
         if(!neurodivergencia) {
@@ -34,6 +42,12 @@ export async function DELETE(request:NextRequest, {params}:{params:Params}) {
  */
 export async function PUT(request: NextRequest, {params}:{params: {id: string}}) {
     try {
+        const cookieStore = cookies();
+                    const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+                    if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+                    const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+                    if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
         const idNum: number = parseInt(params.id)
         if(isNaN(idNum)) {
             return NextResponse.json({message: "ID invalido"}, {status: 400})

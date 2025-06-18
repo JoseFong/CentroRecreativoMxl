@@ -1,5 +1,7 @@
 import { actualizarGrupo, eliminarGrupo } from "@/Controllers/grupoController";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken"
 
 interface Params {
     id: string;
@@ -14,6 +16,12 @@ interface Params {
  */
 export async function PATCH(request:NextRequest) {
     try {
+const cookieStore = cookies();
+            const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+            if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+            const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+            if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
         const data = await request.json()
         const response = await actualizarGrupo(data)
         if (!response) {
@@ -32,6 +40,12 @@ export async function PATCH(request:NextRequest) {
 
 export async function DELETE(request:NextRequest, {params}:{params:Params}) {
     try {
+        const cookieStore = cookies();
+                    const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+                    if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+                    const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+                    if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
         const id = parseInt(params.id);
         const response = await eliminarGrupo(id);
         if (!response) {

@@ -1,6 +1,8 @@
 import {NextRequest, NextResponse} from "next/server";
 import {Params} from "next/dist/shared/lib/router/utils/route-matcher";
 import {modificarGasto} from "@/Controllers/gastoController";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken"
 
 /**
  * Función handler para modificar la información de un gasto
@@ -11,6 +13,12 @@ import {modificarGasto} from "@/Controllers/gastoController";
  */
 export async function PATCH(request:NextRequest,{params}:{params:Params}){
     try{
+const cookieStore = cookies();
+            const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+            if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+            const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+            if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
         const id = parseInt(params.id)
         const data = await request.json()
         const response = await modificarGasto(data,id)

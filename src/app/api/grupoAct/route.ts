@@ -1,9 +1,17 @@
 import { eliminarGrupoAct, modificarHorario, obtenerGrupoActividades } from "@/Controllers/grupoActividadController";
 import { asignarActAGrupo } from "@/Controllers/grupoController";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken"
 
 export async function POST(req:NextRequest){
     try{
+        const cookieStore = cookies();
+                    const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+                    if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+                    const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+                    if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
         const data = await req.json()
         const response = await asignarActAGrupo(data)
         if(!response) return NextResponse.json({message:"Error al asignar al grupo."},{status:404})

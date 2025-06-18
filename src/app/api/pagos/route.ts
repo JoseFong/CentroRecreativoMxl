@@ -1,5 +1,7 @@
 import { eliminarPagosDeOtrosAnos, obtenerPagos, registrarPago } from "@/Controllers/pagoController";
 import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken"
+import { cookies } from "next/headers";
 
 /**
  * Función handler GET para obtener los pagos registrados
@@ -9,6 +11,12 @@ import { NextRequest, NextResponse } from "next/server";
  */
 export async function GET(request:NextRequest){
     try{
+        const cookieStore = cookies();
+                    const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+                    if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+                    const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+                    if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
         await eliminarPagosDeOtrosAnos()
         const pagos = await obtenerPagos()
         if(!pagos){
@@ -28,6 +36,12 @@ export async function GET(request:NextRequest){
  */
 export async function POST(request:NextRequest){
     try{
+        const cookieStore = cookies();
+                    const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+                    if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+                    const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+                    if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
         const data = await request.json()
         const response = await registrarPago(data)
         if(!response){

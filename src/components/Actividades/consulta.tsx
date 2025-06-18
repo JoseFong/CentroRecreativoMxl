@@ -1,3 +1,4 @@
+"use client";
 import { Button, Spinner, Tooltip, useDisclosure } from "@nextui-org/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -122,16 +123,15 @@ function ConsultaActividades() {
   };
 
   const filteredActividades = actividades
-  .filter((actividad: any) => {
-    const nombreActividad = actividad.nombre.toLowerCase();
-    return nombreActividad.includes(searchText.toLowerCase());
-  })
-  .sort((a: any, b: any) => {
-    const nombreA = a.nombre.toLowerCase();
-    const nombreB = b.nombre.toLowerCase();
-    return nombreA.localeCompare(nombreB);
-  });
-
+    .filter((actividad: any) => {
+      const nombreActividad = actividad.nombre.toLowerCase();
+      return nombreActividad.includes(searchText.toLowerCase());
+    })
+    .sort((a: any, b: any) => {
+      const nombreA = a.nombre.toLowerCase();
+      const nombreB = b.nombre.toLowerCase();
+      return nombreA.localeCompare(nombreB);
+    });
 
   return (
     <MainLayout>
@@ -142,100 +142,106 @@ function ConsultaActividades() {
           setSearchText={setSearchText}
         />
         <div className="ml-auto">
-          <Button onPress={handleAgregar} className=" bg-verdeFuerte text-[#ffffff]" startContent={<FaCut />}>Registrar Actividad</Button>
+          <Button
+            onPress={handleAgregar}
+            className=" bg-verdeFuerte text-[#ffffff]"
+            startContent={<FaCut />}
+          >
+            Registrar Actividad
+          </Button>
         </div>
       </div>
       <div className="flex flex-col m-4 md:px-10">
         {cargando ? (
-            <div className="flex justify-center items-center">
-              <Spinner size="lg" color="warning"/>
-            </div>
+          <div className="flex justify-center items-center">
+            <Spinner size="lg" color="warning" />
+          </div>
         ) : (
           <div className="overflow-y-auto max-h-[40rem] border-1 rounded-xl">
             <Table aria-label="Tabla actividades">
               <TableHeader>
-                    <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
-                      Nombre
-                    </TableColumn>
-                    <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
-                      Descripción
-                    </TableColumn>
-                    <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4 ">
-                      <div className="flex justify-center">Acciones</div>
-                    </TableColumn>
-            </TableHeader>
-            <TableBody>
-              {filteredActividades.map((act:any, index: any) => (
-               <TableRow key={index}>
-                  <TableCell>
-                    <p className="text-lg">{act.nombre}</p>
-                  </TableCell>
-                  <TableCell>
-                    <p className="text-lg">{act.descripcion}</p>
-                  </TableCell>
-                  <TableCell>
-                  <div className="flex flex-col md:flex-row justify-center items-center">
-                    <Tooltip content="Detalles">
-                      <Button
-                        isIconOnly
-                        size="md"
-                        className=" bg-verde"
-                        onClick={() => handleDetalles(act)}
-                      >
-                        <CgDetailsMore />
-                      </Button>
-                    </Tooltip>
-                    <Tooltip content="Gestionar">
-                      <Button
-                        isIconOnly
-                        size="md"
-                        className="bg-verdeDetails mx-0  my-2 md:mx-3 md:my-0"
-                        onClick={() => handleGestionar(act)}
-                        >
-                          <FaRegEdit style={{ fontSize: "15px" }} />
-                      </Button>
-                    </Tooltip>
-                    <Tooltip content="Eliminar">
-                      <Button
-                        isIconOnly
-                        size="md"
-                        className=" bg-verdeFuerte"
-                        onClick={() => handleEliminar(act)}
-                      >
-                        <MdOutlineDelete style={{ fontSize: "15px" }} />
-                      </Button>
-                    </Tooltip>
-                  </div>
-                  </TableCell>
-               </TableRow>                   
-              ))}
-            </TableBody>
-          </Table>
+                <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
+                  Nombre
+                </TableColumn>
+                <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4">
+                  Descripción
+                </TableColumn>
+                <TableColumn className=" bg-headerNav text-[#ffffff] text-md w-1/4 ">
+                  <div className="flex justify-center">Acciones</div>
+                </TableColumn>
+              </TableHeader>
+              <TableBody>
+                {filteredActividades.map((act: any, index: any) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      <p className="text-lg">{act.nombre}</p>
+                    </TableCell>
+                    <TableCell>
+                      <p className="text-lg">{act.descripcion}</p>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col md:flex-row justify-center items-center">
+                        <Tooltip content="Detalles">
+                          <Button
+                            isIconOnly
+                            size="md"
+                            className=" bg-verde"
+                            onClick={() => handleDetalles(act)}
+                          >
+                            <CgDetailsMore />
+                          </Button>
+                        </Tooltip>
+                        <Tooltip content="Gestionar">
+                          <Button
+                            isIconOnly
+                            size="md"
+                            className="bg-verdeDetails mx-0  my-2 md:mx-3 md:my-0"
+                            onClick={() => handleGestionar(act)}
+                          >
+                            <FaRegEdit style={{ fontSize: "15px" }} />
+                          </Button>
+                        </Tooltip>
+                        <Tooltip content="Eliminar">
+                          <Button
+                            isIconOnly
+                            size="md"
+                            className=" bg-verdeFuerte"
+                            onClick={() => handleEliminar(act)}
+                          >
+                            <MdOutlineDelete style={{ fontSize: "15px" }} />
+                          </Button>
+                        </Tooltip>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>
       <ConfirmarEliminarActividad
-          isOpen={isElOpen}
-          onOpenChange={onElOpenChange}
-          actividad={selectedActividad}
-          fetchActividades={fetchActividades}
-        />
-        <AgregarActividad
-          isOpen={isRegOpen}
-          onOpenChange={onRegOpenChange}
-          fetchActividades={fetchActividades}
-        />
-        <ModActividad
-          actividad={selectedActividad}
-          fetchActividades={fetchActividades}
-          isOpen={isGestOpen}
-          onOpenChange={onGestOpenChange}
-        />
-        <ConsultaEspecificaAct
-          actividad={selectedActividad}
-          isOpen={isDetOpen}
-          onOpenChange={onDetOpenChange}
-        />
+        isOpen={isElOpen}
+        onOpenChange={onElOpenChange}
+        actividad={selectedActividad}
+        fetchActividades={fetchActividades}
+      />
+      <AgregarActividad
+        isOpen={isRegOpen}
+        onOpenChange={onRegOpenChange}
+        fetchActividades={fetchActividades}
+      />
+      <ModActividad
+        actividad={selectedActividad}
+        fetchActividades={fetchActividades}
+        isOpen={isGestOpen}
+        onOpenChange={onGestOpenChange}
+      />
+      <ConsultaEspecificaAct
+        actividad={selectedActividad}
+        isOpen={isDetOpen}
+        onOpenChange={onDetOpenChange}
+      />
     </MainLayout>
   );
 }

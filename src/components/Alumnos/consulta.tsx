@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import RegistrarAlumno from "./registrarAlumno";
 import { Button, Spinner, useDisclosure, Tooltip } from "@nextui-org/react";

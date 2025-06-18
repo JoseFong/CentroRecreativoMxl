@@ -1,5 +1,7 @@
 import { obtenerGrupos, registrarGrupo } from "@/Controllers/grupoController";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken"
 
 /**
  * Función handler par obtener los grupos
@@ -9,6 +11,12 @@ import { NextRequest, NextResponse } from "next/server";
  */
 export async function GET(request:NextRequest){
     try{
+        const cookieStore = cookies();
+                    const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+                    if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+                    const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+                    if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
         const grupos = await obtenerGrupos()
         if(!grupos){
             return NextResponse.json({message:"Error al obtener los grupos."},{status:404})
@@ -28,6 +36,12 @@ export async function GET(request:NextRequest){
  */
 export async function POST(request:NextRequest){
     try{
+        const cookieStore = cookies();
+                    const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+                    if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+                    const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+                    if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
         const data = await request.json()
         const response = await registrarGrupo(data)
         if(!response){

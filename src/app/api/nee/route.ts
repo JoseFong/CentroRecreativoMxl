@@ -1,5 +1,7 @@
 import { obtenerTodasNEE, registrarNEE } from "@/Controllers/nee/neurodivergenciaController";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken"
 
 /**
  * Maneja la solicitud GET para obtener todas las neurodivergencias.
@@ -9,6 +11,12 @@ import { NextRequest, NextResponse } from "next/server";
  */
 export async function GET(request: NextRequest) {
   try {
+    const cookieStore = cookies();
+                const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+                if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+                const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+                if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
     const neurodivergencias = await obtenerTodasNEE();
     if (!neurodivergencias) {
       return NextResponse.json({ message: "Error al obtener las neurodivergencias." }, { status: 404 });
@@ -27,6 +35,12 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
+    const cookieStore = cookies();
+                const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+                if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+                const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+                if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
     const data = await request.json();
     const neurodivergencia = await registrarNEE(data);
     if (!neurodivergencia) {

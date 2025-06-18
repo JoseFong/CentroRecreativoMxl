@@ -1,5 +1,7 @@
 import { eliminarAlumno, modificarAlumno } from "@/Controllers/alumnoController";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken"
 
 interface Params{
     id:string
@@ -14,6 +16,12 @@ interface Params{
  */
 export async function DELETE(request:NextRequest,{params}:{params:Params}){
     try{
+const cookieStore = cookies();
+            const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+            if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+            const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+            if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
         const id = parseInt(params.id)
         const alumno = await eliminarAlumno(id)
         if(!alumno){
@@ -34,6 +42,12 @@ export async function DELETE(request:NextRequest,{params}:{params:Params}){
  */
 export async function PATCH(request:NextRequest,{params}:{params:Params}){
     try{
+const cookieStore = cookies();
+            const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+            if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+            const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+            if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
         const id = parseInt(params.id)
         const data = await request.json()
         const response = await modificarAlumno(data,id)

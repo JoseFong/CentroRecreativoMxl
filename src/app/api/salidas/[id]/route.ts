@@ -1,6 +1,8 @@
 import {NextRequest, NextResponse} from "next/server";
 import {eliminarSalida, modificarSalida} from "@/Controllers/salidasController";
 import {Params} from "next/dist/shared/lib/router/utils/route-matcher";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken"
 
 /**
  * Función POST para actualizar una salida de un grupo
@@ -11,6 +13,12 @@ import {Params} from "next/dist/shared/lib/router/utils/route-matcher";
  */
 export async function PATCH(request:NextRequest,{params}:{params:Params}){
     try{
+        const cookieStore = cookies();
+                    const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+                    if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+                    const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+                    if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
         const id = parseInt(params.id)
         const data = await request.json()
         const response = await modificarSalida(data,id)
@@ -35,6 +43,12 @@ export async function PATCH(request:NextRequest,{params}:{params:Params}){
  */
 export async function DELETE(request:NextRequest,{params}:{params:Params}){
     try{
+        const cookieStore = cookies();
+                    const cookie = cookieStore.get("centroDeAtencionMultipleUser");
+                    if (!cookie) return NextResponse.json({message:"No está autorizado."},{status:400})
+                    const decoded = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+                    if (!decoded) return NextResponse.json({message:"No está autorizado."},{status:400})
+
         const id = parseInt(params.id)
         const response = await eliminarSalida(id)
         if(!response){
