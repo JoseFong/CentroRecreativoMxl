@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
-import ConsultaGastos from "@/Components/Gastos/consulta";
+import ConsultaGastos from "@/aaaaaaa/Gastos/consulta";
 
 function Gastos() {
-  return <ConsultaGastos/>;
+  return <ConsultaGastos />;
 }
 
 export default Gastos;

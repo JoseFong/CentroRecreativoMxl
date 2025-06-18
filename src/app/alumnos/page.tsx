@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import ConsultaAlumnos from "../../Components/Alumnos/consulta";
+import ConsultaAlumnos from "../../aaaaaaa/Alumnos/consulta";
 
 function Alumnos() {
   return <ConsultaAlumnos />;

@@ -1,5 +1,5 @@
 "use client";
-import MainLayout from "../Components/Layout/MainLayout";
+import MainLayout from "../aaaaaaa/Layout/MainLayout";
 
 import { Image } from "@nextui-org/image";
 

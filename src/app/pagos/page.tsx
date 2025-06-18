@@ -1,5 +1,5 @@
 "use client";
-import ConsultaPagos from "@/Components/Pagos/consultaPagos";
+import ConsultaPagos from "@/aaaaaaa/Pagos/consultaPagos";
 import React from "react";
 
 function Pagos() {
