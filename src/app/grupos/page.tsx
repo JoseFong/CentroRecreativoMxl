@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import ConsultaGrupos from "@/aaaaaaa/Grupos/consulta";
+import ConsultaGrupos from "@/components/Grupos/consulta";
 
 function Grupos() {
   return <ConsultaGrupos />;

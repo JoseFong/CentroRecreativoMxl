@@ -1,5 +1,5 @@
 import React from "react";
-import ConsultaDocente from "@/aaaaaaa/Docentes/ConsultaDocente";
+import ConsultaDocente from "@/components/Docentes/ConsultaDocente";
 
 function page() {
   return <ConsultaDocente />;

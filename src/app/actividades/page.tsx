@@ -1,5 +1,5 @@
 "use client";
-import ConsultaActividades from "@/aaaaaaa/Actividades/consulta";
+import ConsultaActividades from "@/components/Actividades/consulta";
 import React from "react";
 
 function Actividades() {

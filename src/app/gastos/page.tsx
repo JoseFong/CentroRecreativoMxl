@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import ConsultaGastos from "@/aaaaaaa/Gastos/consulta";
+import ConsultaGastos from "@/components/Gastos/consulta";
 
 function Gastos() {
   return <ConsultaGastos />;
