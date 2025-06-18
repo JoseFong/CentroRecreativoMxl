@@ -8,7 +8,6 @@ import ListaDeAsistenciaGrupo from "./ListaDeAsistenciaGrupo";
 import axios from "axios";
 import toast from "react-hot-toast";
 import ListaDeAsistenciaTodos from "./ListaDeAsistenciaTodos";
-import DocumentoEnBlanco from "./DocumentoEnBlanco";
 import DocumentoPermiso from "./DocumentoPermiso";
 import CalendarioImg from "@/Assets/calendarioImg.png";
 import Calendario from "../Calendario/Calendario";
@@ -191,10 +190,6 @@ function ConsultaAlumnos() {
         alumnos={alumnos}
         isOpen={isOpenTodos}
         onOpenChange={onOpenChangeTodos}
-      />
-      <DocumentoEnBlanco
-        isOpen={isOpenBlanco}
-        onOpenChange={onOpenChangeBlanco}
       />
       <DocumentoPermiso
         isOpen={isOpenPermiso}
