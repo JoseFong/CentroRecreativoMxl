@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   ModalContent,
@@ -53,7 +54,6 @@ const styles = StyleSheet.create({
   },
   headerText2: {
     paddingTop: 4,
-
     fontSize: 10,
     fontWeight: "bold",
     textAlign: "center",
@@ -69,10 +69,11 @@ const styles = StyleSheet.create({
   },
   pie: { marginTop: "auto" },
 });
+
 const logo = "https://i.imgur.com/6hTa0ZR.png";
 const hoy = new Date();
 const ano = hoy.getFullYear();
-const mes = hoy.getMonth() + 1; // Sumamos 1 porque los meses empiezan en 0
+const mes = hoy.getMonth() + 1;
 const dia = hoy.getDate();
 const meses = [
   "Enero",
@@ -102,7 +103,7 @@ const MyDocument = ({ descripcion, encargado, numero }: any) => (
         </View>
       </View>
       <View style={{ marginLeft: "auto" }}>
-        <Text style={{ fontSize: "12" }}>
+        <Text style={{ fontSize: 12 }}>
           Mexicali, B.C. a {dia} de {meses[mes]} del {ano}
         </Text>
       </View>
@@ -129,10 +130,15 @@ function DocumentoVacioLogo({ isOpen, onOpenChange }: any) {
   const [descripcion, setDescripcion] = useState("");
   const [encargado, setEncargado] = useState("");
   const [numero, setNumero] = useState("");
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handlePrint = async () => {
     if (!encargado || !numero || !descripcion) {
-      toast.error("No deje campos vacios");
+      toast.error("No deje campos vacíos");
       return;
     } else {
       const blob = await pdf(
@@ -164,6 +170,7 @@ function DocumentoVacioLogo({ isOpen, onOpenChange }: any) {
       setNumero(value);
     }
   };
+
   const splitText = (text: string, chunkSize: number) => {
     const chunks = [];
     for (let i = 0; i < text.length; i += chunkSize) {
@@ -173,6 +180,7 @@ function DocumentoVacioLogo({ isOpen, onOpenChange }: any) {
   };
 
   const textLines = splitText(descripcion, 81);
+
   return (
     <Modal
       isOpen={isOpen}
@@ -184,16 +192,18 @@ function DocumentoVacioLogo({ isOpen, onOpenChange }: any) {
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Documento vacio (Logo y firma)
+              Documento vacío (Logo y firma)
             </ModalHeader>
             <ModalBody>
-              <PDFViewer width="100%" height="500px">
-                <MyDocument
-                  descripcion={textLines}
-                  encargado={encargado}
-                  numero={numero}
-                />
-              </PDFViewer>{" "}
+              {isClient && (
+                <PDFViewer width="100%" height="500px">
+                  <MyDocument
+                    descripcion={textLines}
+                    encargado={encargado}
+                    numero={numero}
+                  />
+                </PDFViewer>
+              )}
               <div className="flex flex-row gap-2">
                 <Input
                   isRequired
@@ -202,14 +212,14 @@ function DocumentoVacioLogo({ isOpen, onOpenChange }: any) {
                   className="pr-2"
                   value={encargado}
                   onChange={(e) => setEncargado(e.target.value)}
-                ></Input>
+                />
                 <Input
                   isRequired
-                  label="Numero"
+                  label="Número"
                   placeholder="Número telefónico"
                   value={numero}
                   onChange={handleNumeroChange}
-                ></Input>
+                />
               </div>
               <Textarea
                 isRequired
@@ -217,7 +227,7 @@ function DocumentoVacioLogo({ isOpen, onOpenChange }: any) {
                 onChange={(e) => setDescripcion(e.target.value)}
                 label="Descripción"
                 placeholder="Ingrese la descripción del documento"
-              ></Textarea>
+              />
             </ModalBody>
             <ModalFooter>
               <Button
