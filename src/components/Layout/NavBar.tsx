@@ -4,6 +4,10 @@ import { IoLogOutOutline } from "react-icons/io5";
 import Image from "next/image";
 import Logo from "../../Assets/Logo.png";
 import Link from "next/link";
+import Logout from "@/Assets/icons8-logout-90.png";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,8 +21,19 @@ export default function NavBar() {
     { nombre: "Actividades", path: "/actividades" },
   ]);
 
+  const router = useRouter();
+
+  async function logout() {
+    try {
+      const res = await axios.get("/api/login");
+      router.push("/");
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+  }
+
   return (
-    <header className="bg-headerNav shadow-lg">
+    <header className="bg-headerNav shadow-lg relative">
       <nav className=" mx-auto px-4">
         <div className="flex justify-center	items-center h-20">
           <div className="flex items-center">
@@ -46,9 +61,19 @@ export default function NavBar() {
                 </Button>
               </Link>
             ))}
+            <Button
+              color="success"
+              variant="light"
+              size="md"
+              className="text-white"
+              isIconOnly
+              onPress={logout}
+            >
+              <Image src={Logout} alt="Cerrar sesión" />
+            </Button>
           </div>
 
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center flex-row gap-3">
             <button
               className="text-white focus:outline-none"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -76,6 +101,16 @@ export default function NavBar() {
                 )}
               </svg>
             </button>
+            <Button
+              color="success"
+              variant="light"
+              size="md"
+              className="text-white"
+              isIconOnly
+              onPress={logout}
+            >
+              <Image src={Logout} alt="Cerrar sesión" />
+            </Button>
           </div>
         </div>
 
